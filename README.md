@@ -4,18 +4,26 @@ Test your **42 Fly-In** algorithm on 130 maps and **watch it fly**.
 
 ![The visualizer](docs/screenshot.png)
 
-## Start in three steps
+## Start
 
 ```sh
 git clone https://github.com/jasuoh/fly-in-tester-and-visual-adapter.git flyin
 cd flyin
-python3 start.py install     # once: the visualizer (pygame-ce) into .venv/
-python3 start.py             # the menu
+make            # or: make run, or: python3 start.py
 ```
 
-On the first start flyin asks for the folder of your project and finds
-the command that runs it (`python3 main.py {map}`, `./fly_in {map}`, ...).
-It tries it on one map and tells you if something is off. Then:
+The first start offers to install the visualizer (pygame-ce, into
+`.venv/`) and then asks three things:
+
+1. **Where is your Fly-In project?** (the folder)
+2. **How is it started for one map?** It guesses the command:
+   `python3 main.py {map}`, `./fly_in {map}`, `python3 -m pkg {map}`, ...
+3. **Where does it put the solution?** In the terminal, in a file whose
+   name it gets as an argument (`{out}`), or always in the same file
+   (e.g. `output.txt`).
+
+It tries your program on one map and tells you if something is off. Then
+the menu:
 
 ```
 What do you want to do?
@@ -28,6 +36,11 @@ What do you want to do?
    7  Settings
    0  quit
 ```
+
+**Watch a map** runs your program on the maps you pick and plays each one
+in the visualizer: one number, several (`1,3,5`), a range (`2-6`) or
+`all`; close the window for the next one. Your answers are saved in
+`.flyin/` and can be changed under Settings.
 
 That is all you need. The rest of this page is reference.
 
@@ -63,7 +76,7 @@ after `pip install`, or `make ...`):
 
 | Command | |
 | --- | --- |
-| `setup [PROJECT] [--cmd "..."]` | connect your project |
+| `setup [PROJECT] [--cmd "..."] [--output-file FILE]` | connect your project |
 | `test [WHAT ...] [-v] [--strict] [--show]` | all maps, a group (`challenge`) or part of a name (`hard`); `-v` lists every map, not only problems |
 | `show MAP` | run your program on a map and watch it |
 | `show MAP OUTPUT` | watch an output file (`-` = stdin) |
@@ -111,10 +124,9 @@ for o in outcomes:
 
 ## What your program must do
 
-1. take the map path as an argument (or on stdin, or write to a file with
-   `{out}` in the command);
-2. for a solvable map print one line per turn (`D1-roof1 D2-corridorA`)
-   and exit with **0**;
+1. take the map path as an argument (or on stdin with `--shell`);
+2. for a solvable map give one line per turn (`D1-roof1 D2-corridorA`) in
+   the terminal or in a file, and exit with **0**;
 3. for a broken or unsolvable map print an error naming the line to
    stderr and exit with **non-zero**;
 4. never open a window and never crash with a traceback.

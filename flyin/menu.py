@@ -38,6 +38,26 @@ def choose(title: str, options: list[str], allow_text: bool = False,
     return None
 
 
+def selection(text: str, count: int) -> list[int] | None:
+    """Parse ``all``, ``1,3,5`` or ``2-6`` into 0-based indexes.
+
+    Returns None if ``text`` is not a selection (e.g. a map name).
+    """
+    text = text.replace(" ", "")
+    if text.lower() == "all":
+        return list(range(count))
+    indexes: list[int] = []
+    for part in text.split(","):
+        first, dash, last = part.partition("-")
+        if not first.isdigit() or (dash and not last.isdigit()):
+            return None
+        stop = int(last) if dash else int(first)
+        for number in range(int(first), stop + 1):
+            if 1 <= number <= count and number - 1 not in indexes:
+                indexes.append(number - 1)
+    return indexes or None
+
+
 class Menu:
     """Main loop: shows the project, offers every action."""
 
@@ -60,6 +80,10 @@ class Menu:
         while True:
             say(f"\nProject: {self.cfg.project}", "dim")
             say(f"Command: {self.cfg.command}", "dim")
+            say("Output:  " + (f"file {self.cfg.output_file}"
+                               if self.cfg.output_file else
+                               "file {out}" if "{out}" in self.cfg.command
+                               else "terminal"), "dim")
             labels = [label for label, _ in actions]
             count = len(problems())
             if count:
@@ -85,9 +109,12 @@ class Menu:
             self._offer_problems()
 
     def watch(self) -> None:
-        """Pick a map, run the program on it, open the visualizer."""
-        ref = self._pick_map()
-        if ref is not None:
+        """Pick maps, run the program on each and play it."""
+        refs = self._pick_maps()
+        for number, ref in enumerate(refs, 1):
+            if len(refs) > 1:
+                say(f"\n[{number}/{len(refs)}] {Path(ref).name} - close "
+                    "the window (Esc) for the next one", "bold")
             do_show(self.cfg, ref)
 
     def watch_problems(self) -> None:
@@ -96,9 +123,10 @@ class Menu:
 
     def watch_file(self) -> None:
         """Play an output that is already in a file."""
-        ref = self._pick_map()
-        if ref is None:
+        refs = self._pick_maps(several=False)
+        if not refs:
             return
+        ref = refs[0]
         output = ask("Output file")
         if not Path(output).expanduser().is_file():
             say(f"no file '{output}'", "bad")
@@ -152,40 +180,49 @@ class Menu:
             return None
         return GROUP_ORDER[picked] if picked < len(GROUP_ORDER) else ""
 
-    def _pick_map(self) -> str | None:
-        """Return a map path: by group and number, by name or a file."""
-        picked = choose("Which map?", [
-            f"from group '{g}'" for g in GROUP_ORDER if g != "edge-invalid"
-            and g != "provided-invalid"] + ["a map file of my own"],
-            allow_text=True)
+    def _pick_maps(self, several: bool = True) -> list[str]:
+        """Return map paths: by group and number(s), by name or a file."""
+        groups = [g for g in GROUP_ORDER if "invalid" not in g]
+        picked = choose("Which map?", [f"from group '{g}'" for g in groups]
+                        + ["a map file of my own"], allow_text=True)
         if picked is None:
-            return None
+            return []
         if isinstance(picked, str):
             return self._by_name(picked)
-        groups = [g for g in GROUP_ORDER if "invalid" not in g]
         if picked == len(groups):
             path = Path(ask("Map file")).expanduser()
-            return str(path) if path.is_file() else None
+            if not path.is_file():
+                say(f"no file '{path}'", "bad")
+                return []
+            return [str(path)]
         order = ["easy", "medium", "hard", "challenger", "critical"]
         cases = sorted(api.maps(groups[picked]), key=lambda c: (
             next((i for i, word in enumerate(order) if f"/{word}/" in
                   f"/{c.name}"), len(order)), c.name))
+        if several:
+            say("One number, several (1,3,5), a range (2-6) or 'all'.",
+                "dim")
         chosen = choose(f"Maps in '{groups[picked]}'", [
             c.name.split("/", 1)[-1] + (f"   (target {c.target})"
                                         if c.target else "")
             for c in cases], allow_text=True)
         if isinstance(chosen, int):
-            return str(cases[chosen].path)
-        return None if chosen is None else self._by_name(chosen)
+            return [str(cases[chosen].path)]
+        if chosen is None:
+            return []
+        numbers = selection(chosen, len(cases)) if several else None
+        if numbers:
+            return [str(cases[i].path) for i in numbers]
+        return self._by_name(chosen)
 
     @staticmethod
-    def _by_name(text: str) -> str | None:
+    def _by_name(text: str) -> list[str]:
         """Resolve a typed name; list the candidates if it is ambiguous."""
         try:
-            return str(api.find_map(text))
+            return [str(api.find_map(text))]
         except LookupError as error:
             say(str(error), "bad")
-            return None
+            return []
 
     @staticmethod
     def _number(question: str, current: float) -> float:

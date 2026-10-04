@@ -4,10 +4,12 @@ PYTHON ?= python3
 START   = $(PYTHON) start.py
 
 .DEFAULT_GOAL := menu
-.PHONY: menu install setup test show problems maps dev-test lint clean
+.PHONY: menu run install setup test show problems maps dev-test lint clean
 
-menu:            ## the interactive menu
+menu:            ## the interactive menu (also: make run)
 	@$(START)
+
+run: menu
 
 install:         ## visualizer (pygame-ce) into .venv/
 	@$(START) install

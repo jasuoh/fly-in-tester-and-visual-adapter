@@ -27,6 +27,9 @@ class Config:
         theme: Visualizer theme.
         timeout: Seconds per map.
         jobs: Maps tested in parallel.
+        output_file: For programs that always write the solution to the
+            same file (relative to ``project``); empty when it is printed
+            or written to ``{out}``.
     """
 
     project: str
@@ -34,6 +37,7 @@ class Config:
     theme: str = "mission"
     timeout: float = 30.0
     jobs: int = 4
+    output_file: str = ""
 
 
 def state_dir() -> Path:

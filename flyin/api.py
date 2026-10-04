@@ -119,15 +119,20 @@ def show(ref: MapRef, output: Output, theme: str = "mission",
 
 
 def run(ref: MapRef, command: str, cwd: str | None = None,
-        timeout: float = 60.0) -> Outcome:
-    """Run your program on one map and judge it (``outcome.output`` holds
-    what it printed)."""
-    return Runner(command, timeout=timeout, cwd=cwd).run_case(case_for(ref))
+        timeout: float = 60.0, output_file: str = "") -> Outcome:
+    """Run your program on one map and judge it.
+
+    ``outcome.output`` holds the solution: what it printed, or the file it
+    wrote (``{out}`` in the command, or a fixed ``output_file``).
+    """
+    return Runner(command, timeout=timeout, cwd=cwd,
+                  output_file=output_file).run_case(case_for(ref))
 
 
 def test(command: str, cwd: str | None = None,
          only: str | list[str] | None = None, timeout: float = 30.0,
-         jobs: int = 4, strict_targets: bool = False) -> list[Outcome]:
+         jobs: int = 4, strict_targets: bool = False,
+         output_file: str = "") -> list[Outcome]:
     """Run your program on many maps and judge every one.
 
     Args:
@@ -138,6 +143,8 @@ def test(command: str, cwd: str | None = None,
         timeout: Seconds per map.
         jobs: Maps in parallel.
         strict_targets: Turns above the target fail instead of warn.
+        output_file: The fixed file your program writes, if any (the maps
+            then run one by one).
     """
     queries = [only] if isinstance(only, str) else only
     if queries is None:
@@ -146,5 +153,5 @@ def test(command: str, cwd: str | None = None,
         wanted = {c.name for q in queries for c in maps(q)}
         cases = [c for c in maps() if c.name in wanted]
     runner = Runner(command, timeout=timeout, cwd=cwd,
-                    strict_targets=strict_targets)
+                    strict_targets=strict_targets, output_file=output_file)
     return runner.run_all(cases, jobs=jobs)

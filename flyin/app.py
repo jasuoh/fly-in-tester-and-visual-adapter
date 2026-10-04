@@ -49,8 +49,14 @@ def ask(question: str, default: str = "") -> str:
 # setup ----------------------------------------------------------------
 
 def setup(project: str | None = None, command: str | None = None,
-          interactive: bool = True) -> Config | None:
-    """Find out how to run the project, try it on one map and save it."""
+          interactive: bool = True, output_file: str | None = None
+          ) -> Config | None:
+    """Find out how to run the project, try it on one map and save it.
+
+    Asks (when ``interactive``) for the folder, the command and how the
+    program hands over its solution: terminal, a file passed as
+    ``{out}``, or always the same file.
+    """
     old = config.load()
     if project is None:
         default = old.project if old else str(Path.cwd())
@@ -71,17 +77,44 @@ def setup(project: str | None = None, command: str | None = None,
             command = ask("Command", guess)
         else:
             command = guess
-    if "{map}" not in command and "{out}" not in command:
+    if "{map}" not in command:
         command += " {map}"
-    new = Config(str(folder), command)
+    if output_file is None:
+        command, output_file = _ask_output(command, old) if interactive \
+            else (command, old.output_file if old else "")
+    new = Config(str(folder), command, output_file=output_file)
     if old is not None:
         new.theme, new.timeout, new.jobs = old.theme, old.timeout, old.jobs
     say(f"\nTrying it on {FIRST_MAP} ...", "dim")
-    outcome = api.run(FIRST_MAP, new.command, new.project, timeout=20)
+    outcome = api.run(FIRST_MAP, new.command, new.project, 20,
+                      new.output_file)
     _explain_first_run(outcome)
     config.save(new)
     say(f"Saved in {config.state_dir() / 'config.json'}", "dim")
     return new
+
+
+def _ask_output(command: str, old: Config | None) -> tuple[str, str]:
+    """Ask where the solution goes; return the command and output file."""
+    current = "3" if old and old.output_file else \
+        "2" if "{out}" in command else "1"
+    say("\nWhere does your program put the solution (the turn lines)?",
+        "bold")
+    print("   1  prints it in the terminal")
+    print("   2  writes it to a file whose name it gets as an argument")
+    print("   3  always writes the same file (e.g. output.txt)")
+    answer = ask("Choose", current)
+    if answer == "2":
+        if "{out}" not in command:
+            say("{out} stands for that file name in the command.", "dim")
+            command = ask("Command", command + " {out}")
+        return command, ""
+    command = command.replace(" {out}", "")
+    if answer == "3":
+        name = ask("File name, relative to your project",
+                   (old.output_file if old else "") or "output.txt")
+        return command, name
+    return command, ""
 
 
 def _explain_first_run(outcome: Outcome) -> None:
@@ -94,8 +127,9 @@ def _explain_first_run(outcome: Outcome) -> None:
         say("Does your program open a window? Give it a flag without one "
             "(e.g. --no-gui) and add it to the command.", "warn")
     elif "no solution" in outcome.message:
-        say("Nothing that looks like 'D1-zone' was printed. Print one "
-            "line per turn to the terminal.", "warn")
+        say("No turn lines ('D1-zone ...') found where flyin looked. Check "
+            "where your program puts the solution (setup question 3).",
+            "warn")
     say("Saved anyway; change it under Settings or with 'flyin setup'.",
         "dim")
 
@@ -124,7 +158,7 @@ def do_test(cfg: Config, only: list[str] | None = None,
         return []
     say(f"Testing {count} maps with: {cfg.command}", "dim")
     outcomes = api.test(cfg.command, cfg.project, only or None,
-                        cfg.timeout, cfg.jobs, strict)
+                        cfg.timeout, cfg.jobs, strict, cfg.output_file)
     print_outcomes(outcomes, sys.stdout.isatty(), verbose)
     config.save_run(outcomes)
     problems = sum(1 for o in outcomes if o.status != PASS
@@ -151,7 +185,8 @@ def do_show(cfg: Config | None, ref: str, output: str | None = None,
         if cfg is None:
             cfg = need_config()
         say(f"Running: {cfg.command.replace('{map}', path.name)}", "dim")
-        outcome = api.run(path, cfg.command, cfg.project, cfg.timeout)
+        outcome = api.run(path, cfg.command, cfg.project, cfg.timeout,
+                          cfg.output_file)
         say(f"{outcome.status}: {outcome.message}",
             {PASS: "ok", WARN: "warn", FAIL: "bad"}[outcome.status])
         text = outcome.output
@@ -198,7 +233,10 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command")
     setup_p = sub.add_parser("setup", help="connect your project")
     setup_p.add_argument("project", nargs="?")
-    setup_p.add_argument("--cmd", help="command for one map ({map})")
+    setup_p.add_argument("--cmd", help="command for one map ({map}; "
+                         "{out} if it takes an output file)")
+    setup_p.add_argument("--output-file", help="the file your program "
+                         "always writes, if it does not print the turns")
     test_p = sub.add_parser("test", help="test all maps, a group or a few")
     test_p.add_argument("what", nargs="*", help="group or part of a map "
                         "name (default: all)")
@@ -250,8 +288,8 @@ def _dispatch(args: argparse.Namespace) -> int:
         return Menu().run()
     if args.command == "setup":
         cmd = args.cmd
-        return 0 if setup(args.project, cmd, interactive=cmd is None) \
-            else 2
+        return 0 if setup(args.project, cmd, cmd is None,
+                          args.output_file) else 2
     if args.command == "test":
         outcomes = do_test(need_config(), args.what, args.verbose,
                            args.strict)

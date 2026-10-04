@@ -131,6 +131,19 @@ class ConfigTests(InWorkdir):
         self.assertTrue((self.dir / ".flyin" / ".gitignore").is_file())
 
 
+class SelectionTests(unittest.TestCase):
+    """Choosing several maps in the menu."""
+
+    def test_selection(self) -> None:
+        """Numbers, lists, ranges, all; names are not selections."""
+        from flyin.menu import selection
+        self.assertEqual(selection("all", 3), [0, 1, 2])
+        self.assertEqual(selection("1,3", 5), [0, 2])
+        self.assertEqual(selection("2-4, 1", 5), [1, 2, 3, 0])
+        self.assertEqual(selection("9", 3), None)
+        self.assertEqual(selection("city_grid", 3), None)
+
+
 class CommandTests(InWorkdir):
     """The short commands of ``flyin``."""
 
@@ -151,6 +164,27 @@ class CommandTests(InWorkdir):
         records = config.last_run()
         self.assertEqual(len(records), 5)
         self.assertTrue(Path(records[0]["output"]).is_file())
+
+    def test_programs_that_write_files(self) -> None:
+        """A fixed output file, or a file passed as {out}."""
+        folder = self.dir / "writer"
+        folder.mkdir()
+        (folder / "main.py").write_text(
+            "import subprocess, sys\n"
+            f"out = subprocess.run([sys.executable, {str(NAIVE)!r}, "
+            "sys.argv[1]], capture_output=True, text=True).stdout\n"
+            "target = sys.argv[2] if len(sys.argv) > 2 else 'output.txt'\n"
+            "open(target, 'w').write(out)\nprint('done')\n", "utf-8")
+        command = f"{sys.executable} main.py"
+        code, text = self.flyin("setup", str(folder), "--cmd", command,
+                                "--output-file", "output.txt")
+        self.assertEqual(code, 0, text)
+        self.assertIn("Works", text)
+        code, text = self.flyin("setup", str(folder), "--cmd",
+                                command + " {map} {out}", "--output-file", "")
+        self.assertIn("Works", text)
+        code, text = self.flyin("test", "easy/01")
+        self.assertEqual(code, 0, text)
 
     def test_show_output_file_as_screenshot(self) -> None:
         """``show MAP OUTPUT --screenshot`` needs no project."""

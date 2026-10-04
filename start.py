@@ -30,9 +30,30 @@ def install() -> int:
                            "--upgrade", "pip", "pygame-ce"]).returncode
 
 
+def has_pygame() -> bool:
+    """Return True if this Python can import pygame."""
+    try:
+        import pygame  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+def offer_install() -> None:
+    """Menu start without the visualizer: offer to install it once."""
+    if VENV_PYTHON.exists() or has_pygame() or not sys.stdin.isatty():
+        return
+    answer = input("The visualizer needs pygame-ce. Install it into "
+                   ".venv/ now? [Y/n]: ").strip().lower()
+    if answer in ("", "y", "yes", "j", "ja") and install() == 0:
+        os.execv(str(VENV_PYTHON), [str(VENV_PYTHON), __file__])
+
+
 if __name__ == "__main__":
     if sys.argv[1:2] == ["install"]:
         sys.exit(install())
+    if not sys.argv[1:]:
+        offer_install()
     if VENV_PYTHON.exists() and \
             Path(sys.prefix).resolve() != VENV.resolve():
         os.execv(str(VENV_PYTHON),

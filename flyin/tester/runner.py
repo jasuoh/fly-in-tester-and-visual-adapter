@@ -106,18 +106,23 @@ class Runner:
         check_lines: bool = True,
         strict_output: bool = False,
         strict_targets: bool = False,
+        output_file: str = "",
     ) -> None:
         """Configure the runner.
 
         ``command`` may contain ``{map}`` (path of the map) and ``{out}``
         (path of an output file the program should write). When ``{out}``
         is used, or ``source`` is ``"file"``, the solution is read from that
-        file instead of from the terminal.
+        file instead of from the terminal. ``output_file`` is for programs
+        that always write the same file (relative to ``cwd``): it is
+        removed before and read after every run, so run maps one by one.
         """
         self.command = command
         self.timeout = timeout
         self.cwd = cwd
-        self.use_file = source == "file" or "{out}" in command
+        self.use_file = source == "file" or "{out}" in command \
+            or bool(output_file)
+        self.output_file = output_file
         self.shell = shell
         self.check_lines = check_lines
         self.strict_output = strict_output
@@ -143,6 +148,10 @@ class Runner:
         start = time.monotonic()
         with tempfile.TemporaryDirectory() as tmp:
             out_path = os.path.join(tmp, "solution.txt")
+            if self.output_file:
+                out_path = os.path.join(self.cwd or ".", self.output_file)
+                if os.path.exists(out_path):
+                    os.remove(out_path)
             try:
                 process = self._execute(case, out_path)
             except subprocess.TimeoutExpired:
@@ -229,7 +238,9 @@ class Runner:
             return Outcome(case, FAIL, f"exit status {process.returncode}: "
                            f"{message[:120]}")
         if not turns:
-            return Outcome(case, FAIL, "no solution was printed")
+            where = f" in {self.output_file}" if self.output_file else \
+                " in the output file" if self.use_file else ""
+            return Outcome(case, FAIL, f"no solution was printed{where}")
         if self.strict_output and noise:
             return Outcome(case, FAIL, "output has lines that are not "
                            "movements", details=tuple(noise[:3]))
@@ -266,7 +277,7 @@ class Runner:
 
     def run_all(self, cases: list[Case], jobs: int = 1) -> list[Outcome]:
         """Run every case, optionally in parallel, keeping the order."""
-        if jobs <= 1:
+        if jobs <= 1 or self.output_file:
             return [self.run_case(case) for case in cases]
         with ThreadPoolExecutor(max_workers=jobs) as pool:
             return list(pool.map(self.run_case, cases))
