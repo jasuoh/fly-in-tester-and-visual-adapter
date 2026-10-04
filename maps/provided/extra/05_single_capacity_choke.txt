@@ -1,0 +1,11 @@
+# Extra 05: Single-capacity choke point
+# A hard capacity-1 connection forces all 5 drones through one at a
+# time, with a roomy zone on either side.
+nb_drones: 5
+
+start_hub: start 0 0 [color=green max_drones=5]
+hub: choke 1 0 [color=orange max_drones=1]
+end_hub: goal 2 0 [color=green max_drones=5]
+
+connection: start-choke [max_link_capacity=1]
+connection: choke-goal

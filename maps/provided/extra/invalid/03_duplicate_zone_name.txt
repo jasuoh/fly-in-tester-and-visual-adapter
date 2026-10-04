@@ -1,0 +1,10 @@
+# Invalid: two hubs share the same name "mid"
+nb_drones: 1
+
+start_hub: start 0 0
+hub: mid 1 0
+hub: mid 2 0
+end_hub: goal 3 0
+
+connection: start-mid
+connection: mid-goal

@@ -1,0 +1,29 @@
+# Critical 01: Restricted gate contention
+#
+# Two normal, roomy staging zones (gateA, gateB) both feed the SAME
+# restricted zone "checkpoint" (max_drones=2). Because a restricted
+# zone is a forced 2-turn transit that cannot be aborted or held on
+# the connection, the drone MUST land in checkpoint exactly on
+# arrival turn. With 6 drones and only 2 checkpoint slots, a
+# scheduler that dispatches greedily from both sides without
+# reserving capacity two turns ahead will try to land more than 2
+# drones on the same turn -> invalid state.
+#
+# Watch out for: capacity must be reserved for the FULL duration of a
+# restricted-zone transit, and reservations coming from different
+# connections into the same destination zone must be tracked jointly.
+nb_drones: 6
+
+start_hub: start 0 0 [color=green max_drones=6]
+hub: gateA 1 1 [color=blue max_drones=6]
+hub: gateB 1 -1 [color=blue max_drones=6]
+hub: checkpoint 2 0 [zone=restricted color=red max_drones=2]
+hub: post 3 0 [color=yellow max_drones=6]
+end_hub: goal 4 0 [color=green max_drones=6]
+
+connection: start-gateA
+connection: start-gateB
+connection: gateA-checkpoint
+connection: gateB-checkpoint
+connection: checkpoint-post
+connection: post-goal

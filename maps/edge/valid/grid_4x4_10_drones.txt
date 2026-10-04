@@ -1,0 +1,41 @@
+nb_drones: 10
+start_hub: n0_0 0 0
+hub: n0_1 0 1 [max_drones=2]
+hub: n0_2 0 2 [max_drones=2]
+hub: n0_3 0 3 [max_drones=2]
+hub: n1_0 1 0 [max_drones=2]
+hub: n1_1 1 1 [max_drones=2]
+hub: n1_2 1 2 [max_drones=2]
+hub: n1_3 1 3 [max_drones=2]
+hub: n2_0 2 0 [max_drones=2]
+hub: n2_1 2 1 [max_drones=2]
+hub: n2_2 2 2 [max_drones=2]
+hub: n2_3 2 3 [max_drones=2]
+hub: n3_0 3 0 [max_drones=2]
+hub: n3_1 3 1 [max_drones=2]
+hub: n3_2 3 2 [max_drones=2]
+end_hub: n3_3 3 3
+connection: n0_0-n1_0
+connection: n0_0-n0_1
+connection: n0_1-n1_1
+connection: n0_1-n0_2
+connection: n0_2-n1_2
+connection: n0_2-n0_3
+connection: n0_3-n1_3
+connection: n1_0-n2_0
+connection: n1_0-n1_1
+connection: n1_1-n2_1
+connection: n1_1-n1_2
+connection: n1_2-n2_2
+connection: n1_2-n1_3
+connection: n1_3-n2_3
+connection: n2_0-n3_0
+connection: n2_0-n2_1
+connection: n2_1-n3_1
+connection: n2_1-n2_2
+connection: n2_2-n3_2
+connection: n2_2-n2_3
+connection: n2_3-n3_3
+connection: n3_0-n3_1
+connection: n3_1-n3_2
+connection: n3_2-n3_3

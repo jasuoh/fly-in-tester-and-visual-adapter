@@ -1,0 +1,19 @@
+# Extra 07: Priority tie-break
+# A normal zone and a priority zone offer the exact same movement
+# cost (1 turn). A well-optimized pathfinder should favor the
+# priority zone when costs are otherwise equal.
+nb_drones: 1
+
+start_hub: start 0 0 [color=green]
+hub: fork 1 0 [color=yellow]
+hub: plain 2 1 [zone=normal color=blue]
+hub: pref 2 -1 [zone=priority color=cyan]
+hub: merge 3 0 [color=yellow]
+end_hub: goal 4 0 [color=green]
+
+connection: start-fork
+connection: fork-plain
+connection: fork-pref
+connection: plain-merge
+connection: pref-merge
+connection: merge-goal

@@ -1,0 +1,16 @@
+# Extra 14: Shorter path preference
+# One direct route and one two-hop detour made of the same zone
+# type; the shorter route must be preferred.
+nb_drones: 1
+
+start_hub: start 0 0 [color=green]
+hub: short 1 0 [color=blue]
+hub: long1 0 1 [color=blue]
+hub: long2 1 1 [color=blue]
+end_hub: goal 2 0 [color=green]
+
+connection: start-short
+connection: short-goal
+connection: start-long1
+connection: long1-long2
+connection: long2-goal

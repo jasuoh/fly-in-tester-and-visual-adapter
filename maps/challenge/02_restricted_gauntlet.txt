@@ -1,0 +1,30 @@
+# Hard 2: a wide chain of restricted zones (2 turns each, links busy for both
+# turns) against a long normal corridor and a blocked shortcut.
+nb_drones: 24
+
+start_hub: camp 0 0 [color=green]
+hub: r1 1 0 [zone=restricted color=red max_drones=2]
+hub: r2 2 0 [zone=restricted color=red max_drones=2]
+hub: r3 3 0 [zone=restricted color=red max_drones=2]
+hub: c1 1 2 [color=blue]
+hub: c2 2 2 [color=blue]
+hub: c3 3 2 [color=blue]
+hub: c4 4 2 [color=blue]
+hub: c5 5 2 [color=blue]
+hub: wall 2 -1 [zone=blocked color=gray]
+hub: merge 5 0 [color=yellow max_drones=3]
+end_hub: keep 6 0 [color=gold]
+
+connection: camp-r1 [max_link_capacity=2]
+connection: r1-r2 [max_link_capacity=2]
+connection: r2-r3 [max_link_capacity=2]
+connection: r3-merge [max_link_capacity=2]
+connection: camp-c1
+connection: c1-c2
+connection: c2-c3
+connection: c3-c4
+connection: c4-c5
+connection: c5-merge
+connection: camp-wall
+connection: wall-merge
+connection: merge-keep [max_link_capacity=3]

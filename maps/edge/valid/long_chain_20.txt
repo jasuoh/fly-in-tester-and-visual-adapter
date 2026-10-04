@@ -1,0 +1,42 @@
+nb_drones: 3
+start_hub: s 0 0
+hub: h1 1 0
+hub: h2 2 0
+hub: h3 3 0
+hub: h4 4 0
+hub: h5 5 0
+hub: h6 6 0
+hub: h7 7 0
+hub: h8 8 0
+hub: h9 9 0
+hub: h10 10 0
+hub: h11 11 0
+hub: h12 12 0
+hub: h13 13 0
+hub: h14 14 0
+hub: h15 15 0
+hub: h16 16 0
+hub: h17 17 0
+hub: h18 18 0
+hub: h19 19 0
+end_hub: g 20 0
+connection: s-h1
+connection: h1-h2
+connection: h2-h3
+connection: h3-h4
+connection: h4-h5
+connection: h5-h6
+connection: h6-h7
+connection: h7-h8
+connection: h8-h9
+connection: h9-h10
+connection: h10-h11
+connection: h11-h12
+connection: h12-h13
+connection: h13-h14
+connection: h14-h15
+connection: h15-h16
+connection: h16-h17
+connection: h17-h18
+connection: h18-h19
+connection: h19-g

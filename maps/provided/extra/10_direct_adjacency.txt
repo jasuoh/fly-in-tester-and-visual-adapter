@@ -1,0 +1,10 @@
+# Extra 10: Direct start-goal adjacency
+# Start and goal are directly connected; every drone finishes in a
+# single turn. Exercises loop-termination and output formatting for
+# the shortest possible run.
+nb_drones: 3
+
+start_hub: start 0 0 [color=green]
+end_hub: goal 1 0 [color=green]
+
+connection: start-goal

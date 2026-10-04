@@ -1,0 +1,950 @@
+{
+  "version": 1,
+  "maps": [
+    {
+      "path": "provided/challenger/01_the_impossible_dream.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 44,
+      "optional_target": true,
+      "note": "optional: beat the record of 45 turns"
+    },
+    {
+      "path": "provided/critical/01_restricted_gate_contention.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/critical/02_conveyor_chain.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/critical/03_link_vs_zone_capacity.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/critical/04_symmetric_deadlock_risk.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/easy/01_linear_path.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 6
+    },
+    {
+      "path": "provided/easy/02_simple_fork.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 6
+    },
+    {
+      "path": "provided/easy/03_basic_capacity.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 8
+    },
+    {
+      "path": "provided/extra/01_complex_maze.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/02_connection_check.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/03_challenge_x3.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/04_simple_fork_two_paths.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/05_single_capacity_choke.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/06_oscillation_trap.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/07_priority_tiebreak.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/08_restricted_capacity_relay.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/09_massive_capacity_sanity.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/10_direct_adjacency.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/11_trivial_chain.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/12_dead_end_decoy.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/13_equal_cost_paths.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/14_shorter_path_preference.txt",
+      "group": "provided",
+      "expect": "solve"
+    },
+    {
+      "path": "provided/extra/invalid/01_missing_nb_drones.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "note": "nb_drones line is missing"
+    },
+    {
+      "path": "provided/extra/invalid/02_undefined_zone_reference.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "line": 7,
+      "note": "unknown zone"
+    },
+    {
+      "path": "provided/extra/invalid/03_duplicate_zone_name.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "line": 6,
+      "note": "zone defined twice"
+    },
+    {
+      "path": "provided/extra/invalid/04_invalid_zone_type.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "line": 5,
+      "note": "unknown zone type"
+    },
+    {
+      "path": "provided/extra/invalid/05_unreachable_goal.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "unsolvable",
+      "note": "no route to the goal"
+    },
+    {
+      "path": "provided/extra/invalid/06_zero_capacity_zone.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "line": 6,
+      "note": "max_drones=0"
+    },
+    {
+      "path": "provided/extra/invalid/07_zero_drones.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "line": 2,
+      "note": "nb_drones is 0"
+    },
+    {
+      "path": "provided/extra/invalid/08_malformed_line.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "line": 5,
+      "note": "line without ':'"
+    },
+    {
+      "path": "provided/extra/invalid/09_duplicate_connection.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "line": 11,
+      "note": "a-b then b-a"
+    },
+    {
+      "path": "provided/extra/invalid/10_dash_in_zone_name.txt",
+      "group": "provided-invalid",
+      "expect": "error",
+      "reason": "syntax",
+      "line": [
+        6,
+        9,
+        10
+      ],
+      "note": "dash in a name"
+    },
+    {
+      "path": "provided/hard/01_maze_nightmare.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 45
+    },
+    {
+      "path": "provided/hard/02_capacity_hell.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 60
+    },
+    {
+      "path": "provided/hard/03_ultimate_challenge.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 35
+    },
+    {
+      "path": "provided/medium/01_dead_end_trap.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 15
+    },
+    {
+      "path": "provided/medium/02_circular_loop.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 20
+    },
+    {
+      "path": "provided/medium/03_priority_puzzle.txt",
+      "group": "provided",
+      "expect": "solve",
+      "target": 12
+    },
+    {
+      "path": "edge/valid/single_drone_linear.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 2
+    },
+    {
+      "path": "edge/valid/comments_and_blank_lines.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/crlf_line_endings.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/no_trailing_newline.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/no_space_after_colon.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/metadata_any_order.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/negative_coordinates.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/huge_capacities.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 2
+    },
+    {
+      "path": "edge/valid/many_drones_100.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 101
+    },
+    {
+      "path": "edge/valid/unicode_zone_name.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/link_capacity_two.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 2
+    },
+    {
+      "path": "edge/valid/start_capacity_equals_drones.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/restricted_chain.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/restricted_beats_long_detour.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 3
+    },
+    {
+      "path": "edge/valid/priority_preferred.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 2,
+      "prefer_visit": [
+        "p"
+      ]
+    },
+    {
+      "path": "edge/valid/blocked_bypass.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 4
+    },
+    {
+      "path": "edge/valid/blocked_isolated.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/long_chain_20.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 22
+    },
+    {
+      "path": "edge/valid/fork_merge_bottleneck.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/grid_4x4_10_drones.txt",
+      "group": "edge-valid",
+      "expect": "solve"
+    },
+    {
+      "path": "edge/valid/parallel_paths_three.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 4
+    },
+    {
+      "path": "edge/valid/indented_comment.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "note": "comment line with leading spaces",
+      "level": "recommended"
+    },
+    {
+      "path": "edge/valid/whitespace_only_line.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "note": "a line that only has spaces",
+      "level": "recommended"
+    },
+    {
+      "path": "edge/valid/inline_comment.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "note": "comment after a definition",
+      "level": "recommended"
+    },
+    {
+      "path": "edge/valid/tab_separated_fields.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "note": "tabs between the fields",
+      "level": "recommended"
+    },
+    {
+      "path": "edge/valid/double_space_fields.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "note": "two spaces between the fields",
+      "level": "recommended"
+    },
+    {
+      "path": "edge/valid/utf8_bom.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "note": "file starts with a BOM",
+      "level": "recommended"
+    },
+    {
+      "path": "edge/valid/many_drones_10000.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 10001,
+      "note": "there is no upper limit on drones (slow)",
+      "level": "recommended"
+    },
+    {
+      "path": "edge/valid/unknown_color_name.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "note": "color values are free-form",
+      "level": "recommended"
+    },
+    {
+      "path": "edge/invalid/empty_file.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "note": "empty file"
+    },
+    {
+      "path": "edge/invalid/only_comments.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "note": "no content"
+    },
+    {
+      "path": "edge/invalid/missing_nb_drones.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "note": "nb_drones missing"
+    },
+    {
+      "path": "edge/invalid/nb_drones_not_first_line.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": [
+        1,
+        6
+      ],
+      "note": "nb_drones must be the first line"
+    },
+    {
+      "path": "edge/invalid/nb_drones_zero.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 1,
+      "note": "0 drones"
+    },
+    {
+      "path": "edge/invalid/nb_drones_negative.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 1
+    },
+    {
+      "path": "edge/invalid/nb_drones_text.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 1
+    },
+    {
+      "path": "edge/invalid/nb_drones_float.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 1
+    },
+    {
+      "path": "edge/invalid/nb_drones_empty_value.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 1
+    },
+    {
+      "path": "edge/invalid/nb_drones_twice.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": [
+        1,
+        7
+      ],
+      "note": "nb_drones defined twice"
+    },
+    {
+      "path": "edge/invalid/missing_start_hub.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "note": "no start_hub"
+    },
+    {
+      "path": "edge/invalid/missing_end_hub.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "note": "no end_hub"
+    },
+    {
+      "path": "edge/invalid/two_start_hubs.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": [
+        2,
+        7
+      ]
+    },
+    {
+      "path": "edge/invalid/two_end_hubs.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": [
+        4,
+        7
+      ]
+    },
+    {
+      "path": "edge/invalid/invalid_zone_type.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/empty_zone_type.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/max_drones_zero.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/max_drones_negative.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/max_drones_text.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/max_drones_float.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/link_capacity_zero.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 5
+    },
+    {
+      "path": "edge/invalid/link_capacity_negative.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 5
+    },
+    {
+      "path": "edge/invalid/link_capacity_text.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 5
+    },
+    {
+      "path": "edge/invalid/duplicate_zone_name.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 4,
+      "note": "second definition of a"
+    },
+    {
+      "path": "edge/invalid/duplicate_of_start_name.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": [
+        2,
+        3
+      ]
+    },
+    {
+      "path": "edge/invalid/duplicate_connection.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/duplicate_connection_reversed.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7,
+      "note": "a-b and b-a are duplicates"
+    },
+    {
+      "path": "edge/invalid/dash_in_zone_name.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": [
+        3,
+        5,
+        6
+      ],
+      "note": "names must not contain dashes"
+    },
+    {
+      "path": "edge/invalid/coordinates_float.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/coordinates_text.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/coordinates_missing_y.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/coordinates_missing_both.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/self_connection.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/connection_unknown_zone.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/connection_before_zone_definition.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3,
+      "note": "connections may only use previously defined zones"
+    },
+    {
+      "path": "edge/invalid/connection_without_dash.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/connection_three_parts.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/connection_empty.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/connection_trailing_dash.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/unknown_key.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/line_without_colon.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 7
+    },
+    {
+      "path": "edge/invalid/unknown_zone_metadata.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/metadata_without_equals.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 3
+    },
+    {
+      "path": "edge/invalid/unknown_connection_metadata.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "line": 5
+    },
+    {
+      "path": "edge/invalid/binary_garbage.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "syntax",
+      "note": "not text at all"
+    },
+    {
+      "path": "edge/invalid/disconnected_goal.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "unsolvable",
+      "note": "goal cannot be reached"
+    },
+    {
+      "path": "edge/invalid/no_connections.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "unsolvable",
+      "note": "no connection at all"
+    },
+    {
+      "path": "edge/invalid/only_path_is_blocked.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "unsolvable",
+      "note": "the only route is blocked"
+    },
+    {
+      "path": "edge/invalid/start_is_blocked.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "unsolvable",
+      "note": "start hub is blocked"
+    },
+    {
+      "path": "edge/invalid/end_is_blocked.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "unsolvable",
+      "note": "end hub is blocked"
+    },
+    {
+      "path": "edge/invalid/blocked_wall.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "required",
+      "reason": "unsolvable",
+      "note": "every route crosses a blocked zone"
+    },
+    {
+      "path": "edge/invalid/unclosed_bracket.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "recommended",
+      "reason": "syntax",
+      "line": 3,
+      "note": "missing ]"
+    },
+    {
+      "path": "edge/invalid/metadata_without_brackets.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "recommended",
+      "reason": "syntax",
+      "line": 3,
+      "note": "metadata must be in [...]"
+    },
+    {
+      "path": "edge/invalid/two_metadata_blocks.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "recommended",
+      "reason": "syntax",
+      "line": 3,
+      "note": "only one block"
+    },
+    {
+      "path": "edge/invalid/duplicate_metadata_key.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "recommended",
+      "reason": "syntax",
+      "line": 3,
+      "note": "key given twice"
+    },
+    {
+      "path": "edge/invalid/spaces_around_equals.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "recommended",
+      "reason": "syntax",
+      "line": 3,
+      "note": "key = value"
+    },
+    {
+      "path": "edge/invalid/zone_type_wrong_case.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "recommended",
+      "reason": "syntax",
+      "line": 3,
+      "note": "types are lower case"
+    },
+    {
+      "path": "edge/invalid/start_capacity_below_drones.txt",
+      "group": "edge-invalid",
+      "expect": "error",
+      "level": "recommended",
+      "reason": "syntax",
+      "line": 2,
+      "note": "start cannot hold all drones"
+    },
+    {
+      "path": "challenge/01_detour_trap.txt",
+      "group": "challenge",
+      "expect": "solve",
+      "target": 14,
+      "optional_target": true,
+      "note": "optional: 14 turns is the exact optimum (integer linear program over the time-expanded graph)"
+    },
+    {
+      "path": "challenge/02_restricted_gauntlet.txt",
+      "group": "challenge",
+      "expect": "solve",
+      "target": 18,
+      "optional_target": true,
+      "note": "optional: 18 turns is the exact optimum (integer linear program over the time-expanded graph)"
+    },
+    {
+      "path": "challenge/03_crossroads.txt",
+      "group": "challenge",
+      "expect": "solve",
+      "target": 15,
+      "optional_target": true,
+      "note": "optional: 15 turns is the exact optimum (integer linear program over the time-expanded graph)"
+    },
+    {
+      "path": "challenge/04_city_grid.txt",
+      "group": "challenge",
+      "expect": "solve",
+      "target": 51,
+      "optional_target": true,
+      "note": "optional: 51 turns is the exact optimum (integer linear program over the time-expanded graph)"
+    },
+    {
+      "path": "challenge/05_long_haul.txt",
+      "group": "challenge",
+      "expect": "solve",
+      "target": 27,
+      "optional_target": true,
+      "note": "optional: 27 turns is the exact optimum (integer linear program over the time-expanded graph)"
+    }
+  ]
+}

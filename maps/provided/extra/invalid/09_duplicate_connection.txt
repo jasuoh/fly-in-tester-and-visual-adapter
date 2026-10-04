@@ -1,0 +1,11 @@
+# Invalid: the same connection is declared twice; a-b and b-a count
+# as duplicates per the subject
+nb_drones: 1
+
+start_hub: start 0 0
+hub: mid 1 0
+end_hub: goal 2 0
+
+connection: start-mid
+connection: mid-goal
+connection: mid-start

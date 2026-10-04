@@ -1,0 +1,10 @@
+# Invalid: zone names must not contain dashes; "way-point" breaks the
+# "zone1-zone2" connection syntax
+nb_drones: 1
+
+start_hub: start 0 0
+hub: way-point 1 0
+end_hub: goal 2 0
+
+connection: start-way-point
+connection: way-point-goal

@@ -1,0 +1,8 @@
+# Invalid: goal has no connection reaching it
+nb_drones: 2
+
+start_hub: start 0 0
+hub: island 5 5
+end_hub: goal 10 10
+
+connection: start-island

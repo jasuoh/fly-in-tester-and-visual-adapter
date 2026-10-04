@@ -1,0 +1,28 @@
+[project]
+name = "fly-in-arena"
+version = "1.0.0"
+description = "Test your 42 Fly-In algorithm on 130 maps and watch it in the visualizer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+visual = ["pygame-ce>=2.5"]
+
+[project.scripts]
+fly-in-arena = "fly_in_tester.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["fly_in_tester", "fly_in_visual", "fly_in_visual.gui"]
+
+[tool.setuptools.package-data]
+fly_in_visual = ["assets/fonts/*"]
+
+[tool.mypy]
+strict = true
+exclude = ["examples/", "adapters/", "build/"]
+

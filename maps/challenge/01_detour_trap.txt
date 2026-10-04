@@ -1,0 +1,25 @@
+# Hard 1: a narrow hub behind the start with a fast single-file exit and two
+# slower detours. Planning drones one by one lets early drones wait in the hub
+# and block the detours; good schedules keep them waiting at the start.
+nb_drones: 30
+
+start_hub: base 0 0 [color=green]
+hub: hub 1 0 [color=orange max_drones=3]
+hub: fast 2 0 [zone=priority color=cyan max_drones=2]
+hub: north1 2 1 [color=blue]
+hub: north2 3 1 [color=blue]
+hub: south1 2 -1 [zone=restricted color=purple max_drones=2]
+hub: south2 3 -1 [color=blue max_drones=2]
+hub: gate 4 0 [color=yellow max_drones=4]
+end_hub: goal 5 0 [color=green]
+
+connection: base-hub [max_link_capacity=3]
+connection: hub-fast [max_link_capacity=1]
+connection: fast-gate [max_link_capacity=2]
+connection: hub-north1
+connection: north1-north2
+connection: north2-gate
+connection: hub-south1 [max_link_capacity=2]
+connection: south1-south2 [max_link_capacity=2]
+connection: south2-gate [max_link_capacity=2]
+connection: gate-goal [max_link_capacity=4]

@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.venv/
+.DS_Store
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+*.png
+!fly_in_visual/assets/**
+out/
+!docs/*.png

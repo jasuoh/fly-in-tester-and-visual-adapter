@@ -1,0 +1,7 @@
+# Invalid: nb_drones must be a positive integer, not zero
+nb_drones: 0
+
+start_hub: start 0 0
+end_hub: goal 1 0
+
+connection: start-goal

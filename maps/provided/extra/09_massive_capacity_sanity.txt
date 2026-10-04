@@ -1,0 +1,12 @@
+# Extra 09: High-capacity passthrough sanity check
+# Zone and link capacities far exceed the drone count: nothing here
+# should ever be a bottleneck. Useful to confirm the scheduler does
+# not introduce artificial waiting when there is no real constraint.
+nb_drones: 3
+
+start_hub: start 0 0 [color=green]
+hub: wide 1 0 [color=blue max_drones=999999]
+end_hub: goal 2 0 [color=green]
+
+connection: start-wide [max_link_capacity=999999]
+connection: wide-goal

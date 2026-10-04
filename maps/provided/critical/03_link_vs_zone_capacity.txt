@@ -1,0 +1,37 @@
+# Critical 03: Connection capacity vs. zone capacity
+#
+# Two parallel routes from start to goal:
+#   - the "choke" route: roomy zones, but the plaza-chamber link only
+#     allows 1 drone in flight at a time, and chamber is a restricted
+#     zone (2-turn dwell) with max_drones=2. Note 2 == 1 link slot x
+#     2-turn dwell time: at full throughput the zone is exactly, not
+#     generously, big enough. Drop max_drones to 1 and the pipeline
+#     stalls even though the link would still allow 1 drone/turn.
+#   - the "bypass" route: longer detour, capped independently via
+#     max_link_capacity=2 on its own links.
+#
+# Watch out for: zone capacity (max_drones) and connection capacity
+# (max_link_capacity) are two different constraints that must both be
+# tracked, and for a restricted zone the two only line up correctly
+# if max_drones >= incoming max_link_capacity * 2 (the dwell time). A
+# good algorithm should also split drones across both routes instead
+# of only using the shorter one.
+nb_drones: 8
+
+start_hub: start 0 0 [color=green max_drones=8]
+hub: plaza 1 0 [color=blue max_drones=6]
+hub: chamber 2 0 [zone=restricted color=red max_drones=2]
+hub: hall 3 0 [color=blue max_drones=6]
+hub: bypass1 1 1 [color=yellow max_drones=6]
+hub: bypass2 2 1 [color=yellow max_drones=2]
+hub: bypass3 3 1 [color=yellow max_drones=6]
+end_hub: goal 4 0 [color=green max_drones=8]
+
+connection: start-plaza
+connection: plaza-chamber [max_link_capacity=1]
+connection: chamber-hall
+connection: hall-goal
+connection: start-bypass1
+connection: bypass1-bypass2 [max_link_capacity=2]
+connection: bypass2-bypass3 [max_link_capacity=2]
+connection: bypass3-goal

@@ -1,0 +1,10 @@
+# Invalid: max_drones=0 makes the zone impossible to ever enter, so
+# the only path to the goal is permanently blocked
+nb_drones: 1
+
+start_hub: start 0 0
+hub: mid 0 1 [max_drones=0]
+end_hub: goal 1 0
+
+connection: start-mid
+connection: mid-goal

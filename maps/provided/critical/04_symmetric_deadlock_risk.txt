@@ -1,0 +1,34 @@
+# Critical 04: Symmetric deadlock risk
+#
+# Two perfectly symmetric arms (armA, armB) of equal length both feed
+# the SAME single-capacity restricted zone "sync" (max_drones=1).
+# Each arm's own connection into sync has its own default capacity of
+# 1, so a scheduler that checks link capacity per-connection only will
+# see "one drone allowed in from A" AND "one drone allowed in from B"
+# as both individually legal in the same turn -- but sync can only
+# hold one of them. Naive per-drone shortest-path assignment (half the
+# drones via A, half via B) makes this collision almost guaranteed.
+#
+# Watch out for: destination zone capacity must be checked jointly
+# across ALL incoming connections for the same turn, not per
+# connection in isolation. This is the classic path-conflict /
+# deadlock-avoidance case called out in the subject.
+nb_drones: 8
+
+start_hub: start 0 0 [color=green max_drones=8]
+hub: armA1 1 1 [color=blue max_drones=8]
+hub: armA2 2 1 [color=blue max_drones=8]
+hub: armB1 1 -1 [color=blue max_drones=8]
+hub: armB2 2 -1 [color=blue max_drones=8]
+hub: sync 3 0 [zone=restricted color=red max_drones=1]
+hub: relay 4 0 [color=yellow max_drones=8]
+end_hub: goal 5 0 [color=green max_drones=8]
+
+connection: start-armA1
+connection: armA1-armA2
+connection: armA2-sync
+connection: start-armB1
+connection: armB1-armB2
+connection: armB2-sync
+connection: sync-relay
+connection: relay-goal

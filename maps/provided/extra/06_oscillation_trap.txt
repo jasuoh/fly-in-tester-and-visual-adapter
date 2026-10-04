@@ -1,0 +1,19 @@
+# Extra 06: Oscillation trap
+# Symmetric equal-cost fork feeding a single-capacity merge point.
+# Tests that the scheduler makes drones wait their turn instead of
+# endlessly rerouting between equally good branches.
+nb_drones: 6
+
+start_hub: start 0 0 [color=green max_drones=6]
+hub: fork 1 0 [color=yellow max_drones=6]
+hub: path_a 2 1 [color=blue max_drones=1]
+hub: path_b 2 -1 [color=blue max_drones=1]
+hub: merge 3 0 [color=orange max_drones=1]
+end_hub: goal 4 0 [color=green max_drones=6]
+
+connection: start-fork
+connection: fork-path_a [max_link_capacity=1]
+connection: fork-path_b [max_link_capacity=1]
+connection: path_a-merge [max_link_capacity=1]
+connection: path_b-merge [max_link_capacity=1]
+connection: merge-goal

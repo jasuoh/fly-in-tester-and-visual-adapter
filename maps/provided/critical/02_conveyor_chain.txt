@@ -1,0 +1,29 @@
+# Critical 02: Conveyor chain
+#
+# A single-file tunnel of five max_drones=1 zones is the ONLY path for
+# 8 drones. The rule "drones moving out of a zone free up capacity for
+# that same turn" is what makes this solvable efficiently: once the
+# tunnel is full, the whole line of drones can advance one step every
+# turn, like a train, instead of needing two turns per hop (one to
+# vacate, one to enter).
+#
+# Watch out for: an implementation that evaluates "can I move in" and
+# "did someone move out" as two separate turns instead of one atomic
+# turn will roughly double the turn count on this map. Compare your
+# result against (tunnel length + nb_drones - 1) turns.
+nb_drones: 8
+
+start_hub: start 0 0 [color=green max_drones=8]
+hub: c1 1 0 [color=orange max_drones=1]
+hub: c2 2 0 [color=orange max_drones=1]
+hub: c3 3 0 [color=orange max_drones=1]
+hub: c4 4 0 [color=orange max_drones=1]
+hub: c5 5 0 [color=orange max_drones=1]
+end_hub: goal 6 0 [color=green max_drones=8]
+
+connection: start-c1
+connection: c1-c2
+connection: c2-c3
+connection: c3-c4
+connection: c4-c5
+connection: c5-goal

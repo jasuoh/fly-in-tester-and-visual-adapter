@@ -1,0 +1,38 @@
+# Hard 5: 80 drones, three corridors of different length and capacity that
+# merge twice; the optimum needs all three corridors at the same time.
+nb_drones: 80
+
+start_hub: depot 0 0 [color=green]
+hub: a1 1 1 [max_drones=2]
+hub: a2 2 1 [max_drones=2]
+hub: a3 3 1 [max_drones=2]
+hub: b1 1 0 [zone=priority color=cyan]
+hub: b2 2 0 [zone=priority color=cyan]
+hub: c1 1 -1 [max_drones=3]
+hub: c2 2 -1 [zone=restricted color=purple max_drones=3]
+hub: c3 3 -1 [max_drones=3]
+hub: c4 4 -1 [max_drones=3]
+hub: m1 4 0 [color=yellow max_drones=4]
+hub: d1 5 1 [max_drones=2]
+hub: d2 5 -1 [zone=restricted color=purple max_drones=2]
+hub: m2 6 0 [color=yellow max_drones=4]
+end_hub: port 7 0 [color=gold]
+
+connection: depot-a1 [max_link_capacity=2]
+connection: a1-a2 [max_link_capacity=2]
+connection: a2-a3 [max_link_capacity=2]
+connection: a3-m1 [max_link_capacity=2]
+connection: depot-b1
+connection: b1-b2
+connection: b2-m1
+connection: depot-c1 [max_link_capacity=3]
+connection: c1-c2 [max_link_capacity=3]
+connection: c2-c3 [max_link_capacity=3]
+connection: c3-c4 [max_link_capacity=3]
+connection: c4-m1 [max_link_capacity=3]
+connection: m1-d1 [max_link_capacity=2]
+connection: m1-d2 [max_link_capacity=2]
+connection: d1-m2 [max_link_capacity=2]
+connection: d2-m2 [max_link_capacity=2]
+connection: m1-m2
+connection: m2-port [max_link_capacity=4]

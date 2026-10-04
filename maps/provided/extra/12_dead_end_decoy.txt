@@ -1,0 +1,13 @@
+# Extra 12: Dead-end decoy
+# A tempting branch leads nowhere useful; the correct route is the
+# other one. Confirms the pathfinder explores before committing.
+nb_drones: 1
+
+start_hub: start 0 0 [color=green]
+hub: trap 1 1 [color=red]
+hub: route 1 0 [color=blue]
+end_hub: goal 2 0 [color=green]
+
+connection: start-trap
+connection: start-route
+connection: route-goal

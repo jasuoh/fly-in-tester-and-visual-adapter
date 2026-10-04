@@ -1,0 +1,13 @@
+# Extra 11: Trivial single-drone chain
+# One drone, one path, no branching or contention. A baseline sanity
+# check before testing capacity or scheduling logic.
+nb_drones: 1
+
+start_hub: start 0 0 [color=green]
+hub: a 1 0 [color=blue]
+hub: b 2 0 [color=blue]
+end_hub: goal 3 0 [color=green]
+
+connection: start-a
+connection: a-b
+connection: b-goal

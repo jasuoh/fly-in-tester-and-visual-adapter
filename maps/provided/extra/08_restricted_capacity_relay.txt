@@ -1,0 +1,15 @@
+# Extra 08: Restricted relay with a dead-end decoy
+# h1 can hold 2 drones but the link onward to h3 only admits 1 per
+# turn. h2 looks like an alternative restricted route but is actually
+# a dead end with no way out - the pathfinder must not waste drones
+# on it.
+nb_drones: 5
+
+start_hub: h0 0 0 [color=green max_drones=5]
+hub: h1 1 0 [zone=restricted color=red max_drones=2]
+hub: h2 0 1 [zone=restricted color=purple max_drones=1]
+end_hub: h3 2 0 [color=green]
+
+connection: h0-h1 [max_link_capacity=2]
+connection: h1-h3 [max_link_capacity=1]
+connection: h0-h2 [max_link_capacity=1]

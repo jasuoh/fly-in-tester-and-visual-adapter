@@ -1,0 +1,31 @@
+# Hard 3: a ring with crossing diagonals; drones meet head-on, priority zones
+# tie with normal ones and every link has capacity 1.
+nb_drones: 36
+
+start_hub: s 0 0 [color=green]
+hub: n 1 2 [color=blue max_drones=2]
+hub: e 2 0 [zone=priority color=cyan max_drones=2]
+hub: w 1 -2 [color=blue max_drones=2]
+hub: x 2 1 [color=yellow max_drones=2]
+hub: y 2 -1 [zone=priority color=cyan max_drones=2]
+hub: ne 3 2 [color=blue]
+hub: se 3 -2 [zone=restricted color=purple max_drones=2]
+hub: core 3 0 [color=orange max_drones=3]
+end_hub: t 4 0 [color=red]
+
+connection: s-n
+connection: s-e
+connection: s-w
+connection: n-x
+connection: w-y
+connection: e-x
+connection: e-y
+connection: x-y
+connection: n-ne
+connection: w-se
+connection: x-core
+connection: y-core
+connection: ne-t
+connection: se-t [max_link_capacity=2]
+connection: core-t [max_link_capacity=2]
+connection: ne-core

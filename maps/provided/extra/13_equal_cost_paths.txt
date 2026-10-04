@@ -1,0 +1,14 @@
+# Extra 13: Equal-cost alternative paths
+# Two symmetric branches of identical length and type; either is a
+# valid choice, and both may be used to spread drones evenly.
+nb_drones: 1
+
+start_hub: start 0 0 [color=green]
+hub: left 1 1 [color=blue]
+hub: right 1 -1 [color=blue]
+end_hub: goal 2 0 [color=green]
+
+connection: start-left
+connection: left-goal
+connection: start-right
+connection: right-goal
