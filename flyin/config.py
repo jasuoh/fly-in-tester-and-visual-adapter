@@ -7,9 +7,12 @@ and ``outputs/`` the last test, so its problem maps can be watched later.
 
 import json
 import os
+import shutil
 import sys
+import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Any
 
 from flyin.tester.runner import Outcome
 
@@ -93,14 +96,26 @@ def detect_command(project: Path) -> str | None:
 
 
 def save_run(outcomes: list[Outcome]) -> None:
-    """Remember the last test: verdicts plus the output of every map."""
+    """Remember a test run.
+
+    ``last_run.json`` and ``outputs/`` hold the latest run; the outputs of
+    the run before move to ``previous/`` (for comparing), and every run
+    is added to ``history.jsonl`` (for the history and the diff).
+    """
     folder = state_dir()
     outputs = folder / "outputs"
     folder.mkdir(exist_ok=True)
+    if outputs.is_dir():
+        previous = folder / "previous"
+        if previous.is_dir():
+            shutil.rmtree(previous)
+        outputs.rename(previous)
     records = []
     for outcome in outcomes:
-        record = {"map": outcome.case.name, "status": outcome.status,
-                  "message": outcome.message, "expect": outcome.case.expect}
+        record: dict[str, Any] = {
+            "map": outcome.case.name, "status": outcome.status,
+            "message": outcome.message, "expect": outcome.case.expect,
+            "turns": outcome.turns, "best": outcome.best}
         if outcome.case.expect == "solve":
             target = outputs / outcome.case.name
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -109,9 +124,35 @@ def save_run(outcomes: list[Outcome]) -> None:
         records.append(record)
     (folder / "last_run.json").write_text(
         json.dumps(records, indent=2) + "\n", "utf-8")
+    entry = {"time": time.strftime("%Y-%m-%d %H:%M"),
+             "results": {r["map"]: [r["status"], r["turns"]]
+                         for r in records}}
+    with open(folder / "history.jsonl", "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(entry) + "\n")
 
 
-def last_run() -> list[dict[str, str]]:
+def history() -> list[dict[str, Any]]:
+    """Return every remembered run, oldest first."""
+    try:
+        lines = (state_dir() / "history.jsonl").read_text("utf-8")
+    except OSError:
+        return []
+    runs = []
+    for line in lines.splitlines():
+        try:
+            runs.append(json.loads(line))
+        except ValueError:
+            continue
+    return [r for r in runs if isinstance(r, dict) and "results" in r]
+
+
+def previous_output(map_name: str) -> Path | None:
+    """Return the output of ``map_name`` from the run before the last."""
+    path = state_dir() / "previous" / map_name
+    return path if path.is_file() else None
+
+
+def last_run() -> list[dict[str, Any]]:
     """Return the records of the last test (empty if there was none)."""
     try:
         data = json.loads(

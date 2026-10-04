@@ -7,6 +7,7 @@
     flyin show --problems       watch every map of the last test that
                                 failed or missed its target
     flyin maps [WHAT]           list the maps
+    flyin history               results of the earlier test runs
     flyin generate [--seed N]   write a random solvable map
     flyin check MAP OUTPUT      check an output file
 
@@ -18,6 +19,7 @@ import argparse
 import random
 import sys
 from pathlib import Path
+from typing import Any
 
 from flyin import api, config
 from flyin.config import Config
@@ -172,7 +174,10 @@ def do_test(cfg: Config, only: list[str] | None = None,
     outcomes = api.test(cfg.command, cfg.project, only or None,
                         cfg.timeout, cfg.jobs, strict, cfg.output_file)
     print_outcomes(outcomes, sys.stdout.isatty(), verbose)
+    runs = config.history()
     config.save_run(outcomes)
+    if runs:
+        print_changes(runs[-1], outcomes)
     problems = sum(1 for o in outcomes if o.status != PASS
                    and o.case.expect == "solve")
     if problems:
@@ -205,7 +210,67 @@ def do_show(cfg: Config | None, ref: str, output: str | None = None,
     return api.show(path, text, theme, screenshot, turn)
 
 
-def problems() -> list[dict[str, str]]:
+RANK = {FAIL: 0, WARN: 1, PASS: 2}
+
+
+def changes(before: dict[str, Any], outcomes: list[Outcome]
+            ) -> tuple[list[str], list[str]]:
+    """Return (better, worse) lines compared with an earlier run."""
+    better: list[str] = []
+    worse: list[str] = []
+    old = before.get("results", {})
+    for outcome in outcomes:
+        if outcome.case.name not in old:
+            continue
+        status, turns = old[outcome.case.name]
+        was = f"{status} {turns or ''}".strip()
+        now = f"{outcome.status} {outcome.turns or ''}".strip()
+        if was == now:
+            continue
+        line = f"{outcome.case.name}: {was} -> {now}"
+        rank, new_rank = RANK.get(status, 0), RANK[outcome.status]
+        if new_rank != rank:
+            (better if new_rank > rank else worse).append(line)
+        elif turns and outcome.turns:
+            (better if outcome.turns < turns else worse).append(line)
+    return better, worse
+
+
+def print_changes(before: dict[str, Any], outcomes: list[Outcome]) -> None:
+    """Print what got better or worse since the previous run."""
+    better, worse = changes(before, outcomes)
+    if not better and not worse:
+        say(f"Same results as the run of {before.get('time', '?')}.", "dim")
+        return
+    say(f"\nSince the run of {before.get('time', '?')}: {len(better)} "
+        f"better, {len(worse)} worse", "bold")
+    for line in better[:10]:
+        say(f"  better  {line}", "ok")
+    for line in worse[:10]:
+        say(f"  worse   {line}", "bad")
+    if len(better) > 10 or len(worse) > 10:
+        say("  (only the first 10 of each)", "dim")
+    if worse:
+        say("Compare old and new: flyin compare MAP --previous", "dim")
+
+
+def do_history() -> None:
+    """Print one line per remembered run."""
+    runs = config.history()
+    if not runs:
+        say("No test runs yet.", "dim")
+        return
+    for run in runs[-20:]:
+        results = list(run["results"].values())
+        counts = {s: sum(1 for r in results if r[0] == s)
+                  for s in (PASS, WARN, FAIL)}
+        turns = sum(r[1] or 0 for r in results)
+        print(f"  {run.get('time', '?'):<17} {len(results):>4} maps  "
+              f"{counts[PASS]:>4} pass {counts[WARN]:>4} warn "
+              f"{counts[FAIL]:>4} fail   {turns:>6} turns")
+
+
+def problems() -> list[dict[str, Any]]:
     """Return the solvable maps of the last test that were not PASS."""
     return [r for r in config.last_run()
             if r.get("expect") == "solve" and r.get("status") != PASS
@@ -286,6 +351,7 @@ def build_parser() -> argparse.ArgumentParser:
     show_p.add_argument("--theme", choices=THEMES)
     show_p.add_argument("--screenshot", metavar="PNG")
     show_p.add_argument("--turn", type=int)
+    sub.add_parser("history", help="results of the earlier test runs")
     maps_p = sub.add_parser("maps", help="list the maps")
     maps_p.add_argument("what", nargs="?")
     gen_p = sub.add_parser("generate", help="write a random solvable map")
@@ -344,6 +410,9 @@ def _dispatch(args: argparse.Namespace) -> int:
             return 2
         return 0 if do_show(config.load(), args.map, args.output,
                             args.theme, args.screenshot, args.turn) else 1
+    if args.command == "history":
+        do_history()
+        return 0
     if args.command == "generate":
         return do_generate(args.seed, args.size, args.drones, args.out)
     do_maps(args.what)
