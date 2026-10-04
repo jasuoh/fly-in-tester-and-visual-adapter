@@ -1,4 +1,4 @@
-# fly-in-arena
+# fly-in-tester-and-visual-adapter
 
 Test your **42 Fly-In** algorithm and **watch it fly**.
 
@@ -21,7 +21,8 @@ line per turn). Any language works.
 ## Quick start
 
 ```sh
-git clone <this repo> fly-in-arena && cd fly-in-arena
+git clone https://github.com/jasuoh/fly-in-tester-and-visual-adapter.git
+cd fly-in-tester-and-visual-adapter
 make install            # .venv with pygame-ce (only the visualizer needs it)
 
 # 1. test your program on every map
