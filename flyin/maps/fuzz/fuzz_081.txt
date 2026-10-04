@@ -1,0 +1,23 @@
+# fuzz map (seeded random), 5x2 grid
+nb_drones: 10
+hub: z0_0 0 0 [zone=normal max_drones=1]
+start_hub: z0_1 0 1
+hub: z1_0 1 0 [zone=priority max_drones=3]
+hub: z1_1 1 1 [zone=restricted max_drones=3]
+hub: z2_0 2 0 [zone=priority max_drones=1]
+hub: z2_1 2 1 [zone=normal max_drones=1]
+hub: z3_0 3 0 [zone=priority max_drones=2]
+hub: z3_1 3 1 [zone=normal max_drones=3]
+hub: z4_0 4 0 [zone=normal max_drones=1]
+end_hub: z4_1 4 1
+connection: z0_0-z1_0 [max_link_capacity=1]
+connection: z0_1-z1_1 [max_link_capacity=2]
+connection: z0_1-z1_0 [max_link_capacity=2]
+connection: z1_0-z2_0 [max_link_capacity=2]
+connection: z1_0-z1_1 [max_link_capacity=1]
+connection: z1_1-z2_1 [max_link_capacity=3]
+connection: z2_0-z3_0 [max_link_capacity=2]
+connection: z2_1-z3_1 [max_link_capacity=3]
+connection: z3_0-z4_0 [max_link_capacity=1]
+connection: z3_0-z4_1 [max_link_capacity=3]
+connection: z3_1-z4_1 [max_link_capacity=1]

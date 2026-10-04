@@ -7,6 +7,7 @@
     flyin show --problems       watch every map of the last test that
                                 failed or missed its target
     flyin maps [WHAT]           list the maps
+    flyin generate [--seed N]   write a random solvable map
     flyin check MAP OUTPUT      check an output file
 
 ``flyin run|view|list`` keep every option of the full tester
@@ -14,13 +15,15 @@
 """
 
 import argparse
+import random
 import sys
 from pathlib import Path
 
 from flyin import api, config
 from flyin.config import Config
 from flyin.tester.cli import main as tester_main, print_outcomes
-from flyin.tester.runner import FAIL, PASS, WARN, Outcome
+from flyin.tester.generate import generate
+from flyin.tester.runner import DEFAULT_GROUPS, FAIL, PASS, WARN, Outcome
 
 THEMES = ("mission", "blueprint", "graphite", "ashen")
 FIRST_MAP = "provided/easy/01_linear_path.txt"
@@ -134,11 +137,19 @@ def _explain_first_run(outcome: Outcome) -> None:
         "dim")
 
 
-def need_config() -> Config:
-    """Return the settings, running the setup the first time."""
+def need_config(interactive: bool = True) -> Config:
+    """Return the settings, running the setup the first time.
+
+    Without a terminal to ask questions (scripts, CI) it stops with a
+    hint instead of waiting for input.
+    """
     current = config.load()
     if current is not None:
         return current
+    if not interactive:
+        say("flyin is not set up in this folder yet. Run 'flyin' (menu) or "
+            "'flyin setup PROJECT --cmd \"python3 main.py {map}\"'.", "bad")
+        raise SystemExit(2)
     say("First start: let's connect your project.\n", "bold")
     created = setup()
     if created is None:
@@ -151,7 +162,8 @@ def need_config() -> Config:
 def do_test(cfg: Config, only: list[str] | None = None,
             verbose: bool = False, strict: bool = False) -> list[Outcome]:
     """Test the maps, print the results and remember them."""
-    count = len(api.maps()) if not only else \
+    count = len([c for c in api.maps() if c.group in DEFAULT_GROUPS]) \
+        if not only else \
         len({c.name for q in only for c in api.maps(q)})
     if count == 0:
         say(f"no map matches {' '.join(only or [])}", "bad")
@@ -183,7 +195,7 @@ def do_show(cfg: Config | None, ref: str, output: str | None = None,
             api.output_text(Path(output))
     else:
         if cfg is None:
-            cfg = need_config()
+            cfg = need_config(sys.stdin.isatty())
         say(f"Running: {cfg.command.replace('{map}', path.name)}", "dim")
         outcome = api.run(path, cfg.command, cfg.project, cfg.timeout,
                           cfg.output_file)
@@ -222,6 +234,24 @@ def do_maps(query: str | None = None) -> None:
         print(f"  {case.group:<17} {case.name:<52} {extra}")
 
 
+def do_generate(seed: int | None, size: str, drones: int,
+                out: str | None) -> int:
+    """Write a random solvable map and say how to use it."""
+    seed = random.randrange(1_000_000) if seed is None else seed
+    try:
+        width, height = (int(n) for n in size.lower().split("x"))
+        text = generate(seed, width, height, drones)
+    except ValueError as error:
+        say(f"cannot generate: {error}", "bad")
+        return 2
+    path = Path(out or f"maps-generated/seed_{seed}.txt")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, "utf-8")
+    say(f"wrote {path} ({text.splitlines()[1].lstrip('# ')})", "ok")
+    say(f"watch your program on it: flyin show {path}", "dim")
+    return 0
+
+
 # command line -------------------------------------------------------------
 
 def build_parser() -> argparse.ArgumentParser:
@@ -258,6 +288,13 @@ def build_parser() -> argparse.ArgumentParser:
     show_p.add_argument("--turn", type=int)
     maps_p = sub.add_parser("maps", help="list the maps")
     maps_p.add_argument("what", nargs="?")
+    gen_p = sub.add_parser("generate", help="write a random solvable map")
+    gen_p.add_argument("--seed", type=int, help="same seed, same map "
+                       "(default: random)")
+    gen_p.add_argument("--size", default="6x3", help="WIDTHxHEIGHT")
+    gen_p.add_argument("--drones", type=int, default=10)
+    gen_p.add_argument("-o", "--out", help="file (default: "
+                       "maps-generated/seed_<seed>.txt)")
     sub.add_parser("check", help="check an output: flyin check MAP OUTPUT")
     sub.add_parser("run", help="the full tester with every option")
     return parser
@@ -291,7 +328,8 @@ def _dispatch(args: argparse.Namespace) -> int:
         return 0 if setup(args.project, cmd, cmd is None,
                           args.output_file) else 2
     if args.command == "test":
-        outcomes = do_test(need_config(), args.what, args.verbose,
+        outcomes = do_test(need_config(sys.stdin.isatty()), args.what,
+                           args.verbose,
                            args.strict)
         if args.show:
             do_show_problems(config.load())
@@ -306,5 +344,7 @@ def _dispatch(args: argparse.Namespace) -> int:
             return 2
         return 0 if do_show(config.load(), args.map, args.output,
                             args.theme, args.screenshot, args.turn) else 1
+    if args.command == "generate":
+        return do_generate(args.seed, args.size, args.drones, args.out)
     do_maps(args.what)
     return 0

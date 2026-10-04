@@ -912,7 +912,8 @@
       "expect": "solve",
       "target": 14,
       "optional_target": true,
-      "note": "optional: 14 turns is the exact optimum (integer linear program over the time-expanded graph)"
+      "note": "optional: 14 turns is the exact optimum (integer linear program over the time-expanded graph)",
+      "optimum": 14
     },
     {
       "path": "challenge/02_restricted_gauntlet.txt",
@@ -920,7 +921,8 @@
       "expect": "solve",
       "target": 18,
       "optional_target": true,
-      "note": "optional: 18 turns is the exact optimum (integer linear program over the time-expanded graph)"
+      "note": "optional: 18 turns is the exact optimum (integer linear program over the time-expanded graph)",
+      "optimum": 18
     },
     {
       "path": "challenge/03_crossroads.txt",
@@ -928,7 +930,8 @@
       "expect": "solve",
       "target": 15,
       "optional_target": true,
-      "note": "optional: 15 turns is the exact optimum (integer linear program over the time-expanded graph)"
+      "note": "optional: 15 turns is the exact optimum (integer linear program over the time-expanded graph)",
+      "optimum": 15
     },
     {
       "path": "challenge/04_city_grid.txt",
@@ -936,7 +939,8 @@
       "expect": "solve",
       "target": 51,
       "optional_target": true,
-      "note": "optional: 51 turns is the exact optimum (integer linear program over the time-expanded graph)"
+      "note": "optional: 51 turns is the exact optimum (integer linear program over the time-expanded graph)",
+      "optimum": 51
     },
     {
       "path": "challenge/05_long_haul.txt",
@@ -944,7 +948,2408 @@
       "expect": "solve",
       "target": 27,
       "optional_target": true,
-      "note": "optional: 27 turns is the exact optimum (integer linear program over the time-expanded graph)"
+      "note": "optional: 27 turns is the exact optimum (integer linear program over the time-expanded graph)",
+      "optimum": 27
+    },
+    {
+      "path": "fuzz/fuzz_001.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_002.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_003.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 24,
+      "optimum": 24,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_004.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 32,
+      "optimum": 32,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_005.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_006.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_007.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 24,
+      "optimum": 24,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_008.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_009.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_010.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_011.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 5,
+      "optimum": 5,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_012.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_013.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_014.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_015.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_016.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_017.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_018.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 16,
+      "optimum": 16,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_019.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 6,
+      "optimum": 6,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_020.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_021.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_022.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_023.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 6,
+      "optimum": 6,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_024.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 5,
+      "optimum": 5,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_025.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 16,
+      "optimum": 16,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_026.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 53,
+      "optimum": 53,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_027.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_028.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_029.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_030.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 25,
+      "optimum": 25,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_031.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_032.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 8,
+      "optimum": 8,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_033.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_034.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_035.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_036.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 16,
+      "optimum": 16,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_037.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_038.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_039.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_040.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_041.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_042.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 16,
+      "optimum": 16,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_043.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_044.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_045.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_046.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 29,
+      "optimum": 29,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_047.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_048.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 23,
+      "optimum": 23,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_049.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_050.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_051.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_052.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 8,
+      "optimum": 8,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_053.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_054.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_055.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_056.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 28,
+      "optimum": 28,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_057.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_058.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_059.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 5,
+      "optimum": 5,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_060.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_061.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 8,
+      "optimum": 8,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_062.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_063.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_064.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_065.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_066.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_067.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 24,
+      "optimum": 24,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_068.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_069.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 39,
+      "optimum": 39,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_070.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 35,
+      "optimum": 35,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_071.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_072.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_073.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_074.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 4,
+      "optimum": 4,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_075.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_076.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_077.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 28,
+      "optimum": 28,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_078.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_079.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 5,
+      "optimum": 5,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_080.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_081.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_082.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_083.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_084.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 24,
+      "optimum": 24,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_085.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_086.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_087.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_088.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_089.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_090.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_091.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_092.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 16,
+      "optimum": 16,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_093.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_094.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_095.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_096.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 34,
+      "optimum": 34,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_097.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_098.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_099.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 32,
+      "optimum": 32,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_100.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 5,
+      "optimum": 5,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_101.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_102.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_103.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_104.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 31,
+      "optimum": 31,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_105.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_106.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_107.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_108.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 54,
+      "optimum": 54,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_109.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_110.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_111.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 24,
+      "optimum": 24,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_112.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 31,
+      "optimum": 31,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_113.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_114.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_115.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 5,
+      "optimum": 5,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_116.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_117.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_118.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 30,
+      "optimum": 30,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_119.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_120.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_121.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_122.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 6,
+      "optimum": 6,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_123.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_124.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 8,
+      "optimum": 8,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_125.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_126.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_127.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_128.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_129.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_130.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_131.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_132.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_133.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_134.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_135.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_136.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_137.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_138.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 25,
+      "optimum": 25,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_139.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 6,
+      "optimum": 6,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_140.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 28,
+      "optimum": 28,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_141.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 32,
+      "optimum": 32,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_142.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_143.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 45,
+      "optimum": 45,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_144.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 39,
+      "optimum": 39,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_145.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 24,
+      "optimum": 24,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_146.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_147.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_148.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_149.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 16,
+      "optimum": 16,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_150.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_151.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_152.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_153.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 30,
+      "optimum": 30,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_154.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 8,
+      "optimum": 8,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_155.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_156.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 15,
+      "optimum": 15,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_157.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_158.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_159.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 26,
+      "optimum": 26,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_160.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_161.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 35,
+      "optimum": 35,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_162.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_163.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_164.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_165.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 32,
+      "optimum": 32,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_166.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_167.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_168.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 26,
+      "optimum": 26,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_169.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 26,
+      "optimum": 26,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_170.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_171.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_172.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 25,
+      "optimum": 25,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_173.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_174.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 16,
+      "optimum": 16,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_175.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_176.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 30,
+      "optimum": 30,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_177.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_178.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 16,
+      "optimum": 16,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_179.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_180.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_181.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_182.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_183.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_184.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_185.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_186.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_187.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_188.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 43,
+      "optimum": 43,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_189.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 38,
+      "optimum": 38,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_190.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_191.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_192.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_193.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_194.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 30,
+      "optimum": 30,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_195.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_196.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 23,
+      "optimum": 23,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_197.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_198.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_199.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 14,
+      "optimum": 14,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_200.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_201.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 25,
+      "optimum": 25,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_202.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 30,
+      "optimum": 30,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_203.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_204.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 23,
+      "optimum": 23,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_205.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_206.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_207.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_208.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_209.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_210.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_211.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_212.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_213.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_214.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_215.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_216.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_217.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 54,
+      "optimum": 54,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_218.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_219.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 55,
+      "optimum": 55,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_220.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_221.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_222.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 24,
+      "optimum": 24,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_223.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 6,
+      "optimum": 6,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_224.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 23,
+      "optimum": 23,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_225.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_226.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_227.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 9,
+      "optimum": 9,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_228.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_229.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_230.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 41,
+      "optimum": 41,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_231.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_232.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_233.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_234.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_235.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 20,
+      "optimum": 20,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_236.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 10,
+      "optimum": 10,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_237.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_238.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_239.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 25,
+      "optimum": 25,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_240.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 7,
+      "optimum": 7,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_241.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 55,
+      "optimum": 55,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_242.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 45,
+      "optimum": 45,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_243.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_244.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_245.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 29,
+      "optimum": 29,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_246.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 29,
+      "optimum": 29,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_247.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_248.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 23,
+      "optimum": 23,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_249.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 45,
+      "optimum": 45,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_250.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 18,
+      "optimum": 18,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_251.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_252.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 37,
+      "optimum": 37,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_253.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_254.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_255.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 25,
+      "optimum": 25,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_256.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 45,
+      "optimum": 45,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_257.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 26,
+      "optimum": 26,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_258.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 69,
+      "optimum": 69,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_259.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 11,
+      "optimum": 11,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_260.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 12,
+      "optimum": 12,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_261.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 29,
+      "optimum": 29,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_262.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 84,
+      "optimum": 84,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_263.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 80,
+      "optimum": 80,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_264.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 17,
+      "optimum": 17,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_265.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 49,
+      "optimum": 49,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_266.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 34,
+      "optimum": 34,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_267.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_268.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 44,
+      "optimum": 44,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_269.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 34,
+      "optimum": 34,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_270.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 36,
+      "optimum": 36,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_271.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_272.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 49,
+      "optimum": 49,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_273.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 24,
+      "optimum": 24,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_274.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 43,
+      "optimum": 43,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_275.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 43,
+      "optimum": 43,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_276.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 36,
+      "optimum": 36,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_277.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 23,
+      "optimum": 23,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_278.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 19,
+      "optimum": 19,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_279.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 38,
+      "optimum": 38,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_280.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 28,
+      "optimum": 28,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_281.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 44,
+      "optimum": 44,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_282.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 32,
+      "optimum": 32,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_283.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 27,
+      "optimum": 27,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_284.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 25,
+      "optimum": 25,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_285.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 42,
+      "optimum": 42,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_286.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_287.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 33,
+      "optimum": 33,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_288.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 38,
+      "optimum": 38,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_289.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 22,
+      "optimum": 22,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_290.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 21,
+      "optimum": 21,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_291.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 38,
+      "optimum": 38,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_292.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 25,
+      "optimum": 25,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_293.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 47,
+      "optimum": 47,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_294.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 13,
+      "optimum": 13,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_295.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 65,
+      "optimum": 65,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_296.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 40,
+      "optimum": 40,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_297.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 38,
+      "optimum": 38,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_298.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 50,
+      "optimum": 50,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_299.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 34,
+      "optimum": 34,
+      "optional_target": true
+    },
+    {
+      "path": "fuzz/fuzz_300.txt",
+      "group": "fuzz",
+      "expect": "solve",
+      "target": 23,
+      "optimum": 23,
+      "optional_target": true
     }
   ]
 }

@@ -16,6 +16,7 @@ GROUP_TEXT = {
     "edge-valid": "tricky but valid maps",
     "edge-invalid": "every parser rule broken once (must be rejected)",
     "challenge": "hard maps, target = exact optimum (optional)",
+    "fuzz": "300 random maps with their exact optimum (optional)",
 }
 
 

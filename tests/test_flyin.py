@@ -42,7 +42,8 @@ class LibraryTests(unittest.TestCase):
 
     def test_maps(self) -> None:
         """All, a group, or a text."""
-        self.assertEqual(len(flyin.maps()), 130)
+        self.assertEqual(len(flyin.maps()), 430)
+        self.assertEqual(len(flyin.maps("fuzz")), 300)
         self.assertEqual(len(flyin.maps("challenge")), 5)
         self.assertEqual(len(flyin.maps("easy")), 3)
 
@@ -211,7 +212,7 @@ class CommandTests(InWorkdir):
         self.assertIn("VALID", text)
         code, text = self.flyin("show", "01", "-")
         self.assertEqual(code, 1)
-        self.assertIn("matches 8 maps", text)
+        self.assertIn("matches 21 maps", text)
 
 
 if __name__ == "__main__":

@@ -17,8 +17,8 @@ from typing import Iterable, Union
 from flyin.tester.checker import CheckResult, check_solution
 from flyin.tester.mapfile import FlyMap, read_map
 from flyin.tester.runner import (
-    GROUP_ORDER, MAPS_DIR, Case, Outcome, Runner, extract_turns,
-    load_manifest,
+    DEFAULT_GROUPS, GROUP_ORDER, MAPS_DIR, Case, Outcome, Runner,
+    extract_turns, load_manifest,
 )
 
 MapRef = Union[str, Path]
@@ -139,7 +139,7 @@ def test(command: str, cwd: str | None = None,
         command: Runs one map, ``{map}`` is replaced by its path.
         cwd: Folder the command runs in.
         only: A group, part of a map path, or a list of those; None
-            for all bundled maps.
+            for all bundled maps except the 300 of ``fuzz``.
         timeout: Seconds per map.
         jobs: Maps in parallel.
         strict_targets: Turns above the target fail instead of warn.
@@ -148,7 +148,7 @@ def test(command: str, cwd: str | None = None,
     """
     queries = [only] if isinstance(only, str) else only
     if queries is None:
-        cases = maps()
+        cases = [c for c in maps() if c.group in DEFAULT_GROUPS]
     else:
         wanted = {c.name for q in queries for c in maps(q)}
         cases = [c for c in maps() if c.name in wanted]

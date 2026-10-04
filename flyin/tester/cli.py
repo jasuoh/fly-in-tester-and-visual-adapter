@@ -9,7 +9,8 @@ from pathlib import Path
 from .checker import check_solution
 from .mapfile import MapError, read_map
 from .runner import (
-    FAIL, MAPS_DIR, PASS, WARN, Case, Outcome, Runner, extract_turns,
+    DEFAULT_GROUPS, FAIL, MAPS_DIR, PASS, WARN, Case, Outcome, Runner,
+    extract_turns,
     load_manifest,
 )
 
@@ -17,9 +18,11 @@ COLORS = {PASS: "\033[32m", WARN: "\033[33m", FAIL: "\033[31m"}
 
 
 def _select(cases: list[Case], args: argparse.Namespace) -> list[Case]:
-    """Apply the --group and --filter options."""
+    """Apply the --group and --filter options (fuzz only on request)."""
     if args.group:
         cases = [c for c in cases if c.group in args.group]
+    elif not args.filter or "fuzz" not in args.filter:
+        cases = [c for c in cases if c.group in DEFAULT_GROUPS]
     if args.filter:
         cases = [c for c in cases if args.filter in c.name]
     return cases
@@ -31,8 +34,13 @@ def _print_outcome(outcome: Outcome, color: bool, verbose: bool) -> None:
     if color:
         tag = f"{COLORS[tag]}{tag}\033[0m"
     time_text = f"{outcome.seconds:5.1f}s"
+    best = ""
+    if outcome.turns and outcome.best and outcome.status != FAIL:
+        label = "optimum" if outcome.case.optimum else "bound"
+        best = f"  [{label} {outcome.best}]" if outcome.turns > \
+            outcome.best else f"  [= {label}]"
     print(f"  {tag:>4}  {outcome.case.name:<52} {time_text}  "
-          f"{outcome.message}")
+          f"{outcome.message}{best}")
     if verbose or outcome.status == FAIL:
         for detail in outcome.details:
             print(f"          | {detail}")
@@ -56,6 +64,25 @@ def print_outcomes(outcomes: list[Outcome], color: bool = False,
     print(f"\n{len(outcomes)} maps: {counts[PASS]} passed, "
           f"{counts[WARN]} warnings, {counts[FAIL]} failed"
           + ("" if verbose else "   (-v shows every map)"))
+    line = score_line(outcomes)
+    if line:
+        print(line)
+
+
+def score_line(outcomes: list[Outcome]) -> str:
+    """Summarise the turns of all valid solutions against the best
+    possible (the optimum where known, else the lower bound)."""
+    scored = [o for o in outcomes if o.turns and o.best
+              and o.status != FAIL]
+    if not scored:
+        return ""
+    turns = sum(o.turns or 0 for o in scored)
+    best = sum(o.best or 0 for o in scored)
+    at_best = sum(1 for o in scored if o.turns == o.best)
+    gap = 100 * (turns - best) / best if best else 0.0
+    return (f"Score: {turns} turns on {len(scored)} solved maps, at least "
+            f"{best} are needed (+{gap:.1f}%); at the optimum or lower "
+            f"bound on {at_best}/{len(scored)} maps")
 
 
 def command_run(args: argparse.Namespace) -> int:
@@ -75,7 +102,7 @@ def command_run(args: argparse.Namespace) -> int:
     if args.json:
         print(json.dumps([
             {"map": o.case.name, "group": o.case.group, "status": o.status,
-             "message": o.message, "turns": o.turns,
+             "message": o.message, "turns": o.turns, "best": o.best,
              "seconds": round(o.seconds, 2)} for o in outcomes
         ], indent=2))
     else:

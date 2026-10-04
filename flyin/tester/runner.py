@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .checker import check_solution
+from .bounds import lower_bound
 from .mapfile import MapError, read_map
 
 MAPS_DIR = Path(__file__).resolve().parent.parent / "maps"
@@ -20,7 +21,9 @@ TRACEBACK = re.compile(r"Traceback \(most recent call last\)")
 
 PASS, WARN, FAIL = "PASS", "WARN", "FAIL"
 GROUP_ORDER = ("provided", "provided-invalid", "edge-valid", "edge-invalid",
-               "challenge")
+               "challenge", "fuzz")
+# Groups a plain "test everything" runs; fuzz (300 maps) only on request.
+DEFAULT_GROUPS = GROUP_ORDER[:-1]
 
 
 @dataclass(frozen=True)
@@ -37,6 +40,7 @@ class Case:
     level: str = "required"
     note: str = ""
     prefer_visit: tuple[str, ...] = ()
+    optimum: int | None = None
 
 
 @dataclass
@@ -50,6 +54,13 @@ class Outcome:
     seconds: float = 0.0
     details: tuple[str, ...] = ()
     output: str = ""
+    bound: int | None = None
+
+    @property
+    def best(self) -> int | None:
+        """Return the best possible turns: the optimum if known, else the
+        lower bound (None for maps that must be rejected)."""
+        return self.case.optimum or self.bound
 
 
 def load_manifest(maps_dir: Path = MAPS_DIR) -> list[Case]:
@@ -70,6 +81,7 @@ def load_manifest(maps_dir: Path = MAPS_DIR) -> list[Case]:
             level=entry.get("level", "required"),
             note=entry.get("note", ""),
             prefer_visit=tuple(entry.get("prefer_visit", [])),
+            optimum=entry.get("optimum"),
         ))
     order = {group: i for i, group in enumerate(GROUP_ORDER)}
     return sorted(cases, key=lambda case: order.get(case.group, len(order)))
@@ -249,6 +261,7 @@ class Runner:
         except (MapError, OSError, KeyError) as error:
             return Outcome(case, FAIL, f"tester cannot read the map: {error}")
         result = check_solution(fly_map, turns)
+        bound = lower_bound(fly_map)
         if not result.valid:
             return Outcome(case, FAIL, "invalid solution: "
                            f"{result.errors[0]}", turns=len(turns),
@@ -259,14 +272,15 @@ class Runner:
         if missing:
             return Outcome(case, WARN, "valid, but the priority zone "
                            f"{', '.join(missing)} was not preferred",
-                           turns=len(turns))
-        return self._judge_turns(case, len(turns))
+                           turns=len(turns), bound=bound)
+        outcome = self._judge_turns(case, len(turns))
+        outcome.bound = bound
+        return outcome
 
     def _judge_turns(self, case: Case, turns: int) -> Outcome:
         """Compare a valid solution's length with the reference target."""
         if case.target is None:
-            return Outcome(case, PASS, f"valid solution, {turns} turns",
-                           turns=turns)
+            return Outcome(case, PASS, f"valid, {turns} turns", turns=turns)
         if turns <= case.target:
             return Outcome(case, PASS, f"{turns} turns "
                            f"(target <= {case.target})", turns=turns)
