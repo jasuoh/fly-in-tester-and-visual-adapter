@@ -12,3 +12,5 @@ dist/
 out/
 !docs/*.png
 .flyin/
+maps-generated/
+flyin-report.md

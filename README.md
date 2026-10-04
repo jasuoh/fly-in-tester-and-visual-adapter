@@ -1,6 +1,7 @@
 # flyin: Fly-In tester & visualizer
 
-Test your **42 Fly-In** algorithm on 130 maps and **watch it fly**.
+Test your **42 Fly-In** algorithm on 130 maps (+300 with a known
+optimum) and **watch it fly**.
 
 ![The visualizer](docs/screenshot.png)
 
@@ -29,18 +30,48 @@ the menu:
 What do you want to do?
    1  Test all maps
    2  Test one group
-   3  Watch a map (your program in the visualizer)
+   3  Watch maps (your program in the visualizer)
    4  Watch the problems of the last test  (3)
-   5  Watch an output file
-   6  List the maps
-   7  Settings
+   5  Compare two solutions side by side
+   6  Watch an output file
+   7  Evaluation report (all maps + checklist)
+   8  History of your test runs
+   9  Generate a random map
+  10  List the maps
+  11  How flyin reads the subject (rules)
+  12  Settings
    0  quit
 ```
 
-**Watch a map** runs your program on the maps you pick and plays each one
-in the visualizer: one number, several (`1,3,5`), a range (`2-6`) or
-`all`; close the window for the next one. Your answers are saved in
-`.flyin/` and can be changed under Settings.
+Your answers are saved in `.flyin/` and can be changed under Settings.
+
+## What it does for you
+
+- **Test**: every map is run and judged by an independent checker. Only
+  problems are listed; at the end a **score** sums your turns against the
+  exact optimum (where known) or a proven **lower bound**, so you see
+  where turns can still be won.
+- **Watch**: your program runs on the maps you pick (one, `1,3,5`, `2-6`
+  or `all`) and each solution plays in the visualizer.
+- **See the mistake**: an invalid solution opens paused on the first
+  broken turn; the zones and connections involved pulse red, the panel
+  names the rule, red dots on the timeline mark every broken turn and `E`
+  jumps to the next one.
+- **Compare**: two solutions of one map side by side, in sync: your last
+  test against now, the one before against the last, or any files.
+- **History**: after every test you see which maps got better or worse
+  than in the run before (`flyin history` lists all runs).
+- **Evaluation report**: one Markdown file with a checklist of the
+  subject's requirements (solves, rejects, line numbers, no crash, no
+  timeout, targets), results, score, slowest maps and every problem.
+- **Random maps**: `flyin generate --seed 7` writes a solvable map with
+  its lower bound; the same seed always gives the same map.
+- **Rules**: [flyin/RULES.md](flyin/RULES.md) says how the open points of
+  the subject are read (capacity when leaving, flights, link counting).
+
+| An invalid solution: the broken rule is marked | Compare: the last test against the one before |
+| --- | --- |
+| ![invalid](docs/invalid.png) | ![compare](docs/compare.png) |
 
 That is all you need. The rest of this page is reference.
 
@@ -63,6 +94,7 @@ The visualizer plays **whatever your program prints**:
 | `+` `-` | speed |
 | `R` | restart |
 | `T` | theme: `mission`, `blueprint`, `graphite`, `ashen` |
+| `E` | jump to the next broken rule (invalid solutions) |
 | mouse | drag the timeline, hover a zone for details |
 | `Esc` | close (with "problems": on to the next map) |
 
@@ -77,10 +109,15 @@ after `pip install`, or `make ...`):
 | Command | |
 | --- | --- |
 | `setup [PROJECT] [--cmd "..."] [--output-file FILE]` | connect your project |
-| `test [WHAT ...] [-v] [--strict] [--show]` | all maps, a group (`challenge`) or part of a name (`hard`); `-v` lists every map, not only problems |
+| `test [WHAT ...] [-v] [--strict] [--show]` | all maps, a group (`challenge`, `fuzz`) or part of a name (`hard`); `-v` lists every map, not only problems |
 | `show MAP` | run your program on a map and watch it |
 | `show MAP OUTPUT` | watch an output file (`-` = stdin) |
 | `show --problems` | watch every map of the last test that failed or missed its target |
+| `compare MAP [A] [B]` | two solutions side by side; `now`, `last`, `previous` or a file (default `last now`) |
+| `eval [-o FILE]` | evaluation report (`flyin-report.md`) |
+| `history` | results of all earlier test runs |
+| `generate [--seed N] [--size 8x4] [--drones N]` | a random solvable map in `maps-generated/` |
+| `rules` | how flyin reads the subject |
 | `maps [WHAT]` | list the maps with their targets |
 | `check MAP OUTPUT` | check an output without watching |
 | `run --cmd "..." [options]` | the full tester for scripts and CI (`run --help`) |
@@ -105,6 +142,7 @@ print(result.valid, result.turns, result.errors)
 
 flyin.show("easy/01", turns)             # opens the visualizer
 flyin.show("easy/01", turns, screenshot="turn3.png", turn=3)
+flyin.compare("easy/01", old_turns, turns, labels=("old", "new"))
 
 outcomes = flyin.test("python3 main.py {map}", cwd=".", only="challenge")
 for o in outcomes:
@@ -115,6 +153,7 @@ for o in outcomes:
 | --- | --- |
 | `check(map, output)` | `CheckResult`: `.valid`, `.errors`, `.turns`, `.moves` |
 | `show(map, output, theme=, screenshot=, turn=)` | `True` if valid; opens the window |
+| `compare(map, left, right, labels=, theme=, screenshot=, turn=)` | `True` if both valid; side by side |
 | `run(map, command, cwd=)` | `Outcome` of one map (`.status`, `.message`, `.output`) |
 | `test(command, cwd=, only=, timeout=, jobs=, strict_targets=)` | list of `Outcome` |
 | `maps(query=None)` / `find_map(name)` / `load_map(name)` | bundled maps |
@@ -136,7 +175,7 @@ put that in the command, or copy `adapters/template.py` (three lines to
 fill in). Any language works: flyin only runs a command.
 
 <details>
-<summary><b>How a map is judged and what the checker verifies</b></summary>
+<summary><b>How a map is judged and what the checker verifies</b> (details in <a href="flyin/RULES.md">RULES.md</a>)</summary>
 
 | Map kind | Expected | Result |
 | --- | --- | --- |
@@ -171,13 +210,14 @@ zone, `D<id>-<from>-<to>`. A solution fails when:
 | `edge-valid` | 29 | comments, CRLF, negative coordinates, 10 000 drones, restricted chains, ... |
 | `edge-invalid` | 58 | every parser rule broken once, plus maps without a solution |
 | `challenge` | 5 | hard maps whose target is the **exact optimum** (integer linear program); optional |
+| `fuzz` | 300 | seeded random maps with their exact optimum; only when asked for (`flyin test fuzz`) |
 
 Your own map: `python3 start.py show path/to/map.txt` works with any file.
 
 ## Development
 
 ```sh
-make dev-test    # 80+ tests: checker, map reader, runner, replay, GUI (headless), menu commands
+make dev-test    # ~100 tests: checker, bounds, runner, replay, GUI (headless), commands
 make lint        # flake8 + mypy --strict
 ```
 
@@ -185,10 +225,13 @@ make lint        # flake8 + mypy --strict
 start.py         starts flyin from this folder (uses .venv/ if present)
 flyin/           api.py      the library (check, show, run, test, maps)
                  app.py      the flyin command        menu.py   the menu
-                 config.py   settings + last results in .flyin/ of the current folder
-                 tester/     map reader, checker, runner, full command line
+                 config.py   settings, last results, history in .flyin/
+                 report.py   the evaluation report
+                 RULES.md    how the subject is read
+                 tester/     map reader, checker, lower bounds, map generator,
+                             runner, full command line
                  visual/     replay.py (any output -> playable), the pygame GUI
-                 maps/       the 130 maps and manifest.json
+                 maps/       the 430 maps and manifest.json
 examples/        naive_solver.py, use_as_library.py
 adapters/        template.py
 tests/

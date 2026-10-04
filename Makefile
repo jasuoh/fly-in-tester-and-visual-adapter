@@ -4,7 +4,7 @@ PYTHON ?= python3
 START   = $(PYTHON) start.py
 
 .DEFAULT_GOAL := menu
-.PHONY: menu run install setup test show problems maps dev-test lint clean
+.PHONY: menu run install setup test show problems compare eval history maps dev-test lint clean
 
 menu:            ## the interactive menu (also: make run)
 	@$(START)
@@ -25,6 +25,15 @@ show:            ## watch a map, e.g. make show MAP=easy/01
 
 problems:        ## watch the problem maps of the last test
 	@$(START) show --problems
+
+compare:         ## last test vs now, e.g. make compare MAP=easy/01
+	@$(START) compare $(MAP)
+
+eval:            ## evaluation report of all maps (flyin-report.md)
+	@$(START) eval
+
+history:         ## results of the earlier test runs
+	@$(START) history
 
 maps:            ## list the maps
 	@$(START) maps $(WHAT)
