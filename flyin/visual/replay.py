@@ -20,7 +20,7 @@ from flyin.tester.checker import CheckResult, check_solution
 from flyin.tester.mapfile import FlyMap
 from flyin.tester.runner import extract_turns
 from flyin.visual.loader import graph_from_map
-from flyin.visual.models import Move, SimulationResult, TurnRecord
+from flyin.visual.models import Issue, Move, SimulationResult, TurnRecord
 
 TOKEN = re.compile(r"^D(\d+)-(\S+)$")
 
@@ -102,4 +102,10 @@ def build_replay(fly_map: FlyMap, text: str, raw: bool = False) -> Replay:
             delivered[drone] = place == fly_map.end
         turns.append(TurnRecord(number, [moves[d] for d in sorted(moves)]))
     graph = graph_from_map(fly_map)
-    return Replay(SimulationResult(graph, turns, base), check, skipped)
+    issues = [Issue(i.turn, i.message, tuple(z for z in i.zones
+                                             if graph.has_zone(z)),
+                    i.link if i.link and all(graph.has_zone(z)
+                                             for z in i.link) else None)
+              for i in check.issues]
+    return Replay(SimulationResult(graph, turns, base, issues), check,
+                  skipped)

@@ -63,6 +63,31 @@ class MapLayer:
         for sprite in sprites:
             self._draw_drone(target, sprite, p)
         self._draw_flashes(target, sprites, p)
+        self._draw_issues(target, self.timeline.shown_index(t, p), now)
+
+    def _draw_issues(self, target: pygame.Surface, k: int,
+                     clock: float) -> None:
+        """Mark zones and connections of the rules broken in state ``k``.
+
+        A pulsing red ring around each zone and a red line over each
+        connection, so the mistake is visible on the map itself.
+        """
+        issues = self.timeline.issues_at(k)
+        if not issues:
+            return
+        danger = self.theme.danger
+        positions = self.scene.projection.positions
+        pulse = 0.5 + 0.5 * math.sin(clock * math.tau * 1.2)
+        for issue in issues:
+            if issue.link is not None:
+                a, b = issue.link
+                start, stop = self.scene.edge_points(a, b)
+                self.painter.line(target, danger, start, stop, self.px(4))
+            for name in issue.zones:
+                zone = self.scene.graph.zone(name)
+                radius = self.scene.zone_radius(zone) + self.px(7 + 4 * pulse)
+                self.painter.ring(target, danger, positions[name], radius,
+                                  self.px(3))
 
     def _draw_ambient(self, target: pygame.Surface, clock: float) -> None:
         """Ashen only: the bonfire in the start and cursed zones."""

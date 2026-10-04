@@ -27,6 +27,23 @@ TOKEN = re.compile(r"^D(\d+)-(\S+)$")
 MAX_ERRORS = 30
 
 
+@dataclass(frozen=True)
+class Issue:
+    """One broken rule, with what the visualizer should highlight.
+
+    Attributes:
+        turn: 1-based turn, 0 if it concerns the whole output.
+        message: Text of the problem (without the turn prefix).
+        zones: Zones involved.
+        link: The connection involved, if any.
+    """
+
+    turn: int
+    message: str
+    zones: tuple[str, ...] = ()
+    link: tuple[str, str] | None = None
+
+
 @dataclass
 class CheckResult:
     """Outcome of checking a solution."""
@@ -35,6 +52,7 @@ class CheckResult:
     moves: int = 0
     id_base: int | None = None
     errors: list[str] = field(default_factory=list)
+    issues: list[Issue] = field(default_factory=list)
 
     @property
     def valid(self) -> bool:
@@ -63,9 +81,11 @@ def check_solution(fly_map: FlyMap, log: list[str]) -> CheckResult:
     result = CheckResult(turns=len(log))
     errors = result.errors
 
-    def fail(turn: int, message: str) -> None:
+    def fail(turn: int, message: str, zones: tuple[str, ...] = (),
+             link: tuple[str, str] | None = None) -> None:
         if len(errors) < MAX_ERRORS:
             errors.append(f"turn {turn}: {message}" if turn else message)
+            result.issues.append(Issue(turn, message, zones, link))
 
     parsed: list[list[tuple[str, int, list[str]]]] = []
     ids: set[int] = set()
@@ -108,7 +128,7 @@ def check_solution(fly_map: FlyMap, log: list[str]) -> CheckResult:
                 target, arrival = drone.flight
                 if len(parts) != 1 or parts[0] != target or arrival != turn:
                     fail(turn, f"{token}: D{drone_id} must land in {target} "
-                               f"in turn {arrival}")
+                               f"in turn {arrival}", (target,))
                 drone.zone, drone.flight = target, None
                 continue
             if drone.zone == fly_map.end:
@@ -126,21 +146,25 @@ def check_solution(fly_map: FlyMap, log: list[str]) -> CheckResult:
                 continue
             if origin != drone.zone:
                 fail(turn, f"{token}: D{drone_id} is in {drone.zone}, "
-                           f"not in {origin}")
+                           f"not in {origin}",
+                     tuple(z for z in (drone.zone, origin) if z))
                 continue
             link_key = frozenset((str(origin), target))
             if target not in fly_map.zones or link_key not in fly_map.links:
-                fail(turn, f"{token}: no connection {origin}-{target}")
+                fail(turn, f"{token}: no connection {origin}-{target}",
+                     (str(origin), target), (str(origin), target))
                 continue
             kind = fly_map.zones[target].kind
             if kind == "blocked":
-                fail(turn, f"{token}: {target} is blocked")
+                fail(turn, f"{token}: {target} is blocked", (target,))
             elif kind == "restricted" and not kind_required:
                 fail(turn, f"{token}: {target} is restricted, so the move "
-                           f"needs the form D{drone_id}-{origin}-{target}")
+                           f"needs the form D{drone_id}-{origin}-{target}",
+                     (target,), (str(origin), target))
             elif kind != "restricted" and kind_required:
                 fail(turn, f"{token}: {target} is not restricted, so the "
-                           f"connection form is wrong")
+                           f"connection form is wrong", (target,),
+                     (str(origin), target))
             link_use[link_key] = link_use.get(link_key, 0) + 1
             if kind == "restricted":
                 drone.zone, drone.flight = None, (target, turn + 1)
@@ -149,14 +173,16 @@ def check_solution(fly_map: FlyMap, log: list[str]) -> CheckResult:
         for drone_id, drone in drones.items():
             if drone.flight is not None and drone.flight[1] <= turn:
                 fail(turn, f"D{drone_id + base} did not land in "
-                           f"{drone.flight[0]} as required")
+                           f"{drone.flight[0]} as required",
+                     (drone.flight[0],))
                 drone.zone, drone.flight = drone.flight[0], None
         for link_key, used in link_use.items():
             capacity = fly_map.links[link_key].capacity
             if used > capacity:
                 names = "-".join(sorted(link_key))
+                a, b = sorted(link_key)
                 fail(turn, f"connection {names} carries {used} drones "
-                           f"(max_link_capacity {capacity})")
+                           f"(max_link_capacity {capacity})", (), (a, b))
         occupancy: dict[str, int] = {}
         for drone in drones.values():
             if drone.zone is not None:
@@ -166,7 +192,8 @@ def check_solution(fly_map: FlyMap, log: list[str]) -> CheckResult:
                 continue
             if count > fly_map.zones[name].max_drones:
                 fail(turn, f"zone {name} holds {count} drones "
-                           f"(max_drones {fly_map.zones[name].max_drones})")
+                           f"(max_drones {fly_map.zones[name].max_drones})",
+                     (name,))
     for drone_id, drone in drones.items():
         if drone.zone != fly_map.end:
             where = drone.zone or "in flight"

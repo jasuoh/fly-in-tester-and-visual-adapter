@@ -33,6 +33,7 @@ class Theme:
         accent: Main accent (headings, playhead, occupancy).
         success: Delivered drones / progress bar.
         warning: Full zones and transit moves.
+        danger: Broken rules (invalid solutions only).
         edge: Colour of idle connections.
         edge_active: Colour of connections used in the current turn.
         zone_fill_mix: Share of the map colour in a zone fill (0..1).
@@ -91,6 +92,7 @@ class Theme:
     hue_value: float = 1.0
     embers: bool = False
     agent_label: str = "Drone"
+    danger: RGB = (255, 84, 96)
 
 
 class ThemeBook:
@@ -123,7 +125,7 @@ class ThemeBook:
             edge_active=(32, 82, 180), zone_fill_mix=0.10, zone_ring=0.12,
             tint=(22, 40, 82), tint_amount=0.18, drone=(22, 46, 110),
             drone_text=(250, 249, 244), drone_hues=False, glow=False,
-            mono_labels=True,
+            mono_labels=True, danger=(196, 36, 48),
         ),
         Theme(
             name="graphite", title="Graphite", dark=True,

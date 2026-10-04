@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, FrozenSet, Iterator, List, Optional
+from typing import Dict, FrozenSet, Iterator, List, Optional, Tuple
 
 
 class ZoneType(Enum):
@@ -289,6 +289,24 @@ class TurnRecord:
     positions: Dict[int, str] = field(default_factory=dict)
 
 
+@dataclass(frozen=True)
+class Issue:
+    """A broken rule the GUI marks on the map.
+
+    Attributes:
+        turn: 1-based turn whose resulting state breaks the rule (0: the
+            whole run).
+        message: What is wrong.
+        zones: Zones to mark.
+        link: Connection to mark, if any.
+    """
+
+    turn: int
+    message: str
+    zones: Tuple[str, ...] = ()
+    link: Optional[Tuple[str, str]] = None
+
+
 @dataclass
 class SimulationResult:
     """Result of a complete simulation run.
@@ -297,11 +315,13 @@ class SimulationResult:
         graph: The network.
         turns: One record per output line.
         id_base: Id of the first drone: 1 (``D1..Dn``) or 0 (``D0..``).
+        issues: Broken rules to show (empty for a valid solution).
     """
 
     graph: Graph
     turns: List[TurnRecord] = field(default_factory=list)
     id_base: int = 1
+    issues: List[Issue] = field(default_factory=list)
 
     @property
     def turn_count(self) -> int:

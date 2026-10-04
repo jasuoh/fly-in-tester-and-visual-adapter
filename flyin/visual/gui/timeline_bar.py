@@ -54,6 +54,9 @@ class TimelineBar:
         pygame.draw.line(target, theme.accent, (track.left, y),
                          (round(head), y), px(4))
         self._ticks(target, track, total, position)
+        for turn in self.timeline.issue_turns():
+            x = track.left + track.width * (turn - 0.5) / max(1, total)
+            painter.disc(target, theme.danger, (x, y - px(9)), px(3.5))
         painter.disc(target, theme.background, (head, y), px(9))
         painter.disc(target, theme.accent, (head, y), px(7))
         end = painter.text(str(total), px(11.5), theme.muted, "mono")

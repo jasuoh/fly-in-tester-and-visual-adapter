@@ -5,7 +5,7 @@ from collections import OrderedDict
 from dataclasses import dataclass
 from typing import Dict, FrozenSet, List, Optional, Set, Tuple, TypeVar
 
-from flyin.visual.models import SimulationResult
+from flyin.visual.models import Issue, SimulationResult
 from flyin.visual.metrics import SimulationMetrics
 
 Edge = FrozenSet[str]
@@ -195,6 +195,16 @@ class Timeline:
                            max(i * total // slots + 1,
                                (i + 1) * total // slots)])
                 for i in range(slots)] if total else []
+
+    # problems -----------------------------------------------------------
+
+    def issues_at(self, k: int) -> List[Issue]:
+        """Return the broken rules of the state after ``k`` turns."""
+        return [i for i in self.result.issues if i.turn == k and k > 0]
+
+    def issue_turns(self) -> List[int]:
+        """Return the turns with a broken rule, sorted."""
+        return sorted({i.turn for i in self.result.issues if i.turn > 0})
 
     # places -------------------------------------------------------------
 

@@ -31,6 +31,8 @@ class PlayerWindow:
         self.visualizer: "GuiVisualizer" = visualizer
         self.result: SimulationResult = result
         self.player: Player = Player(len(result.turns))
+        if result.issues:
+            self.jump_to_issue()
         self.dragging: bool = False
         self._title: str = ""
 
@@ -115,7 +117,24 @@ class PlayerWindow:
             player.restart()
         elif key == pygame.K_t:
             self.visualizer.next_theme()
+        elif key == pygame.K_e:
+            self.jump_to_issue()
         return True
+
+    def jump_to_issue(self) -> None:
+        """Pause on the next turn that breaks a rule (wraps around).
+
+        The playhead lands just after the middle of that turn, where the
+        map shows the state the rule is about.
+        """
+        turns = self.visualizer.timeline_for(self.result).issue_turns()
+        if not turns:
+            return
+        index, progress = self.player.view()
+        shown = index + (1 if progress >= 0.5 else 0)
+        target = next((t for t in turns if t > shown), turns[0])
+        self.player.playing = False
+        self.player.seek(target - 0.4)
 
     def _scrub(self, screen: pygame.Surface, pos: Tuple[int, int]) -> bool:
         """Seek when the mouse is on the timeline; return True if so."""

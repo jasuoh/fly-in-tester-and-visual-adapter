@@ -204,7 +204,8 @@ class KeyHints(PanelSection):
 
     HINTS: Tuple[Tuple[str, str], ...] = (
         ("Space", "play"), ("← →", "step"), ("+ −", "speed"),
-        ("R", "restart"), ("T", "theme"), ("Q", "quit"))
+        ("R", "restart"), ("T", "theme"), ("E", "next error"),
+        ("Q", "quit"))
 
     def _rows(self, width: int) -> List[List[Tuple[str, str]]]:
         """Group the hints into rows that fit ``width``."""

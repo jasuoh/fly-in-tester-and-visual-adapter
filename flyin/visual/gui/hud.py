@@ -59,6 +59,71 @@ class BrandSection(PanelSection):
         return surface
 
 
+class IssueSection(PanelSection):
+    """Invalid solutions only: the rule broken at the shown turn.
+
+    Away from a broken turn it says where the next problem is; ``E``
+    jumps there (see :mod:`flyin.visual.gui.window`).
+    """
+
+    LINES: int = 3
+
+    def line_height(self) -> int:
+        """Return the height of one text line."""
+        return self.painter.text("Xg", self.px(12.5), self.theme.text) \
+            .get_height()
+
+    def height(self, width: int) -> int:
+        """Return caption + text lines + gap."""
+        return self.caption_height() + self.LINES * self.line_height() \
+            + self.px(self.GAP) - self.px(6)
+
+    def draw(self, target: pygame.Surface, x: int, y: int, width: int,
+             view: View) -> None:
+        """Draw the problem of the shown state, or the way to it."""
+        timeline, theme = self.timeline, self.theme
+        shown = timeline.shown_index(view.turn_index, view.progress)
+        here = timeline.issues_at(shown)
+        turns = timeline.issue_turns()
+        label = self.painter.heading("Rule broken", self.px(11),
+                                     theme.danger, self.px(1.3))
+        target.blit(label, (x, y))
+        y += self.caption_height()
+        if here:
+            text = f"Turn {shown}: " + here[0].message
+            if len(here) > 1:
+                text += f"  (+{len(here) - 1} more)"
+            color = theme.danger
+        else:
+            later = [t for t in turns if t > shown] or turns
+            text = (f"{len(turns)} turns break a rule. Next: turn "
+                    f"{later[0]}. Press E to jump there." if turns else
+                    "; ".join(i.message for i in timeline.result.issues))
+            color = theme.muted
+        for line in self._wrap(text, width)[:self.LINES]:
+            target.blit(self.painter.text(line, self.px(12.5), color),
+                        (x, y))
+            y += self.line_height()
+
+    def _wrap(self, text: str, width: int) -> List[str]:
+        """Split ``text`` into lines that fit ``width``."""
+        lines: List[str] = []
+        current = ""
+        for word in text.split():
+            trial = f"{current} {word}".strip()
+            if current and self.painter.text(
+                    trial, self.px(12.5), self.theme.text).get_width() > width:
+                lines.append(current)
+                current = word
+            else:
+                current = trial
+        if current:
+            lines.append(current)
+        if len(lines) > self.LINES:
+            lines[self.LINES - 1] += " …"
+        return lines
+
+
 class TurnSection(PanelSection):
     """Big turn counter plus en route / in transit / waiting counts."""
 
@@ -236,6 +301,8 @@ class HudRenderer:
         self.required: List[PanelSection] = [
             BrandSection(painter, layout, timeline, map_name),
             TurnSection(*args), DeliveredSection(*args)]
+        if timeline.result.issues:
+            self.required.insert(1, IssueSection(*args))
         self.metrics: PanelSection = MetricsSection(*args)
         self.legend: PanelSection = LegendSection(*args)
         self.chart: PanelSection = ThroughputSection(*args)
