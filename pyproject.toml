@@ -20,7 +20,7 @@ build-backend = "setuptools.build_meta"
 packages = ["flyin", "flyin.tester", "flyin.visual", "flyin.visual.gui"]
 
 [tool.setuptools.package-data]
-flyin = ["maps/**/*.txt", "maps/manifest.json"]
+flyin = ["maps/**/*.txt", "maps/manifest.json", "RULES.md"]
 "flyin.visual" = ["assets/fonts/*"]
 
 [tool.mypy]

@@ -7,7 +7,12 @@
     flyin show --problems       watch every map of the last test that
                                 failed or missed its target
     flyin maps [WHAT]           list the maps
+    flyin compare MAP [A] [B]   two solutions side by side; A and B are
+                                now (run it), last, previous (outputs
+                                of the last two tests) or a file
     flyin history               results of the earlier test runs
+    flyin eval [-o FILE]        evaluation report (Markdown)
+    flyin rules                 how flyin reads the subject
     flyin generate [--seed N]   write a random solvable map
     flyin check MAP OUTPUT      check an output file
 
@@ -251,7 +256,87 @@ def print_changes(before: dict[str, Any], outcomes: list[Outcome]) -> None:
     if len(better) > 10 or len(worse) > 10:
         say("  (only the first 10 of each)", "dim")
     if worse:
-        say("Compare old and new: flyin compare MAP --previous", "dim")
+        say("Watch old and new side by side: flyin compare MAP previous "
+            "last", "dim")
+
+
+SOURCES = ("now", "last", "previous")
+
+
+def solution_text(cfg: Config | None, path: Path, source: str
+                  ) -> tuple[str, str] | None:
+    """Return (label, output) for a compare side, or None with a message.
+
+    ``source``: ``now`` runs your program, ``last``/``previous`` are the
+    outputs of the last test run and the one before, ``-`` is stdin,
+    anything else a file.
+    """
+    if source == "now":
+        cfg = cfg or need_config(sys.stdin.isatty())
+        outcome = api.run(path, cfg.command, cfg.project, cfg.timeout,
+                          cfg.output_file)
+        return "now", outcome.output
+    if source in ("last", "previous"):
+        saved = config.saved_output(api.case_for(path).name, source)
+        if saved is None:
+            say(f"no '{source}' output for {path.name}: test it "
+                f"{'once' if source == 'last' else 'twice'} first", "bad")
+            return None
+        return f"{source} test", api.output_text(saved)
+    if source == "-":
+        return "stdin", sys.stdin.read()
+    file = Path(source)
+    if not file.is_file():
+        say(f"'{source}' is neither a file nor one of {', '.join(SOURCES)}",
+            "bad")
+        return None
+    return file.name, api.output_text(file)
+
+
+def do_compare(cfg: Config | None, ref: str, left: str, right: str,
+               theme: str | None = None, screenshot: str | None = None,
+               turn: int | None = None) -> int:
+    """Play two solutions of one map side by side."""
+    try:
+        path = api.find_map(ref)
+    except LookupError as error:
+        say(str(error), "bad")
+        return 2
+    sides = []
+    for source in (left, right):
+        side = solution_text(cfg, path, source)
+        if side is None:
+            return 2
+        sides.append(side)
+    labels = (sides[0][0], sides[1][0])
+    if labels[0] == labels[1]:
+        labels = (f"A: {labels[0]}", f"B: {labels[1]}")
+    valid = api.compare(path, sides[0][1], sides[1][1], labels,
+                        theme or (cfg.theme if cfg else "mission"),
+                        screenshot, turn)
+    return 0 if valid else 1
+
+
+def do_eval(cfg: Config, out: str = "flyin-report.md") -> int:
+    """Run every standard map and write the evaluation report."""
+    from flyin import report
+    outcomes = do_test(cfg)
+    if not outcomes:
+        return 2
+    path = Path(out)
+    path.write_text(report.build(outcomes, cfg.project, cfg.command),
+                    "utf-8")
+    say("\nChecklist:", "bold")
+    for ok, requirement, details in report.checklist(outcomes):
+        say(f"  {report.MARK[ok]} {requirement}: {details}",
+            "ok" if ok else "bad")
+    say(f"Report written to {path.resolve()}", "dim")
+    return 1 if any(o.status == FAIL for o in outcomes) else 0
+
+
+def do_rules() -> None:
+    """Print how flyin reads the subject."""
+    print((Path(__file__).parent / "RULES.md").read_text("utf-8"))
 
 
 def do_history() -> None:
@@ -351,7 +436,19 @@ def build_parser() -> argparse.ArgumentParser:
     show_p.add_argument("--theme", choices=THEMES)
     show_p.add_argument("--screenshot", metavar="PNG")
     show_p.add_argument("--turn", type=int)
+    cmp_p = sub.add_parser("compare", help="two solutions side by side")
+    cmp_p.add_argument("map")
+    cmp_p.add_argument("left", nargs="?", default="last",
+                       help="now | last | previous | FILE (default: last)")
+    cmp_p.add_argument("right", nargs="?", default="now",
+                       help="now | last | previous | FILE (default: now)")
+    cmp_p.add_argument("--theme", choices=THEMES)
+    cmp_p.add_argument("--screenshot", metavar="PNG")
+    cmp_p.add_argument("--turn", type=int)
     sub.add_parser("history", help="results of the earlier test runs")
+    eval_p = sub.add_parser("eval", help="evaluation report of all maps")
+    eval_p.add_argument("-o", "--out", default="flyin-report.md")
+    sub.add_parser("rules", help="how flyin reads the subject")
     maps_p = sub.add_parser("maps", help="list the maps")
     maps_p.add_argument("what", nargs="?")
     gen_p = sub.add_parser("generate", help="write a random solvable map")
@@ -410,6 +507,14 @@ def _dispatch(args: argparse.Namespace) -> int:
             return 2
         return 0 if do_show(config.load(), args.map, args.output,
                             args.theme, args.screenshot, args.turn) else 1
+    if args.command == "compare":
+        return do_compare(config.load(), args.map, args.left, args.right,
+                          args.theme, args.screenshot, args.turn)
+    if args.command == "eval":
+        return do_eval(need_config(sys.stdin.isatty()), args.out)
+    if args.command == "rules":
+        do_rules()
+        return 0
     if args.command == "history":
         do_history()
         return 0

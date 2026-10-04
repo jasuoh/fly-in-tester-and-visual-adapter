@@ -4,7 +4,8 @@ from pathlib import Path
 
 from flyin import api, config
 from flyin.app import (
-    THEMES, ask, do_maps, do_show, do_show_problems, do_test, need_config,
+    SOURCES, THEMES, ask, do_compare, do_eval, do_generate, do_history,
+    do_maps, do_rules, do_show, do_show_problems, do_test, need_config,
     problems, say, setup,
 )
 from flyin.config import Config
@@ -72,10 +73,15 @@ class Menu:
         actions = [
             ("Test all maps", self.test_all),
             ("Test one group", self.test_group),
-            ("Watch a map (your program in the visualizer)", self.watch),
+            ("Watch maps (your program in the visualizer)", self.watch),
             ("Watch the problems of the last test", self.watch_problems),
+            ("Compare two solutions side by side", self.compare),
             ("Watch an output file", self.watch_file),
+            ("Evaluation report (all maps + checklist)", self.evaluate),
+            ("History of your test runs", do_history),
+            ("Generate a random map", self.generate),
             ("List the maps", self.list_maps),
+            ("How flyin reads the subject (rules)", do_rules),
             ("Settings", self.settings),
         ]
         while True:
@@ -133,6 +139,44 @@ class Menu:
             say(f"no file '{output}'", "bad")
             return
         do_show(self.cfg, ref, str(Path(output).expanduser()))
+
+    def compare(self) -> None:
+        """Pick a map and two solutions, play them side by side."""
+        refs = self._pick_maps(several=False)
+        if not refs:
+            return
+        say("A solution is: now (run your program), last / previous (the "
+            "outputs of your last two tests) or a file.", "dim")
+        left = ask("Left", "last")
+        right = ask("Right", "now")
+        for side in (left, right):
+            if side not in SOURCES and not Path(side).expanduser().is_file():
+                say(f"'{side}' is neither {', '.join(SOURCES)} nor a file",
+                    "bad")
+                return
+        do_compare(self.cfg, refs[0], left, right)
+
+    def evaluate(self) -> None:
+        """Test everything and write the report."""
+        do_eval(self.cfg, ask("Report file", "flyin-report.md"))
+
+    def generate(self) -> None:
+        """Write a random map and offer to watch it."""
+        seed = ask("Seed (empty: random)")
+        size = ask("Size WIDTHxHEIGHT", "6x3")
+        drones = ask("Drones", "10")
+        if not drones.isdigit() or (seed and not seed.lstrip("-").isdigit()):
+            say("seed and drones must be numbers", "bad")
+            return
+        path = Path(f"maps-generated/seed_{seed or 'random'}.txt")
+        if do_generate(int(seed) if seed else None, size, int(drones),
+                       None if not seed else str(path)) != 0:
+            return
+        latest = max(Path("maps-generated").glob("seed_*.txt"),
+                     key=lambda p: p.stat().st_mtime)
+        if ask("Watch your program on it? (y/n)", "y").lower() \
+                .startswith(("y", "j")):
+            do_show(self.cfg, str(latest))
 
     def list_maps(self) -> None:
         """Print the maps of one group (or all)."""

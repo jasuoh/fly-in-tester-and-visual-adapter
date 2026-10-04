@@ -7,15 +7,16 @@ menu, or use it as a library::
 
     flyin.show("easy/01", lines)            # play a solution
     flyin.check("easy/01", lines).valid     # check it
+    flyin.compare("easy/01", old, new)      # two solutions side by side
     flyin.test("python3 main.py {map}", cwd="../my-project")
 
 See :mod:`flyin.api` for every function.
 """
 
 from flyin.api import (
-    case_for, check, find_map, load_map, maps, run, show, test,
+    case_for, check, compare, find_map, load_map, maps, run, show, test,
 )
 
 __version__ = "2.0.0"
-__all__ = ["case_for", "check", "find_map", "load_map", "maps", "run",
-           "show", "test"]
+__all__ = ["case_for", "check", "compare", "find_map", "load_map", "maps",
+           "run", "show", "test"]

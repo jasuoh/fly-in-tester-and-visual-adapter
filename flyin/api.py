@@ -118,6 +118,20 @@ def show(ref: MapRef, output: Output, theme: str = "mission",
                 screenshot, turn) == 0
 
 
+def compare(ref: MapRef, left: Output, right: Output,
+            labels: tuple[str, str] = ("A", "B"), theme: str = "mission",
+            screenshot: str | None = None, turn: int | None = None) -> bool:
+    """Play two solutions of one map side by side (e.g. old vs new).
+
+    Returns:
+        True if both are valid.
+    """
+    from flyin.visual.view import compare as play_pair
+    return play_pair(str(find_map(ref)), output_text(left),
+                     output_text(right), labels, theme, screenshot,
+                     turn) == 0
+
+
 def run(ref: MapRef, command: str, cwd: str | None = None,
         timeout: float = 60.0, output_file: str = "") -> Outcome:
     """Run your program on one map and judge it.

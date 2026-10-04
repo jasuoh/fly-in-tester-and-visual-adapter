@@ -146,9 +146,11 @@ def history() -> list[dict[str, Any]]:
     return [r for r in runs if isinstance(r, dict) and "results" in r]
 
 
-def previous_output(map_name: str) -> Path | None:
-    """Return the output of ``map_name`` from the run before the last."""
-    path = state_dir() / "previous" / map_name
+def saved_output(map_name: str, which: str = "last") -> Path | None:
+    """Return the output of ``map_name`` from the ``last`` test run or
+    the one before it (``previous``), or None."""
+    folder = "outputs" if which == "last" else "previous"
+    path = state_dir() / folder / map_name
     return path if path.is_file() else None
 
 

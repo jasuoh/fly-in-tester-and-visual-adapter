@@ -95,6 +95,63 @@ def show(map_path: str, text: str, theme: str = "mission",
     return 0 if replay.valid else 1
 
 
+def compare(map_path: str, left: str, right: str,
+            labels: tuple[str, str] = ("A", "B"), theme: str = "mission",
+            screenshot: str | None = None, turn: int | None = None) -> int:
+    """Check two outputs for one map and play them side by side.
+
+    Returns:
+        0 if both are valid, 1 if one is not, 2 if nothing can be shown.
+    """
+    try:
+        fly_map = read_map(map_path)
+        replays = [build_replay(fly_map, text) for text in (left, right)]
+    except (MapError, OSError) as error:
+        print(f"cannot read map: {error}", file=sys.stderr)
+        return 2
+    for label, replay in zip(labels, replays):
+        print(f"[{label}] ", end="")
+        report(replay)
+    if not all(r.result.turns for r in replays):
+        print("nothing to compare: an output has no turn lines",
+              file=sys.stderr)
+        return 2
+    try:
+        from flyin.visual.errors import FlyInError
+        from flyin.visual.gui import GuiVisualizer
+        from flyin.visual.gui.player import View
+        import pygame
+        from flyin.visual.gui.window import CompareWindow, compose_pair
+    except ImportError as error:
+        print(f"the visualizer needs pygame-ce: pip install pygame-ce "
+              f"({error})", file=sys.stderr)
+        return 2
+    guis = [GuiVisualizer(r.result.graph, theme, map_name=f"{label} · "
+                          f"{len(r.result.turns)} turns"
+                          + ("" if r.valid else " · INVALID"))
+            for label, r in zip(labels, replays)]
+    a, b = replays[0].result, replays[1].result
+    try:
+        if screenshot:
+            count = max(len(a.turns), len(b.turns))
+            index = count - 1 if turn is None else \
+                max(0, min(count - 1, turn - 1))
+            frame = compose_pair(guis[0], a, guis[1], b, View(index, 1.0),
+                                 (1700, 860))
+            pygame.image.save(frame, screenshot)
+            print(f"saved turn {index + 1}/{count} to {screenshot}")
+        elif headless():
+            print("no display here: cannot open a window (use "
+                  "--screenshot FILE.png)", file=sys.stderr)
+            return 2
+        else:
+            CompareWindow(guis[0], a, guis[1], b).run()
+    except (FlyInError, pygame.error) as error:
+        print(f"{error}", file=sys.stderr)
+        return 2
+    return 0 if all(r.valid for r in replays) else 1
+
+
 def _case_for(map_path: Path) -> Case:
     """Return the manifest case of a bundled map (with its target)."""
     path = map_path.resolve()
