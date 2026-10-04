@@ -1,12 +1,15 @@
-"""A deliberately naive Fly-In solver, to try the arena without a project.
+"""A deliberately naive Fly-In solver, to try flyin without a project.
 
 Every drone flies the cheapest route alone; the next one starts when the
 previous one has arrived. Always valid, never fast: watch it in the
 visualizer and then beat it with your own algorithm.
 
     python3 examples/naive_solver.py MAP
-    python3 -m fly_in_tester view MAP \\
-        --cmd "python3 examples/naive_solver.py {map}"
+
+To watch it in the visualizer:
+
+    python3 start.py setup examples --cmd "python3 naive_solver.py {map}"
+    python3 start.py show easy/01
 
 It does not validate maps, so it fails most ``edge-invalid`` maps.
 """

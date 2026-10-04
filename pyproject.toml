@@ -1,7 +1,7 @@
 [project]
-name = "fly-in-arena"
-version = "1.0.0"
-description = "Test your 42 Fly-In algorithm on 130 maps and watch it in the visualizer"
+name = "flyin"
+version = "2.0.0"
+description = "Test your 42 Fly-In algorithm on 130 maps and watch it in a visualizer (menu, command line and library)"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
@@ -10,17 +10,18 @@ dependencies = []
 visual = ["pygame-ce>=2.5"]
 
 [project.scripts]
-fly-in-arena = "fly_in_tester.__main__:main"
+flyin = "flyin.app:main"
 
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["fly_in_tester", "fly_in_visual", "fly_in_visual.gui"]
+packages = ["flyin", "flyin.tester", "flyin.visual", "flyin.visual.gui"]
 
 [tool.setuptools.package-data]
-fly_in_visual = ["assets/fonts/*"]
+flyin = ["maps/**/*.txt", "maps/manifest.json"]
+"flyin.visual" = ["assets/fonts/*"]
 
 [tool.mypy]
 strict = true

@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fly_in_tester.runner import (
+from flyin.tester.runner import (
     FAIL, PASS, WARN, Case, Runner, extract_turns, load_manifest,
 )
 
@@ -170,15 +170,15 @@ class CommandLineTests(unittest.TestCase):
     def cli(
         self, *args: str, stdin: str = ""
     ) -> subprocess.CompletedProcess[str]:
-        """Run ``python -m fly_in_tester`` and return the result."""
+        """Run ``python -m flyin`` and return the result."""
         return subprocess.run(
-            [sys.executable, "-m", "fly_in_tester", *args], cwd=ROOT,
+            [sys.executable, "-m", "flyin", *args], cwd=ROOT,
             text=True, capture_output=True, input=stdin,
             env=dict(os.environ, PYTHONPATH=str(ROOT)))
 
     def test_check_valid_and_invalid_from_stdin(self) -> None:
         """`check` reads the output from stdin and sets the exit status."""
-        target = str(ROOT / "maps/edge/valid/single_drone_linear.txt")
+        target = str(ROOT / "flyin/maps/edge/valid/single_drone_linear.txt")
         good = self.cli("check", target, "-", stdin="banner\nD0-a\nD0-g\n")
         self.assertEqual(good.returncode, 0, good.stdout)
         self.assertIn("VALID", good.stdout)

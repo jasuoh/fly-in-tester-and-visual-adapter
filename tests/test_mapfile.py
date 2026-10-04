@@ -2,7 +2,7 @@
 
 import unittest
 
-from fly_in_tester.mapfile import MapError, has_route, parse_map, shortest_cost
+from flyin.tester.mapfile import MapError, has_route, parse_map, shortest_cost
 
 BASE = """# demo
 nb_drones: 2

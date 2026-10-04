@@ -2,8 +2,8 @@
 
 import unittest
 
-from fly_in_tester.checker import check_solution
-from fly_in_tester.mapfile import FlyMap, parse_map
+from flyin.tester.checker import check_solution
+from flyin.tester.mapfile import FlyMap, parse_map
 
 
 def chain(

@@ -3,10 +3,11 @@
 The tester needs a command that takes a map path, prints the turns to the
 terminal and exits with status 0, or prints an error and exits with a status
 other than 0. If your project's own entry point opens a window, copy this
-file, fill in the three marked places and run
+file into your project, fill in the three marked places and give flyin
+this command in its setup (menu: Settings, or):
 
-    python3 -m fly_in_tester run --cmd "python3 my_adapter.py {map}" \\
-        --cwd /path/to/your/project
+    python3 start.py setup /path/to/your/project \\
+        --cmd "python3 my_adapter.py {map}"
 
 Exactly one turn per line, e.g. ``D1-roof1 D2-corridorA``; other output is
 ignored.

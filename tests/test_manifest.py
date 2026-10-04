@@ -3,8 +3,8 @@
 import unittest
 from pathlib import Path
 
-from fly_in_tester.mapfile import MapError, has_route, parse_map, shortest_cost
-from fly_in_tester.runner import MAPS_DIR, load_manifest
+from flyin.tester.mapfile import MapError, has_route, parse_map, shortest_cost
+from flyin.tester.runner import MAPS_DIR, load_manifest
 
 
 class ManifestTests(unittest.TestCase):

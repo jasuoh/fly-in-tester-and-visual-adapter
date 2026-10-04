@@ -9,11 +9,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fly_in_tester.mapfile import MapError, parse_map, read_map
-from fly_in_tester.runner import MAPS_DIR
-from fly_in_visual.loader import graph_from_map
-from fly_in_visual.models import ZoneType
-from fly_in_visual.replay import build_replay, detect_id_base
+from flyin.tester.mapfile import MapError, parse_map, read_map
+from flyin.tester.runner import MAPS_DIR
+from flyin.visual.loader import graph_from_map
+from flyin.visual.models import ZoneType
+from flyin.visual.replay import build_replay, detect_id_base
 
 ROOT = Path(__file__).resolve().parent.parent
 NAIVE = ROOT / "examples" / "naive_solver.py"
@@ -144,7 +144,7 @@ class GuiTests(unittest.TestCase):
 
     def test_every_theme_turn_and_progress(self) -> None:
         """Frames render for all themes, also with ids from zero."""
-        from fly_in_visual.gui import GuiVisualizer
+        from flyin.visual.gui import GuiVisualizer
         fly_map = parse_map(MAP)
         for text in (VALID, "D0-s-r\nD0-r D1-p\nD0-e D1-e\n",
                      "D1-e D2-moon\nD2-e\n"):
@@ -159,7 +159,7 @@ class GuiTests(unittest.TestCase):
 
     def test_show_writes_screenshot(self) -> None:
         """``show`` checks, reports and saves a PNG."""
-        from fly_in_visual.cli import show
+        from flyin.visual.view import show
         map_path = self.dir / "map.txt"
         map_path.write_text(MAP, encoding="utf-8")
         png = self.dir / "frame.png"
@@ -174,7 +174,7 @@ class GuiTests(unittest.TestCase):
         """``view --cmd`` runs a program and shows its output."""
         png = self.dir / "naive.png"
         process = subprocess.run(
-            [sys.executable, "-m", "fly_in_tester", "view",
+            [sys.executable, "-m", "flyin", "view",
              str(MAPS_DIR / "provided" / "easy" / "01_linear_path.txt"),
              "--cmd", f"{sys.executable} {NAIVE} {{map}}",
              "--screenshot", str(png)],
