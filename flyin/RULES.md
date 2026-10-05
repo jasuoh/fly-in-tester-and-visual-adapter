@@ -7,6 +7,14 @@ an issue and say which sentence you base it on.
 
 `flyin rules` prints this page.
 
+The checker was compared with the independent validator of
+[42-fly-in-claude](https://github.com/jasuoh/42-fly-in-claude) on 4605
+solutions (valid ones and deliberately broken variants: moves dropped,
+moved to another turn, retargeted, duplicated, turns swapped or merged)
+on 119 maps: both gave the same verdict every time. That shows the two
+read the subject the same way; it cannot show that this reading is the
+only possible one.
+
 ## Output
 
 1. **One line per turn.** The number of turns is the number of turn lines.
@@ -68,5 +76,6 @@ an issue and say which sentence you base it on.
     with an integer linear program over the time-expanded graph; missing
     them is an optional warning.
 18. The **lower bound** shown for other maps is proven (see
-    `flyin/tester/bounds.py`) but not always reachable: being above it does
-    not mean a better solution exists.
+    `flyin/tester/bounds.py`: a relaxed flow over time) but not always
+    reachable: being above it does not mean a better solution exists. It
+    equals the optimum on 230 of the 305 maps where the optimum is known.

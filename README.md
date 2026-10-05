@@ -29,17 +29,12 @@ the menu:
 ```
 What do you want to do?
    1  Test all maps
-   2  Test one group
-   3  Watch maps (your program in the visualizer)
-   4  Watch the problems of the last test  (3)
-   5  Compare two solutions side by side
-   6  Watch an output file
-   7  Evaluation report (all maps + checklist)
-   8  History of your test runs
-   9  Generate a random map
-  10  List the maps
-  11  How flyin reads the subject (rules)
-  12  Settings
+   2  Watch maps (your program in the visualizer)
+   3  Watch the problems of the last test  (3)
+   4  Compare two solutions side by side
+   5  Evaluation report (all maps + checklist)
+   6  More ...    (one group, output file, history, random map, map list, rules)
+   7  Settings
    0  quit
 ```
 
@@ -48,9 +43,10 @@ Your answers are saved in `.flyin/` and can be changed under Settings.
 ## What it does for you
 
 - **Test**: every map is run and judged by an independent checker. Only
-  problems are listed; at the end a **score** sums your turns against the
-  exact optimum (where known) or a proven **lower bound**, so you see
-  where turns can still be won.
+  problems are listed. Every solved map shows the exact optimum (where
+  known) or a proven **lower bound**; the **score** says on how many maps
+  you reach it, how far off you are on average and where the most turns
+  can still be won.
 - **Watch**: your program runs on the maps you pick (one, `1,3,5`, `2-6`
   or `all`) and each solution plays in the visualizer.
 - **See the mistake**: an invalid solution opens paused on the first
@@ -74,32 +70,6 @@ Your answers are saved in `.flyin/` and can be changed under Settings.
 | ![invalid](docs/invalid.png) | ![compare](docs/compare.png) |
 
 That is all you need. The rest of this page is reference.
-
-## Watching your algorithm
-
-The visualizer plays **whatever your program prints**:
-
-- drone ids from `D0` or `D1`, debug prints and banners around the turns
-  are fine;
-- **invalid solutions are shown too**, so you can watch the mistake: an
-  overfull zone shows `3/2`, the title says `INVALID` and the terminal
-  lists every broken rule with its turn;
-- only what cannot be drawn at all (an unknown zone, a drone moving twice
-  in one turn) is left out and listed.
-
-| Key | |
-| --- | --- |
-| `Space` | play / pause |
-| `←` `→` | one turn back / forward |
-| `+` `-` | speed |
-| `R` | restart |
-| `T` | theme: `mission`, `blueprint`, `graphite`, `ashen` |
-| `E` | jump to the next broken rule (invalid solutions) |
-| mouse | drag the timeline, hover a zone for details |
-| `Esc` | close (with "problems": on to the next map) |
-
-No display (SSH, a server)? Save a picture instead:
-`python3 start.py show easy/01 --screenshot frame.png --turn 3`.
 
 ## Your own visual part is not ready yet?
 
@@ -138,30 +108,6 @@ path first: `sys.path.insert(0, "../flyin")`.
 > your own. Use flyin to debug your algorithm, not as the visual part you
 > hand in: it would be someone else's code in your project.
 
-## Without the menu
-
-Every menu entry is also a command (`python3 start.py ...`, or `flyin ...`
-after `pip install`, or `make ...`):
-
-| Command | |
-| --- | --- |
-| `setup [PROJECT] [--cmd "..."] [--output-file FILE]` | connect your project |
-| `test [WHAT ...] [-v] [--strict] [--show]` | all maps, a group (`challenge`, `fuzz`) or part of a name (`hard`); `-v` lists every map, not only problems |
-| `show MAP` | run your program on a map and watch it |
-| `show MAP OUTPUT` | watch an output file (`-` = stdin) |
-| `show --problems` | watch every map of the last test that failed or missed its target |
-| `compare MAP [A] [B]` | two solutions side by side; `now`, `last`, `previous` or a file (default `last now`) |
-| `eval [-o FILE]` | evaluation report (`flyin-report.md`) |
-| `history` | results of all earlier test runs |
-| `generate [--seed N] [--size 8x4] [--drones N]` | a random solvable map in `maps-generated/` |
-| `rules` | how flyin reads the subject |
-| `maps [WHAT]` | list the maps with their targets |
-| `check MAP OUTPUT` | check an output without watching |
-| `run --cmd "..." [options]` | the full tester for scripts and CI (`run --help`) |
-
-`MAP` is a file or a short name of a bundled map: `easy/01`,
-`city_grid`, `hard/03`.
-
 ## As a library
 
 ```sh
@@ -187,17 +133,7 @@ for o in outcomes:
     print(o.status, o.case.name, o.message)
 ```
 
-| Function | Returns |
-| --- | --- |
-| `check(map, output)` | `CheckResult`: `.valid`, `.errors`, `.turns`, `.moves` |
-| `show(map, output, theme=, screenshot=, turn=)` | `True` if valid; opens the window |
-| `compare(map, left, right, labels=, theme=, screenshot=, turn=)` | `True` if both valid; side by side |
-| `run(map, command, cwd=)` | `Outcome` of one map (`.status`, `.message`, `.output`) |
-| `test(command, cwd=, only=, timeout=, jobs=, strict_targets=)` | list of `Outcome` |
-| `maps(query=None)` / `find_map(name)` / `load_map(name)` | bundled maps |
-
-`output` is text, a list of turn lines, or a `Path`. A full example:
-`examples/use_as_library.py`.
+All functions: [docs/REFERENCE.md](docs/REFERENCE.md#library).
 
 ## What your program must do
 
@@ -212,68 +148,17 @@ If your program always opens a window, give it a flag like `--no-gui` and
 put that in the command, or copy `adapters/template.py` (three lines to
 fill in). Any language works: flyin only runs a command.
 
-<details>
-<summary><b>How a map is judged and what the checker verifies</b> (details in <a href="flyin/RULES.md">RULES.md</a>)</summary>
+## More
 
-| Map kind | Expected | Result |
-| --- | --- | --- |
-| **valid** | exit 0, no traceback, a solution the checker accepts | `PASS`; `WARN` above the target or ignoring a priority zone; else `FAIL` |
-| **invalid** | exit ≠ 0, no traceback, a message naming the line, **no** solution | `PASS`, else `FAIL` |
-
-`recommended` maps are debatable readings of the subject (tabs, a comment
-after a definition, ...): a deviation is only a `WARN`.
-
-A token is `D<id>-<zone>` or, for the two-turn flight into a restricted
-zone, `D<id>-<from>-<to>`. A solution fails when:
-
-- a drone acts twice in a turn, or a token is malformed;
-- ids are not `D0..D(n-1)` or `D1..Dn`;
-- a move uses a missing connection, enters a **blocked** zone, or enters a
-  **restricted** zone without the flight notation;
-- a drone in flight does not land in the **next** turn;
-- a zone holds more than `max_drones` at the end of a turn (start and end
-  are unlimited; leaving frees the place in the same turn);
-- a connection carries more than `max_link_capacity` drones in a turn;
-- a delivered drone moves again, a turn line is empty, or a drone never
-  reaches the end.
-
-</details>
-
-## The maps
-
-| Group | Maps | |
-| --- | --- | --- |
-| `provided` | 28 | the maps of the subject with their "≤ N turns" targets |
-| `provided-invalid` | 10 | their broken maps (must be rejected) |
-| `edge-valid` | 29 | comments, CRLF, negative coordinates, 10 000 drones, restricted chains, ... |
-| `edge-invalid` | 58 | every parser rule broken once, plus maps without a solution |
-| `challenge` | 5 | hard maps whose target is the **exact optimum** (integer linear program); optional |
-| `fuzz` | 300 | seeded random maps with their exact optimum; only when asked for (`flyin test fuzz`) |
-
-Your own map: `python3 start.py show path/to/map.txt` works with any file.
-
-## Development
-
-```sh
-make dev-test    # ~100 tests: checker, bounds, runner, replay, GUI (headless), commands
-make lint        # flake8 + mypy --strict
-```
-
-```
-start.py         starts flyin from this folder (uses .venv/ if present)
-flyin/           api.py      the library (check, show, run, test, maps)
-                 app.py      the flyin command        menu.py   the menu
-                 config.py   settings, last results, history in .flyin/
-                 report.py   the evaluation report
-                 RULES.md    how the subject is read
-                 tester/     map reader, checker, lower bounds, map generator,
-                             runner, full command line
-                 visual/     replay.py (any output -> playable), the pygame GUI
-                 maps/       the 430 maps and manifest.json
-examples/        naive_solver.py, use_as_library.py
-adapters/        template.py
-tests/
-```
+- [docs/REFERENCE.md](docs/REFERENCE.md): every command and option, the
+  visualizer keys, all library functions, how a map is judged, the map
+  groups, development.
+- [flyin/RULES.md](flyin/RULES.md): how flyin reads the open points of
+  the subject. The checker agrees with the independent validator of
+  [42-fly-in-claude](https://github.com/jasuoh/42-fly-in-claude) on 4605
+  deliberately broken solutions.
+- Tests: `make dev-test`; lint: `make lint`; CI runs both on Linux and
+  macOS.
 
 The visualizer comes from [42-fly-in-claude](https://github.com/jasuoh/42-fly-in-claude),
 the tester from [fly-in-tests](https://github.com/jasuoh/fly-in-tests). Fonts:

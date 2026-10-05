@@ -217,3 +217,43 @@ class CommandTests(InWorkdir):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MenuTests(InWorkdir):
+    """The interactive menu, driven with typed answers."""
+
+    def test_first_start_group_test_and_more(self) -> None:
+        """Setup on first start, a group test, history, quit."""
+        project = self.project()
+        answers = "\n".join([
+            str(project), f"{sys.executable} main.py {{map}}", "1",
+            "6", "1", "5", "n",      # More -> Test one group -> challenge
+            "6", "3",                # More -> History
+            "0", ""])
+        code, text = self.flyin(stdin=answers)
+        self.assertEqual(code, 0, text)
+        self.assertIn("First start", text)
+        self.assertIn("Works", text)
+        self.assertIn("[challenge]", text)
+        self.assertIn("5 maps", text)
+        self.assertIn("warn", text)
+
+    @unittest.skipUnless(sys.platform.startswith("linux"),
+                         "needs the no-display message of Linux")
+    def test_selection_of_several_maps(self) -> None:
+        """'Watch maps' with a range runs each map (no display here)."""
+        project = self.project()
+        config.save(config.Config(str(project),
+                                  f"{sys.executable} main.py {{map}}"))
+        os.environ.pop("SDL_VIDEODRIVER", None)
+        old = {k: os.environ.pop(k, None) for k in ("DISPLAY",
+                                                    "WAYLAND_DISPLAY")}
+        try:
+            code, text = self.flyin(stdin="2\n1\n1-2\n0\n")
+        finally:
+            for key, value in old.items():
+                if value is not None:
+                    os.environ[key] = value
+        self.assertEqual(code, 0, text)
+        self.assertIn("[1/2]", text)
+        self.assertIn("[2/2]", text)

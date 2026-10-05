@@ -72,16 +72,11 @@ class Menu:
         """Loop until the user quits."""
         actions = [
             ("Test all maps", self.test_all),
-            ("Test one group", self.test_group),
             ("Watch maps (your program in the visualizer)", self.watch),
             ("Watch the problems of the last test", self.watch_problems),
             ("Compare two solutions side by side", self.compare),
-            ("Watch an output file", self.watch_file),
             ("Evaluation report (all maps + checklist)", self.evaluate),
-            ("History of your test runs", do_history),
-            ("Generate a random map", self.generate),
-            ("List the maps", self.list_maps),
-            ("How flyin reads the subject (rules)", do_rules),
+            ("More ...", self.more),
             ("Settings", self.settings),
         ]
         while True:
@@ -94,7 +89,7 @@ class Menu:
             labels = [label for label, _ in actions]
             count = len(problems())
             if count:
-                labels[3] += f"  ({count})"
+                labels[2] += f"  ({count})"
             picked = choose("What do you want to do?", labels, back="quit")
             if picked is None:
                 return 0
@@ -139,6 +134,20 @@ class Menu:
             say(f"no file '{output}'", "bad")
             return
         do_show(self.cfg, ref, str(Path(output).expanduser()))
+
+    def more(self) -> None:
+        """The actions used less often."""
+        extras = [
+            ("Test one group", self.test_group),
+            ("Watch an output file", self.watch_file),
+            ("History of your test runs", do_history),
+            ("Generate a random map", self.generate),
+            ("List the maps", self.list_maps),
+            ("How flyin reads the subject (rules)", do_rules),
+        ]
+        picked = choose("More", [label for label, _ in extras])
+        if isinstance(picked, int):
+            extras[picked][1]()
 
     def compare(self) -> None:
         """Pick a map and two solutions, play them side by side."""
