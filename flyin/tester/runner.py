@@ -144,13 +144,18 @@ class Runner:
         self, case: Case, out_path: str
     ) -> subprocess.CompletedProcess[str]:
         """Run the command for ``case``."""
+        windows = os.name == "nt"
+        quote = (lambda text: f'"{text}"') if windows else shlex.quote
         command = self.command.replace("{name}", case.path.stem)
-        command = command.replace("{map}", shlex.quote(str(case.path)))
-        command = command.replace("{out}", shlex.quote(out_path))
+        command = command.replace("{map}", quote(str(case.path)))
+        command = command.replace("{out}", quote(out_path))
         env = dict(os.environ, SDL_VIDEODRIVER="dummy", PYTHONUNBUFFERED="1")
+        # Windows splits a command line itself (backslashes in paths would
+        # break shlex), so the string is passed through as it is.
+        shell = self.shell or windows
         return subprocess.run(
-            command if self.shell else shlex.split(command),
-            shell=self.shell, cwd=self.cwd, env=env, text=True,
+            command if shell else shlex.split(command),
+            shell=shell, cwd=self.cwd, env=env, text=True,
             errors="replace", capture_output=True, timeout=self.timeout,
             stdin=subprocess.DEVNULL,
         )

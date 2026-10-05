@@ -385,12 +385,12 @@ def do_maps(query: str | None = None) -> None:
 
 
 def do_generate(seed: int | None, size: str, drones: int,
-                out: str | None) -> int:
+                out: str | None, shape: str = "grid") -> int:
     """Write a random solvable map and say how to use it."""
     seed = random.randrange(1_000_000) if seed is None else seed
     try:
         width, height = (int(n) for n in size.lower().split("x"))
-        text = generate(seed, width, height, drones)
+        text = generate(seed, width, height, drones, shape)
     except ValueError as error:
         say(f"cannot generate: {error}", "bad")
         return 2
@@ -456,6 +456,7 @@ def build_parser() -> argparse.ArgumentParser:
                        "(default: random)")
     gen_p.add_argument("--size", default="6x3", help="WIDTHxHEIGHT")
     gen_p.add_argument("--drones", type=int, default=10)
+    gen_p.add_argument("--shape", choices=("grid", "random"), default="grid")
     gen_p.add_argument("-o", "--out", help="file (default: "
                        "maps-generated/seed_<seed>.txt)")
     sub.add_parser("check", help="check an output: flyin check MAP OUTPUT")
@@ -519,6 +520,7 @@ def _dispatch(args: argparse.Namespace) -> int:
         do_history()
         return 0
     if args.command == "generate":
-        return do_generate(args.seed, args.size, args.drones, args.out)
+        return do_generate(args.seed, args.size, args.drones, args.out,
+                           args.shape)
     do_maps(args.what)
     return 0

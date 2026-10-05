@@ -43,7 +43,7 @@ after `pip install`, or `make ...`):
 | `compare MAP [A] [B]` | two solutions side by side; `now`, `last`, `previous` or a file (default `last now`) |
 | `eval [-o FILE]` | evaluation report (`flyin-report.md`) |
 | `history` | results of all earlier test runs |
-| `generate [--seed N] [--size 8x4] [--drones N]` | a random solvable map in `maps-generated/` |
+| `generate [--seed N] [--size 8x4] [--drones N] [--shape grid\|random]` | a random solvable map in `maps-generated/` |
 | `rules` | how flyin reads the subject |
 | `maps [WHAT]` | list the maps with their targets |
 | `check MAP OUTPUT` | check an output without watching |

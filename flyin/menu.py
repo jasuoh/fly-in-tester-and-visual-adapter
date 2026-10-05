@@ -173,13 +173,15 @@ class Menu:
         """Write a random map and offer to watch it."""
         seed = ask("Seed (empty: random)")
         size = ask("Size WIDTHxHEIGHT", "6x3")
+        shape = "random" if ask("Shape: grid or random", "grid") \
+            .lower().startswith("r") else "grid"
         drones = ask("Drones", "10")
         if not drones.isdigit() or (seed and not seed.lstrip("-").isdigit()):
             say("seed and drones must be numbers", "bad")
             return
         path = Path(f"maps-generated/seed_{seed or 'random'}.txt")
         if do_generate(int(seed) if seed else None, size, int(drones),
-                       None if not seed else str(path)) != 0:
+                       None if not seed else str(path), shape) != 0:
             return
         latest = max(Path("maps-generated").glob("seed_*.txt"),
                      key=lambda p: p.stat().st_mtime)

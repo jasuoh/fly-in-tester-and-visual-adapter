@@ -77,6 +77,14 @@ class GenerateTests(unittest.TestCase):
             self.assertIn("# lower bound:", text)
             self.assertNotIn("?", text.splitlines()[1])
 
+    def test_random_shape(self) -> None:
+        """Scattered zones, also solvable and deterministic."""
+        for seed in range(10):
+            text = generate(seed, 4, 3, 10, "random")
+            self.assertEqual(text, generate(seed, 4, 3, 10, "random"))
+            self.assertTrue(has_route(parse_map(text)))
+            self.assertIn("12 scattered zones", text)
+
     def test_naive_solver_is_valid_on_generated_maps(self) -> None:
         """A sanity check of generator and checker together."""
         import subprocess
