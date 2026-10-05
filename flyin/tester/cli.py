@@ -70,19 +70,26 @@ def print_outcomes(outcomes: list[Outcome], color: bool = False,
 
 
 def score_line(outcomes: list[Outcome]) -> str:
-    """Summarise the turns of all valid solutions against the best
-    possible (the optimum where known, else the lower bound)."""
+    """Summarise the valid solutions against the best possible per map
+    (the exact optimum where known, else the lower bound).
+
+    The gap is averaged per map, so a map with 10 000 drones counts as
+    much as a map with 2.
+    """
     scored = [o for o in outcomes if o.turns and o.best
               and o.status != FAIL]
     if not scored:
         return ""
-    turns = sum(o.turns or 0 for o in scored)
-    best = sum(o.best or 0 for o in scored)
     at_best = sum(1 for o in scored if o.turns == o.best)
-    gap = 100 * (turns - best) / best if best else 0.0
-    return (f"Score: {turns} turns on {len(scored)} solved maps, at least "
-            f"{best} are needed (+{gap:.1f}%); at the optimum or lower "
-            f"bound on {at_best}/{len(scored)} maps")
+    gaps = [100 * ((o.turns or 0) - (o.best or 0)) / (o.best or 1)
+            for o in scored]
+    worst = max(scored, key=lambda o: (o.turns or 0) - (o.best or 0))
+    line = (f"Score: at the best possible on {at_best}/{len(scored)} "
+            f"solved maps, on average +{sum(gaps) / len(gaps):.1f}% turns")
+    if worst.turns != worst.best:
+        line += (f"; most to win: {worst.case.name} ({worst.turns} vs "
+                 f"{worst.best})")
+    return line
 
 
 def command_run(args: argparse.Namespace) -> int:
