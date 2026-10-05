@@ -17,7 +17,7 @@ from typing import Iterable, Union
 from flyin.tester.checker import CheckResult, check_solution
 from flyin.tester.mapfile import FlyMap, read_map
 from flyin.tester.runner import (
-    DEFAULT_GROUPS, GROUP_ORDER, MAPS_DIR, Case, Outcome, Runner,
+    DEFAULT_GROUPS, GROUP_ORDER, LOCAL_MAPS, MAPS_DIR, Case, Outcome, Runner,
     extract_turns, load_manifest,
 )
 
@@ -49,8 +49,9 @@ def find_map(ref: MapRef) -> Path:
     path = Path(ref)
     if path.is_file():
         return path
-    if (MAPS_DIR / path).is_file():
-        return MAPS_DIR / path
+    for folder in (MAPS_DIR, Path.cwd() / LOCAL_MAPS):
+        if (folder / path).is_file():
+            return folder / path
     if str(ref) in GROUP_ORDER:
         raise LookupError(f"{str(ref)!r} is a group, not one map")
     found = maps(str(ref))

@@ -11,7 +11,7 @@ from flyin.app import changes
 from flyin.tester.checker import check_solution
 from flyin.tester.generate import generate
 from flyin.tester.mapfile import has_route, parse_map
-from flyin.tester.runner import FAIL, PASS, WARN, Outcome
+from flyin.tester.runner import FAIL, PASS, WARN, Case, Outcome
 from flyin.visual.replay import build_replay
 from tests.test_flyin import NAIVE, InWorkdir, naive_output
 
@@ -104,7 +104,7 @@ class HistoryTests(InWorkdir):
 
     def test_changes_and_saved_outputs(self) -> None:
         """Better and worse lines; last and previous outputs."""
-        case = flyin.case_for("easy/02")
+        case = flyin.case_for("parallel_paths")
         first = Outcome(case, WARN, "slow", turns=9, output="D1-x\n")
         second = Outcome(case, PASS, "fast", turns=5, output="D1-y\n")
         config.save_run([first])
@@ -123,10 +123,37 @@ class HistoryTests(InWorkdir):
 
     def test_history_command(self) -> None:
         """Lists the runs."""
-        config.save_run([Outcome(flyin.case_for("easy/01"), PASS, "", 4)])
+        config.save_run([Outcome(flyin.case_for("fork_merge"), PASS, "", 4)])
         code, text = self.flyin("history")
         self.assertEqual(code, 0)
         self.assertIn("1 pass", text)
+
+
+class SubjectTests(InWorkdir):
+    """The subject's maps are imported, not shipped."""
+
+    def test_import_with_targets(self) -> None:
+        """Known names get their target; 'invalid' folders must fail."""
+        source = self.dir / "maps"
+        (source / "easy").mkdir(parents=True)
+        (source / "invalid").mkdir()
+        (source / "easy" / "01_linear_path.txt").write_text(MAP, "utf-8")
+        (source / "easy" / "99_mine.txt").write_text(MAP, "utf-8")
+        (source / "invalid" / "broken.txt").write_text("nb_drones: x\n")
+        code, text = self.flyin("import-maps", str(source))
+        self.assertEqual(code, 0, text)
+        self.assertIn("Imported 3 maps (1 with", text)
+        cases = {c.name: c for c in flyin.maps("subject/")}
+        self.assertEqual(cases["subject/easy/01_linear_path.txt"].target, 6)
+        self.assertIsNone(cases["subject/easy/99_mine.txt"].target)
+        self.assertEqual(cases["subject/invalid/broken.txt"].expect,
+                         "error")
+        self.assertTrue(flyin.find_map("easy/01").is_file())
+
+    def test_nothing_shipped(self) -> None:
+        """No subject map is bundled with flyin."""
+        self.assertEqual(flyin.maps("subject"), [])
+        self.assertFalse(any("linear_path" in c.name for c in flyin.maps()))
 
 
 class ReportTests(unittest.TestCase):
@@ -134,13 +161,17 @@ class ReportTests(unittest.TestCase):
 
     def test_checklist_and_markdown(self) -> None:
         """A crash and a missed target show up."""
-        crash = Outcome(flyin.case_for("easy/01"), FAIL,
+        crash = Outcome(flyin.case_for("fork_merge"), FAIL,
                         "printed a traceback: boom")
-        slow = Outcome(flyin.case_for("easy/02"), WARN,
-                       "valid, but 9 turns", turns=9)
+        slow = Outcome(Case(Path("x.txt"), "subject/easy/01.txt", "subject",
+                            "solve", target=6), WARN, "valid, but 9 turns",
+                       turns=9)
         rows = {r[1]: r[0] for r in report.checklist([crash, slow])}
         self.assertFalse(rows["No crash, no traceback"])
         self.assertFalse(rows["Turn targets of the subject are met"])
+        details = {r[1]: r[2] for r in report.checklist([crash])}
+        self.assertIn("not imported", details["Turn targets of the subject "
+                                              "are met"])
         self.assertTrue(rows["No timeout"])
         text = report.build([crash, slow], "/p", "cmd {map}")
         self.assertIn("# Fly-In evaluation report", text)
@@ -163,15 +194,15 @@ class CommandTests(InWorkdir):
         """Two files side by side, one of them invalid."""
         os.environ["SDL_VIDEODRIVER"] = "dummy"
         good = self.dir / "good.txt"
-        good.write_text(naive_output("easy/03"), "utf-8")
+        good.write_text(naive_output("fork_merge"), "utf-8")
         bad = self.dir / "bad.txt"
-        bad.write_text("D1-bottleneck D2-bottleneck D3-bottleneck\n")
+        bad.write_text("D1-l D2-l D3-l\n")
         png = self.dir / "pair.png"
-        code, text = self.flyin("compare", "easy/03", str(good), str(bad),
+        code, text = self.flyin("compare", "fork_merge", str(good), str(bad),
                                 "--screenshot", str(png), "--turn", "1")
         self.assertEqual(code, 1, text)
         self.assertTrue(png.is_file())
-        code, text = self.flyin("compare", "easy/03", "last", "now")
+        code, text = self.flyin("compare", "fork_merge", "last", "now")
         self.assertEqual(code, 2)
         self.assertIn("test it once first", text)
 

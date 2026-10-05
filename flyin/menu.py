@@ -1,100 +1,112 @@
-"""The interactive menu of ``flyin``: pick a number, press Enter."""
+"""The interactive menu of ``flyin``.
 
+In a terminal: arrow keys, Enter, Space to mark several maps, typing to
+filter. Elsewhere: numbers (see :mod:`flyin.ui`).
+"""
+
+import shutil
+from collections import Counter
 from pathlib import Path
+from typing import Callable
 
-from flyin import api, config
+from flyin import api, config, subject
 from flyin.app import (
-    SOURCES, THEMES, ask, do_compare, do_eval, do_generate, do_history,
-    do_maps, do_rules, do_show, do_show_problems, do_test, need_config,
-    problems, say, setup,
+    THEMES, ask, do_compare, do_eval, do_generate, do_history, do_maps,
+    do_rules, do_show, do_show_problems, do_test, need_config, problems,
+    say, setup,
 )
 from flyin.config import Config
-from flyin.tester.runner import GROUP_ORDER
+from flyin.tester.runner import FAIL, GROUP_ORDER, PASS, WARN, Case
+from flyin.ui import Item, paint, pick, selection
+
+__all__ = ["Menu", "selection"]
 
 GROUP_TEXT = {
-    "provided": "the maps of the subject, with their turn targets",
-    "provided-invalid": "the broken maps of the subject (must be rejected)",
-    "edge-valid": "tricky but valid maps",
+    "subject": "the subject's maps from your project, with their targets",
+    "subject-invalid": "the subject's broken maps (must be rejected)",
+    "extra": "more hand-made maps: capacity, deadlocks, mazes",
+    "extra-invalid": "more broken maps (must be rejected)",
+    "edge-valid": "tricky but valid input: comments, CRLF, 10 000 drones",
     "edge-invalid": "every parser rule broken once (must be rejected)",
     "challenge": "hard maps, target = exact optimum (optional)",
     "fuzz": "300 random maps with their exact optimum (optional)",
 }
+STATUS = {PASS: ("✓", "ok"), WARN: ("!", "warn"), FAIL: ("✗", "bad")}
+Action = Callable[[], None]
 
 
-def choose(title: str, options: list[str], allow_text: bool = False,
-           back: str = "back") -> int | str | None:
-    """Show numbered options; return the index, typed text, or None."""
-    say(f"\n{title}", "bold")
-    for number, option in enumerate(options, 1):
-        print(f"  {number:>2}  {option}")
-    print(f"   0  {back}")
-    hint = "number" + (" or part of a name" if allow_text else "")
-    answer = ask(f"Choose ({hint})")
-    if answer in ("", "0", "q"):
-        return None
-    if answer.isdigit() and 1 <= int(answer) <= len(options):
-        return int(answer) - 1
-    if allow_text:
-        return answer
-    say("not a choice", "bad")
-    return None
-
-
-def selection(text: str, count: int) -> list[int] | None:
-    """Parse ``all``, ``1,3,5`` or ``2-6`` into 0-based indexes.
-
-    Returns None if ``text`` is not a selection (e.g. a map name).
-    """
-    text = text.replace(" ", "")
-    if text.lower() == "all":
-        return list(range(count))
-    indexes: list[int] = []
-    for part in text.split(","):
-        first, dash, last = part.partition("-")
-        if not first.isdigit() or (dash and not last.isdigit()):
-            return None
-        stop = int(last) if dash else int(first)
-        for number in range(int(first), stop + 1):
-            if 1 <= number <= count and number - 1 not in indexes:
-                indexes.append(number - 1)
-    return indexes or None
+def output_text(cfg: Config) -> str:
+    """Say where the solution is read from."""
+    if cfg.output_file:
+        return f"file {cfg.output_file}"
+    return "file {out}" if "{out}" in cfg.command else "terminal"
 
 
 class Menu:
-    """Main loop: shows the project, offers every action."""
+    """Main loop: a status box and the actions."""
 
     def __init__(self) -> None:
         """Load the settings (the setup runs on the first start)."""
-        say("flyin: Fly-In tester & visualizer", "bold")
         self.cfg: Config = need_config()
+
+    # main loop ----------------------------------------------------------
 
     def run(self) -> int:
         """Loop until the user quits."""
-        actions = [
-            ("Test all maps", self.test_all),
-            ("Watch maps (your program in the visualizer)", self.watch),
-            ("Watch the problems of the last test", self.watch_problems),
-            ("Compare two solutions side by side", self.compare),
-            ("Evaluation report (all maps + checklist)", self.evaluate),
-            ("More ...", self.more),
-            ("Settings", self.settings),
-        ]
         while True:
-            say(f"\nProject: {self.cfg.project}", "dim")
-            say(f"Command: {self.cfg.command}", "dim")
-            say("Output:  " + (f"file {self.cfg.output_file}"
-                               if self.cfg.output_file else
-                               "file {out}" if "{out}" in self.cfg.command
-                               else "terminal"), "dim")
-            labels = [label for label, _ in actions]
+            self.header()
             count = len(problems())
-            if count:
-                labels[2] += f"  ({count})"
-            picked = choose("What do you want to do?", labels, back="quit")
-            if picked is None:
+            actions: list[tuple[Item, Action]] = [
+                (Item("Test all maps", "every map, problems listed"),
+                 self.test_all),
+                (Item("Watch maps", "your program in the visualizer"),
+                 self.watch),
+                (Item("Watch the problems of the last test",
+                      f"{count} maps" if count else "none",
+                      "●" if count else "", "warn"), self.watch_problems),
+                (Item("Compare two solutions", "side by side, in sync"),
+                 self.compare),
+                (Item("Evaluation report", "checklist + every problem"),
+                 self.evaluate),
+                (Item("More …", "one group, history, random map, rules, "
+                      "subject maps"), self.more),
+                (Item("Settings", "project, command, output, theme"),
+                 self.settings),
+            ]
+            chosen = pick("What do you want to do?",
+                          [item for item, _ in actions], back="quit")
+            if chosen is None:
                 return 0
-            assert isinstance(picked, int)
-            actions[picked][1]()
+            actions[chosen[0]][1]()
+
+    def header(self) -> None:
+        """Print a box with the project and the last test."""
+        cfg = self.cfg
+        rows = [("project", cfg.project),
+                ("command", f"{cfg.command}   ({output_text(cfg)})")]
+        runs = config.history()
+        if runs:
+            counts = Counter(r[0] for r in runs[-1]["results"].values())
+            rows.append(("last test", f"{runs[-1].get('time', '?')} · "
+                         f"{counts[PASS]} pass · {counts[WARN]} warn · "
+                         f"{counts[FAIL]} fail"))
+        imported = subject.imported()
+        rows.append(("subject maps", f"{imported} imported" if imported else
+                     "not imported (More … → Import)"))
+        rows = [(k, v.replace(str(Path.home()), "~")) for k, v in rows]
+        width = min(shutil.get_terminal_size().columns - 2,
+                    max(13 + len(v) for _, v in rows) + 4)
+        title = " flyin · Fly-In tester & visualizer "
+        print()
+        print(paint("╭─" + title + "─" * max(0, width - len(title) - 3)
+                    + "╮", "accent"))
+        room = width - 17
+        for key, value in rows:
+            if len(value) > room:
+                value = value[:room - 1] + "…"
+            print(paint("│ ", "accent") + paint(f"{key:<13}", "dim")
+                  + value.ljust(room) + paint(" │", "accent"))
+        print(paint("╰" + "─" * (width - 2) + "╯", "accent"))
 
     # actions ----------------------------------------------------------
 
@@ -128,42 +140,68 @@ class Menu:
         refs = self._pick_maps(several=False)
         if not refs:
             return
-        ref = refs[0]
-        output = ask("Output file")
-        if not Path(output).expanduser().is_file():
+        output = Path(ask("Output file")).expanduser()
+        if not output.is_file():
             say(f"no file '{output}'", "bad")
             return
-        do_show(self.cfg, ref, str(Path(output).expanduser()))
+        do_show(self.cfg, refs[0], str(output))
 
     def more(self) -> None:
         """The actions used less often."""
-        extras = [
-            ("Test one group", self.test_group),
-            ("Watch an output file", self.watch_file),
-            ("History of your test runs", do_history),
-            ("Generate a random map", self.generate),
-            ("List the maps", self.list_maps),
-            ("How flyin reads the subject (rules)", do_rules),
+        extras: list[tuple[Item, Action]] = [
+            (Item("Import the subject maps", "from your project, with "
+                  "the targets"), self.import_subject),
+            (Item("Test one group", "e.g. only the challenge maps"),
+             self.test_group),
+            (Item("Watch an output file", "a solution saved earlier"),
+             self.watch_file),
+            (Item("History of your test runs", "better or worse over "
+                  "time"), do_history),
+            (Item("Generate a random map", "solvable, with its lower "
+                  "bound"), self.generate),
+            (Item("List the maps", "with targets"), self.list_maps),
+            (Item("How flyin reads the subject", "the rules"), do_rules),
         ]
-        picked = choose("More", [label for label, _ in extras])
-        if isinstance(picked, int):
-            extras[picked][1]()
+        chosen = pick("More", [item for item, _ in extras])
+        if chosen is not None:
+            extras[chosen[0]][1]()
+
+    def import_subject(self) -> None:
+        """Copy the subject's maps from a folder of the project."""
+        default = Path(self.cfg.project) / "maps"
+        folder = Path(ask("Folder with the subject maps",
+                          str(default))).expanduser()
+        found = subject.find_maps(folder)
+        if not found:
+            say(f"no .txt maps in {folder}", "bad")
+            return
+        count, targets = subject.import_maps(folder)
+        say(f"Imported {count} maps ({targets} with the subject's target) "
+            f"into {config.state_dir() / 'maps'}", "ok")
 
     def compare(self) -> None:
         """Pick a map and two solutions, play them side by side."""
         refs = self._pick_maps(several=False)
         if not refs:
             return
-        say("A solution is: now (run your program), last / previous (the "
-            "outputs of your last two tests) or a file.", "dim")
-        left = ask("Left", "last")
-        right = ask("Right", "now")
-        for side in (left, right):
-            if side not in SOURCES and not Path(side).expanduser().is_file():
-                say(f"'{side}' is neither {', '.join(SOURCES)} nor a file",
-                    "bad")
+        sources = [Item("now", "run your program now"),
+                   Item("last", "output of your last test"),
+                   Item("previous", "output of the test before"),
+                   Item("a file …", "a saved solution")]
+        sides = []
+        for side, default in (("Left", 1), ("Right", 0)):
+            ordered = sources[default:] + sources[:default]
+            chosen = pick(f"{side} side", ordered)
+            if chosen is None:
                 return
-        do_compare(self.cfg, refs[0], left, right)
+            name = ordered[chosen[0]].label
+            if name == "a file …":
+                name = str(Path(ask(f"{side} file")).expanduser())
+                if not Path(name).is_file():
+                    say(f"no file '{name}'", "bad")
+                    return
+            sides.append(name)
+        do_compare(self.cfg, refs[0], sides[0], sides[1])
 
     def evaluate(self) -> None:
         """Test everything and write the report."""
@@ -173,15 +211,17 @@ class Menu:
         """Write a random map and offer to watch it."""
         seed = ask("Seed (empty: random)")
         size = ask("Size WIDTHxHEIGHT", "6x3")
-        shape = "random" if ask("Shape: grid or random", "grid") \
-            .lower().startswith("r") else "grid"
+        shapes = [Item("grid", "zones on a grid"),
+                  Item("random", "zones scattered, nearest neighbours")]
+        shape = pick("Shape", shapes)
         drones = ask("Drones", "10")
         if not drones.isdigit() or (seed and not seed.lstrip("-").isdigit()):
             say("seed and drones must be numbers", "bad")
             return
         path = Path(f"maps-generated/seed_{seed or 'random'}.txt")
         if do_generate(int(seed) if seed else None, size, int(drones),
-                       None if not seed else str(path), shape) != 0:
+                       None if not seed else str(path),
+                       shapes[shape[0]].label if shape else "grid") != 0:
             return
         latest = max(Path("maps-generated").glob("seed_*.txt"),
                      key=lambda p: p.stat().st_mtime)
@@ -196,24 +236,27 @@ class Menu:
             do_maps(group or None)
 
     def settings(self) -> None:
-        """Change project and command, theme, timeout or parallel jobs."""
+        """Change project, command, output, theme, timeout or jobs."""
         cfg = self.cfg
-        picked = choose("Settings", [
-            f"Project and command   {cfg.project}  |  {cfg.command}",
-            f"Visualizer theme      {cfg.theme}",
-            f"Seconds per map       {cfg.timeout:g}",
-            f"Maps in parallel      {cfg.jobs}",
+        chosen = pick("Settings", [
+            Item("Project, command and output",
+                 f"{cfg.command} ({output_text(cfg)})"),
+            Item("Visualizer theme", cfg.theme),
+            Item("Seconds per map", f"{cfg.timeout:g}"),
+            Item("Maps in parallel", str(cfg.jobs)),
         ])
-        if picked == 0:
+        if chosen is None:
+            return
+        if chosen[0] == 0:
             self.cfg = setup() or cfg
             return
-        if picked == 1:
-            theme = choose("Theme", list(THEMES))
-            if isinstance(theme, int):
-                cfg.theme = THEMES[theme]
-        elif picked == 2:
+        if chosen[0] == 1:
+            theme = pick("Theme", [Item(t) for t in THEMES])
+            if theme is not None:
+                cfg.theme = THEMES[theme[0]]
+        elif chosen[0] == 2:
             cfg.timeout = self._number("Seconds per map", cfg.timeout)
-        elif picked == 3:
+        else:
             cfg.jobs = max(1, int(self._number("Maps in parallel",
                                                cfg.jobs)))
         config.save(cfg)
@@ -223,62 +266,64 @@ class Menu:
     def _offer_problems(self) -> None:
         """After a test, offer to watch the problem maps."""
         if problems() and ask("Watch the problem maps now? (y/n)",
-                              "n").lower().startswith("y"):
+                              "n").lower().startswith(("y", "j")):
             do_show_problems(self.cfg)
+
+    @staticmethod
+    def _groups(solvable_only: bool = False) -> list[str]:
+        """Return the groups that have maps here."""
+        present = {c.group for c in api.maps()}
+        return [g for g in GROUP_ORDER if g in present
+                and not (solvable_only and "invalid" in g)]
 
     def _pick_group(self, all_option: bool = False) -> str | None:
         """Return a group name ('' for all), or None."""
-        options = [f"{g:<17} {GROUP_TEXT[g]}" for g in GROUP_ORDER]
+        groups = self._groups()
+        counts = Counter(c.group for c in api.maps())
+        items = [Item(g, f"{counts[g]:>3}  {GROUP_TEXT.get(g, '')}")
+                 for g in groups]
         if all_option:
-            options.append("all")
-        picked = choose("Which group?", options)
-        if not isinstance(picked, int):
+            items.append(Item("all", f"{sum(counts.values()):>3}"))
+        chosen = pick("Which group?", items)
+        if chosen is None:
             return None
-        return GROUP_ORDER[picked] if picked < len(GROUP_ORDER) else ""
+        return groups[chosen[0]] if chosen[0] < len(groups) else ""
 
     def _pick_maps(self, several: bool = True) -> list[str]:
-        """Return map paths: by group and number(s), by name or a file."""
-        groups = [g for g in GROUP_ORDER if "invalid" not in g]
-        picked = choose("Which map?", [f"from group '{g}'" for g in groups]
-                        + ["a map file of my own"], allow_text=True)
-        if picked is None:
+        """Return map paths: a group and its maps, or a file."""
+        groups = self._groups(solvable_only=True)
+        counts = Counter(c.group for c in api.maps())
+        items = [Item(g, f"{counts[g]:>3}  {GROUP_TEXT.get(g, '')}")
+                 for g in groups] + [Item("a map file of my own …")]
+        chosen = pick("Which maps?", items)
+        if chosen is None:
             return []
-        if isinstance(picked, str):
-            return self._by_name(picked)
-        if picked == len(groups):
+        if chosen[0] == len(groups):
             path = Path(ask("Map file")).expanduser()
             if not path.is_file():
                 say(f"no file '{path}'", "bad")
                 return []
             return [str(path)]
-        order = ["easy", "medium", "hard", "challenger", "critical"]
-        cases = sorted(api.maps(groups[picked]), key=lambda c: (
-            next((i for i, word in enumerate(order) if f"/{word}/" in
-                  f"/{c.name}"), len(order)), c.name))
-        if several:
-            say("One number, several (1,3,5), a range (2-6) or 'all'.",
-                "dim")
-        chosen = choose(f"Maps in '{groups[picked]}'", [
-            c.name.split("/", 1)[-1] + (f"   (target {c.target})"
-                                        if c.target else "")
-            for c in cases], allow_text=True)
-        if isinstance(chosen, int):
-            return [str(cases[chosen].path)]
-        if chosen is None:
-            return []
-        numbers = selection(chosen, len(cases)) if several else None
-        if numbers:
-            return [str(cases[i].path) for i in numbers]
-        return self._by_name(chosen)
+        cases = self._sorted(api.maps(groups[chosen[0]]))
+        status = {r["map"]: r["status"] for r in config.last_run()}
+        rows = []
+        for case in cases:
+            mark, color = STATUS.get(status.get(case.name, ""), ("·", "dim"))
+            hint = f"optimum {case.optimum}" if case.optimum else \
+                f"target {case.target}" if case.target else ""
+            rows.append(Item(case.name.split("/", 1)[-1], hint, mark,
+                             color))
+        picked = pick(f"Maps in {groups[chosen[0]]}", rows, multi=several,
+                      filterable=True)
+        return [str(cases[i].path) for i in picked or []]
 
     @staticmethod
-    def _by_name(text: str) -> list[str]:
-        """Resolve a typed name; list the candidates if it is ambiguous."""
-        try:
-            return [str(api.find_map(text))]
-        except LookupError as error:
-            say(str(error), "bad")
-            return []
+    def _sorted(cases: list[Case]) -> list[Case]:
+        """Order maps from easy to hard where the name says so."""
+        order = ["easy", "medium", "hard", "challenger", "critical"]
+        return sorted(cases, key=lambda c: (
+            next((i for i, word in enumerate(order) if f"/{word}/" in
+                  f"/{c.name}"), len(order)), c.name))
 
     @staticmethod
     def _number(question: str, current: float) -> float:

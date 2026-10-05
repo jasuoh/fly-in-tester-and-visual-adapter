@@ -35,7 +35,7 @@ def my_solver(map_path: Path) -> list[str]:
 
 
 if __name__ == "__main__":
-    map_path = flyin.find_map("easy/02")      # a short name or any file
+    map_path = flyin.find_map("fork_merge")   # a short name or any file
     turns = my_solver(map_path)
 
     result = flyin.check(map_path, turns)     # every rule of the subject

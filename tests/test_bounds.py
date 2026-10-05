@@ -20,22 +20,24 @@ class BoundTests(unittest.TestCase):
                 assert bound is not None and case.optimum is not None
                 self.assertLessEqual(bound, case.optimum)
 
-    def test_flow_bound_is_tight_on_the_maze(self) -> None:
-        """The simple limits say 10, the flow over time 14 (reachable)."""
-        path = MAPS_DIR / "provided/hard/01_maze_nightmare.txt"
-        fly_map = read_map(path)
-        self.assertEqual(simple_bound(fly_map), 10)
-        self.assertEqual(lower_bound(fly_map), 14)
+    def test_flow_bound_beats_the_simple_limits(self) -> None:
+        """City grid: simple limits 29, flow over time 43, optimum 51."""
+        fly_map = read_map(MAPS_DIR / "challenge/04_city_grid.txt")
+        self.assertEqual(simple_bound(fly_map), 29)
+        self.assertEqual(lower_bound(fly_map), 43)
 
     def test_huge_maps_fall_back(self) -> None:
         """Too big for the flow: the simple bound is used."""
-        path = MAPS_DIR / "provided/hard/01_maze_nightmare.txt"
+        path = MAPS_DIR / "challenge/04_city_grid.txt"
         self.assertIsNone(flow_bound(read_map(path), 1, max_nodes=10))
 
-    def test_challenger_is_43(self) -> None:
-        """One drone per turn leaves the start, the route takes 19."""
-        path = MAPS_DIR / "provided/challenger/01_the_impossible_dream.txt"
-        self.assertEqual(lower_bound(read_map(path)), 43)
+    def test_single_exit_from_the_start(self) -> None:
+        """One drone per turn leaves the start: n - 1 + distance."""
+        text = ("nb_drones: 25\nstart_hub: s 0 0\nhub: a 1 0\nhub: b 2 0 "
+                "[max_drones=9]\nend_hub: e 3 0\nconnection: s-a\n"
+                "connection: a-b [max_link_capacity=9]\n"
+                "connection: b-e [max_link_capacity=9]\n")
+        self.assertEqual(lower_bound(parse_map(text)), 24 + 3)
 
     def test_end_side_and_unsolvable(self) -> None:
         """A narrow entrance to the end; no route at all."""

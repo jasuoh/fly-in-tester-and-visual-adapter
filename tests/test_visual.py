@@ -175,7 +175,7 @@ class GuiTests(unittest.TestCase):
         png = self.dir / "naive.png"
         process = subprocess.run(
             [sys.executable, "-m", "flyin", "view",
-             str(MAPS_DIR / "provided" / "easy" / "01_linear_path.txt"),
+             str(MAPS_DIR / "edge" / "valid" / "fork_merge_bottleneck.txt"),
              "--cmd", f"{sys.executable} {NAIVE} {{map}}",
              "--screenshot", str(png)],
             cwd=ROOT, capture_output=True, text=True, timeout=120,
@@ -188,9 +188,9 @@ class GuiTests(unittest.TestCase):
 class NaiveSolverTests(unittest.TestCase):
     """The example solver is valid on every map it must solve."""
 
-    def test_valid_on_provided_and_challenge_maps(self) -> None:
+    def test_valid_on_extra_and_challenge_maps(self) -> None:
         """Slow but correct."""
-        for group in ("provided", "challenge"):
+        for group in ("extra", "challenge"):
             for path in sorted((MAPS_DIR / group).rglob("*.txt")):
                 if "invalid" in path.parts:
                     continue

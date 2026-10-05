@@ -2,194 +2,168 @@
   "version": 1,
   "maps": [
     {
-      "path": "provided/challenger/01_the_impossible_dream.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 44,
-      "optional_target": true,
-      "note": "optional: beat the record of 45 turns"
-    },
-    {
-      "path": "provided/critical/01_restricted_gate_contention.txt",
-      "group": "provided",
+      "path": "extra/critical/01_restricted_gate_contention.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/critical/02_conveyor_chain.txt",
-      "group": "provided",
+      "path": "extra/critical/02_conveyor_chain.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/critical/03_link_vs_zone_capacity.txt",
-      "group": "provided",
+      "path": "extra/critical/03_link_vs_zone_capacity.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/critical/04_symmetric_deadlock_risk.txt",
-      "group": "provided",
+      "path": "extra/critical/04_symmetric_deadlock_risk.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/easy/01_linear_path.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 6
-    },
-    {
-      "path": "provided/easy/02_simple_fork.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 6
-    },
-    {
-      "path": "provided/easy/03_basic_capacity.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 8
-    },
-    {
-      "path": "provided/extra/01_complex_maze.txt",
-      "group": "provided",
+      "path": "extra/misc/01_complex_maze.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/02_connection_check.txt",
-      "group": "provided",
+      "path": "extra/misc/02_connection_check.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/03_challenge_x3.txt",
-      "group": "provided",
+      "path": "extra/misc/03_challenge_x3.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/04_simple_fork_two_paths.txt",
-      "group": "provided",
+      "path": "extra/misc/04_simple_fork_two_paths.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/05_single_capacity_choke.txt",
-      "group": "provided",
+      "path": "extra/misc/05_single_capacity_choke.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/06_oscillation_trap.txt",
-      "group": "provided",
+      "path": "extra/misc/06_oscillation_trap.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/07_priority_tiebreak.txt",
-      "group": "provided",
+      "path": "extra/misc/07_priority_tiebreak.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/08_restricted_capacity_relay.txt",
-      "group": "provided",
+      "path": "extra/misc/08_restricted_capacity_relay.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/09_massive_capacity_sanity.txt",
-      "group": "provided",
+      "path": "extra/misc/09_massive_capacity_sanity.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/10_direct_adjacency.txt",
-      "group": "provided",
+      "path": "extra/misc/10_direct_adjacency.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/11_trivial_chain.txt",
-      "group": "provided",
+      "path": "extra/misc/11_trivial_chain.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/12_dead_end_decoy.txt",
-      "group": "provided",
+      "path": "extra/misc/12_dead_end_decoy.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/13_equal_cost_paths.txt",
-      "group": "provided",
+      "path": "extra/misc/13_equal_cost_paths.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/14_shorter_path_preference.txt",
-      "group": "provided",
+      "path": "extra/misc/14_shorter_path_preference.txt",
+      "group": "extra",
       "expect": "solve"
     },
     {
-      "path": "provided/extra/invalid/01_missing_nb_drones.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/01_missing_nb_drones.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "note": "nb_drones line is missing"
     },
     {
-      "path": "provided/extra/invalid/02_undefined_zone_reference.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/02_undefined_zone_reference.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "line": 7,
       "note": "unknown zone"
     },
     {
-      "path": "provided/extra/invalid/03_duplicate_zone_name.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/03_duplicate_zone_name.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "line": 6,
       "note": "zone defined twice"
     },
     {
-      "path": "provided/extra/invalid/04_invalid_zone_type.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/04_invalid_zone_type.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "line": 5,
       "note": "unknown zone type"
     },
     {
-      "path": "provided/extra/invalid/05_unreachable_goal.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/05_unreachable_goal.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "unsolvable",
       "note": "no route to the goal"
     },
     {
-      "path": "provided/extra/invalid/06_zero_capacity_zone.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/06_zero_capacity_zone.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "line": 6,
       "note": "max_drones=0"
     },
     {
-      "path": "provided/extra/invalid/07_zero_drones.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/07_zero_drones.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "line": 2,
       "note": "nb_drones is 0"
     },
     {
-      "path": "provided/extra/invalid/08_malformed_line.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/08_malformed_line.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "line": 5,
       "note": "line without ':'"
     },
     {
-      "path": "provided/extra/invalid/09_duplicate_connection.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/09_duplicate_connection.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "line": 11,
       "note": "a-b then b-a"
     },
     {
-      "path": "provided/extra/invalid/10_dash_in_zone_name.txt",
-      "group": "provided-invalid",
+      "path": "extra/invalid/10_dash_in_zone_name.txt",
+      "group": "extra-invalid",
       "expect": "error",
       "reason": "syntax",
       "line": [
@@ -198,42 +172,6 @@
         10
       ],
       "note": "dash in a name"
-    },
-    {
-      "path": "provided/hard/01_maze_nightmare.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 45
-    },
-    {
-      "path": "provided/hard/02_capacity_hell.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 60
-    },
-    {
-      "path": "provided/hard/03_ultimate_challenge.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 35
-    },
-    {
-      "path": "provided/medium/01_dead_end_trap.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 15
-    },
-    {
-      "path": "provided/medium/02_circular_loop.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 20
-    },
-    {
-      "path": "provided/medium/03_priority_puzzle.txt",
-      "group": "provided",
-      "expect": "solve",
-      "target": 12
     },
     {
       "path": "edge/valid/single_drone_linear.txt",

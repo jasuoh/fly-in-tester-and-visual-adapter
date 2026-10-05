@@ -15,11 +15,11 @@ class ManifestTests(unittest.TestCase):
         self.cases = load_manifest()
 
     def test_not_empty_and_groups(self) -> None:
-        """All six groups exist."""
+        """All bundled groups exist (the subject maps are not shipped)."""
         self.assertGreater(len(self.cases), 100)
         self.assertEqual(
             {c.group for c in self.cases},
-            {"provided", "provided-invalid", "edge-valid", "edge-invalid",
+            {"extra", "extra-invalid", "edge-valid", "edge-invalid",
              "challenge", "fuzz"})
 
     def test_files_exist_and_none_are_orphaned(self) -> None:

@@ -69,7 +69,8 @@ only possible one.
 
 ## Targets and scores
 
-16. The `provided` targets are the "≤ N turns" values of the subject; more
+16. The `subject` targets are the "≤ N turns" values of the subject (the
+    subject's maps are imported from your project, not shipped); more
     turns is a warning (`--strict` makes it a failure). The challenger
     target 44 (beat the record of 45) is optional.
 17. `challenge` and `fuzz` targets are the **exact optimum**, computed once

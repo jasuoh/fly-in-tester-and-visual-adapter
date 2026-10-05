@@ -9,7 +9,7 @@ visualizer and then beat it with your own algorithm.
 To watch it in the visualizer:
 
     python3 start.py setup examples --cmd "python3 naive_solver.py {map}"
-    python3 start.py show easy/01
+    python3 start.py show city_grid
 
 It does not validate maps, so it fails most ``edge-invalid`` maps.
 """

@@ -20,10 +20,13 @@ TURN_LINE = re.compile(r"^D\d+-\S+(?: D\d+-\S+)*$")
 TRACEBACK = re.compile(r"Traceback \(most recent call last\)")
 
 PASS, WARN, FAIL = "PASS", "WARN", "FAIL"
-GROUP_ORDER = ("provided", "provided-invalid", "edge-valid", "edge-invalid",
-               "challenge", "fuzz")
+GROUP_ORDER = ("subject", "subject-invalid", "extra", "extra-invalid",
+               "edge-valid", "edge-invalid", "challenge", "fuzz")
 # Groups a plain "test everything" runs; fuzz (300 maps) only on request.
 DEFAULT_GROUPS = GROUP_ORDER[:-1]
+# The subject's own maps are not shipped; ``flyin import-maps`` copies
+# them from your project into this folder (relative to where flyin runs).
+LOCAL_MAPS = Path(".flyin") / "maps"
 
 
 @dataclass(frozen=True)
@@ -64,10 +67,27 @@ class Outcome:
 
 
 def load_manifest(maps_dir: Path = MAPS_DIR) -> list[Case]:
-    """Load every case described in ``maps_dir/manifest.json``."""
-    data = json.loads((maps_dir / "manifest.json").read_text("utf-8"))
+    """Load every case described in ``maps_dir/manifest.json``.
+
+    For the bundled maps this also adds the subject maps imported into
+    ``.flyin/maps/`` of the current folder, if there are any.
+    """
+    cases = _read_manifest(maps_dir)
+    local = Path.cwd() / LOCAL_MAPS
+    if maps_dir == MAPS_DIR and (local / "manifest.json").is_file():
+        cases += _read_manifest(local)
+    order = {group: i for i, group in enumerate(GROUP_ORDER)}
+    return sorted(cases, key=lambda case: order.get(case.group, len(order)))
+
+
+def _read_manifest(maps_dir: Path) -> list[Case]:
+    """Read one manifest; paths are relative to its folder."""
+    try:
+        data = json.loads((maps_dir / "manifest.json").read_text("utf-8"))
+    except (OSError, ValueError):
+        return []
     cases = []
-    for entry in data["maps"]:
+    for entry in data.get("maps", []):
         line = entry.get("line", [])
         lines = tuple(line if isinstance(line, list) else [line])
         cases.append(Case(
@@ -83,8 +103,7 @@ def load_manifest(maps_dir: Path = MAPS_DIR) -> list[Case]:
             prefer_visit=tuple(entry.get("prefer_visit", [])),
             optimum=entry.get("optimum"),
         ))
-    order = {group: i for i, group in enumerate(GROUP_ORDER)}
-    return sorted(cases, key=lambda case: order.get(case.group, len(order)))
+    return cases
 
 
 def last_line(text: str) -> str:

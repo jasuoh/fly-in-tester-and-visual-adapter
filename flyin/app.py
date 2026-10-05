@@ -13,6 +13,7 @@
     flyin history               results of the earlier test runs
     flyin eval [-o FILE]        evaluation report (Markdown)
     flyin rules                 how flyin reads the subject
+    flyin import-maps [DIR]     import the subject's maps from your project
     flyin generate [--seed N]   write a random solvable map
     flyin check MAP OUTPUT      check an output file
 
@@ -33,7 +34,7 @@ from flyin.tester.generate import generate
 from flyin.tester.runner import DEFAULT_GROUPS, FAIL, PASS, WARN, Outcome
 
 THEMES = ("mission", "blueprint", "graphite", "ashen")
-FIRST_MAP = "provided/easy/01_linear_path.txt"
+FIRST_MAP = "edge/valid/fork_merge_bottleneck.txt"
 
 
 def say(text: str = "", color: str = "") -> None:
@@ -101,7 +102,23 @@ def setup(project: str | None = None, command: str | None = None,
     _explain_first_run(outcome)
     config.save(new)
     say(f"Saved in {config.state_dir() / 'config.json'}", "dim")
+    if interactive:
+        offer_subject_import(folder / "maps")
     return new
+
+
+def offer_subject_import(folder: Path) -> None:
+    """Offer to import the subject's maps found in the project."""
+    from flyin import subject
+    found = subject.find_maps(folder)
+    if not found or subject.imported():
+        return
+    say(f"\nYour project has {len(found)} maps in {folder}. flyin does not "
+        "ship the subject's maps; import them to test against the "
+        "subject's turn targets (they stay on your computer).", "dim")
+    if ask("Import them? (y/n)", "y").lower().startswith(("y", "j")):
+        count, targets = subject.import_maps(folder)
+        say(f"Imported {count} maps, {targets} with a target.", "ok")
 
 
 def _ask_output(command: str, old: Config | None) -> tuple[str, str]:
@@ -243,6 +260,8 @@ def changes(before: dict[str, Any], outcomes: list[Outcome]
 
 def print_changes(before: dict[str, Any], outcomes: list[Outcome]) -> None:
     """Print what got better or worse since the previous run."""
+    if not any(o.case.name in before.get("results", {}) for o in outcomes):
+        return
     better, worse = changes(before, outcomes)
     if not better and not worse:
         say(f"Same results as the run of {before.get('time', '?')}.", "dim")
@@ -332,6 +351,25 @@ def do_eval(cfg: Config, out: str = "flyin-report.md") -> int:
             "ok" if ok else "bad")
     say(f"Report written to {path.resolve()}", "dim")
     return 1 if any(o.status == FAIL for o in outcomes) else 0
+
+
+def do_import(folder: str | None) -> int:
+    """Import the subject's maps from ``folder`` or the project."""
+    from flyin import subject
+    if folder is None:
+        cfg = config.load()
+        if cfg is None:
+            say("which folder? flyin import-maps PATH/TO/maps", "bad")
+            return 2
+        folder = str(Path(cfg.project) / "maps")
+    source = Path(folder).expanduser()
+    if not subject.find_maps(source):
+        say(f"no .txt maps in {source}", "bad")
+        return 2
+    count, targets = subject.import_maps(source)
+    say(f"Imported {count} maps ({targets} with the subject's target) into "
+        f"{config.state_dir() / 'maps'}", "ok")
+    return 0
 
 
 def do_rules() -> None:
@@ -449,6 +487,10 @@ def build_parser() -> argparse.ArgumentParser:
     eval_p = sub.add_parser("eval", help="evaluation report of all maps")
     eval_p.add_argument("-o", "--out", default="flyin-report.md")
     sub.add_parser("rules", help="how flyin reads the subject")
+    imp_p = sub.add_parser("import-maps", help="import the subject's maps "
+                           "from your project (kept in .flyin/maps)")
+    imp_p.add_argument("folder", nargs="?", help="default: the maps/ "
+                       "folder of your project")
     maps_p = sub.add_parser("maps", help="list the maps")
     maps_p.add_argument("what", nargs="?")
     gen_p = sub.add_parser("generate", help="write a random solvable map")
@@ -513,6 +555,8 @@ def _dispatch(args: argparse.Namespace) -> int:
                           args.theme, args.screenshot, args.turn)
     if args.command == "eval":
         return do_eval(need_config(sys.stdin.isatty()), args.out)
+    if args.command == "import-maps":
+        return do_import(args.folder)
     if args.command == "rules":
         do_rules()
         return 0

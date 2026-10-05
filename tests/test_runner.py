@@ -203,7 +203,7 @@ class CommandLineTests(unittest.TestCase):
 
     def test_list(self) -> None:
         """`list` names the maps."""
-        result = self.cli("list", "--group", "provided-invalid")
+        result = self.cli("list", "--group", "extra-invalid")
         self.assertEqual(result.returncode, 0)
         self.assertEqual(len(result.stdout.splitlines()), 10)
 

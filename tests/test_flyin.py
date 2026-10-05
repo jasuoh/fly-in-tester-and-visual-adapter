@@ -17,7 +17,7 @@ from flyin.tester.runner import FAIL, MAPS_DIR, PASS
 
 ROOT = Path(__file__).resolve().parent.parent
 NAIVE = ROOT / "examples" / "naive_solver.py"
-EASY = "provided/easy/01_linear_path.txt"
+EASY = "edge/valid/fork_merge_bottleneck.txt"
 
 
 def naive_output(map_name: str) -> str:
@@ -32,8 +32,8 @@ class LibraryTests(unittest.TestCase):
 
     def test_find_map(self) -> None:
         """Short names, paths and files; clear errors otherwise."""
-        self.assertEqual(flyin.find_map("easy/01").name,
-                         "01_linear_path.txt")
+        self.assertEqual(flyin.find_map("fork_merge").name,
+                         "fork_merge_bottleneck.txt")
         self.assertEqual(flyin.find_map(EASY), MAPS_DIR / EASY)
         self.assertEqual(flyin.find_map(MAPS_DIR / EASY), MAPS_DIR / EASY)
         for bad in ("01", "no_such_map", "challenge"):
@@ -42,30 +42,30 @@ class LibraryTests(unittest.TestCase):
 
     def test_maps(self) -> None:
         """All, a group, or a text."""
-        self.assertEqual(len(flyin.maps()), 430)
+        self.assertEqual(len(flyin.maps()), 420)
         self.assertEqual(len(flyin.maps("fuzz")), 300)
         self.assertEqual(len(flyin.maps("challenge")), 5)
-        self.assertEqual(len(flyin.maps("easy")), 3)
+        self.assertEqual(len(flyin.maps("critical")), 4)
 
     def test_check_accepts_text_lines_and_files(self) -> None:
         """The output can be text, a list of lines or a file."""
-        text = naive_output("easy/01")
-        self.assertTrue(flyin.check("easy/01", text).valid)
-        self.assertTrue(flyin.check("easy/01", text.splitlines()).valid)
+        text = naive_output("fork_merge")
+        self.assertTrue(flyin.check("fork_merge", text).valid)
+        self.assertTrue(flyin.check("fork_merge", text.splitlines()).valid)
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "out.txt"
             path.write_text("debug: hello\n" + text, "utf-8")
-            self.assertTrue(flyin.check("easy/01", path).valid)
-        self.assertFalse(flyin.check("easy/01", ["D1-goal"]).valid)
+            self.assertTrue(flyin.check("fork_merge", path).valid)
+        self.assertFalse(flyin.check("fork_merge", ["D1-g"]).valid)
 
     def test_run_and_test(self) -> None:
         """One map, then a group, with the naive solver."""
         command = f"{sys.executable} {NAIVE} {{map}}"
-        outcome = flyin.run("easy/01", command)
+        outcome = flyin.run("fork_merge", command)
         self.assertEqual(outcome.status, PASS)
         self.assertIn("D1-", outcome.output)
-        outcomes = flyin.test(command, only="easy", jobs=2)
-        self.assertEqual(len(outcomes), 3)
+        outcomes = flyin.test(command, only="critical", jobs=2)
+        self.assertEqual(len(outcomes), 4)
         self.assertNotIn(FAIL, [o.status for o in outcomes])
 
 
@@ -184,7 +184,7 @@ class CommandTests(InWorkdir):
         code, text = self.flyin("setup", str(folder), "--cmd",
                                 command + " {map} {out}", "--output-file", "")
         self.assertIn("Works", text)
-        code, text = self.flyin("test", "easy/01")
+        code, text = self.flyin("test", "fork_merge")
         self.assertEqual(code, 0, text)
 
     def test_show_output_file_as_screenshot(self) -> None:
@@ -195,9 +195,9 @@ class CommandTests(InWorkdir):
             self.skipTest("pygame-ce is not installed")
         os.environ["SDL_VIDEODRIVER"] = "dummy"
         out = self.dir / "out.txt"
-        out.write_text(naive_output("easy/02"), "utf-8")
+        out.write_text(naive_output("parallel_paths"), "utf-8")
         png = self.dir / "frame.png"
-        code, text = self.flyin("show", "easy/02", str(out),
+        code, text = self.flyin("show", "parallel_paths", str(out),
                                 "--screenshot", str(png))
         self.assertEqual(code, 0, text)
         self.assertTrue(png.is_file())
@@ -206,13 +206,13 @@ class CommandTests(InWorkdir):
         """Listing, checking from stdin, ambiguous names."""
         code, text = self.flyin("maps", "challenge")
         self.assertEqual((code, len(text.splitlines())), (0, 5))
-        code, text = self.flyin("check", "easy/01", "-",
-                                stdin=naive_output("easy/01"))
+        code, text = self.flyin("check", "fork_merge", "-",
+                                stdin=naive_output("fork_merge"))
         self.assertEqual(code, 0, text)
         self.assertIn("VALID", text)
         code, text = self.flyin("show", "01", "-")
         self.assertEqual(code, 1)
-        self.assertIn("matches 21 maps", text)
+        self.assertIn("matches 17 maps", text)
 
 
 if __name__ == "__main__":
@@ -227,8 +227,8 @@ class MenuTests(InWorkdir):
         project = self.project()
         answers = "\n".join([
             str(project), f"{sys.executable} main.py {{map}}", "1",
-            "6", "1", "5", "n",      # More -> Test one group -> challenge
-            "6", "3",                # More -> History
+            "6", "2", "5", "n",      # More -> Test one group -> challenge
+            "6", "4",                # More -> History
             "0", ""])
         code, text = self.flyin(stdin=answers)
         self.assertEqual(code, 0, text)

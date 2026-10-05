@@ -20,13 +20,13 @@ setup:           ## connect your project
 test:            ## test all maps (WHAT=group or part of a name)
 	@$(START) test $(WHAT)
 
-show:            ## watch a map, e.g. make show MAP=easy/01
+show:            ## watch a map, e.g. make show MAP=city_grid
 	@$(START) show $(MAP)
 
 problems:        ## watch the problem maps of the last test
 	@$(START) show --problems
 
-compare:         ## last test vs now, e.g. make compare MAP=easy/01
+compare:         ## last test vs now, e.g. make compare MAP=city_grid
 	@$(START) compare $(MAP)
 
 eval:            ## evaluation report of all maps (flyin-report.md)

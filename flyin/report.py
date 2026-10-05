@@ -28,12 +28,13 @@ def checklist(outcomes: list[Outcome]) -> list[tuple[bool, str, str]]:
         return [o for o in outcomes if o.case.group in groups
                 and o.status == FAIL and o.case.level == "required"]
 
-    solve = failed(("provided", "edge-valid"))
-    reject = failed(("provided-invalid", "edge-invalid"))
+    solve = failed(("subject", "extra", "edge-valid"))
+    reject = failed(("subject-invalid", "extra-invalid", "edge-invalid"))
     crashes = _problems(outcomes, "traceback", "crashed")
     timeouts = _problems(outcomes, "timeout")
-    targets = [o for o in outcomes if o.case.group == "provided"
-               and o.case.target and not o.case.optional_target
+    subject_maps = [o for o in outcomes if o.case.group == "subject"]
+    targets = [o for o in subject_maps
+               if o.case.target and not o.case.optional_target
                and (o.turns is None or o.turns > o.case.target)]
     lines = _problems(outcomes, "does not name line")
 
@@ -51,8 +52,10 @@ def checklist(outcomes: list[Outcome]) -> list[tuple[bool, str, str]]:
          detail(lines)),
         (not crashes, "No crash, no traceback", detail(crashes)),
         (not timeouts, "No timeout", detail(timeouts)),
-        (not targets, "Turn targets of the subject are met",
-         detail(targets)),
+        (bool(subject_maps) and not targets,
+         "Turn targets of the subject are met",
+         detail(targets) if subject_maps else
+         "subject maps not imported (flyin import-maps)"),
     ]
 
 

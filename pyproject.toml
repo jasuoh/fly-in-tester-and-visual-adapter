@@ -25,5 +25,5 @@ flyin = ["maps/**/*.txt", "maps/manifest.json", "RULES.md"]
 
 [tool.mypy]
 strict = true
-exclude = ["examples/", "adapters/", "build/"]
+exclude = ["examples/", "build/"]
 

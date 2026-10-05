@@ -26,7 +26,7 @@ The visualizer plays **whatever your program prints**:
 | `Esc` | close (with "problems": on to the next map) |
 
 No display (SSH, a server)? Save a picture instead:
-`python3 start.py show easy/01 --screenshot frame.png --turn 3`.
+`python3 start.py show city_grid --screenshot frame.png --turn 3`.
 
 ## Commands
 
@@ -44,12 +44,14 @@ after `pip install`, or `make ...`):
 | `eval [-o FILE]` | evaluation report (`flyin-report.md`) |
 | `history` | results of all earlier test runs |
 | `generate [--seed N] [--size 8x4] [--drones N] [--shape grid\|random]` | a random solvable map in `maps-generated/` |
+| `import-maps [DIR]` | import the subject's maps from your project (default: its `maps/`) |
 | `rules` | how flyin reads the subject |
 | `maps [WHAT]` | list the maps with their targets |
 | `check MAP OUTPUT` | check an output without watching |
 | `run --cmd "..." [options]` | the full tester for scripts and CI (`run --help`) |
 
-`MAP` is a file or a short name of a bundled map: `easy/01`,
+`MAP` is a file or a short name of a map: `city_grid`, `fork_merge`,
+`easy/01` (after importing the subject maps),
 `city_grid`, `hard/03`.
 
 ## Library
@@ -96,8 +98,10 @@ zone, `D<id>-<from>-<to>`. A solution fails when:
 
 | Group | Maps | |
 | --- | --- | --- |
-| `provided` | 28 | the maps of the subject with their "≤ N turns" targets |
-| `provided-invalid` | 10 | their broken maps (must be rejected) |
+| `subject` | yours | the subject's maps, imported from your project (`flyin import-maps`), with the "≤ N turns" targets; not shipped |
+| `subject-invalid` | yours | broken maps from an `invalid/` folder of your project (must be rejected) |
+| `extra` | 18 | hand-made maps: restricted gates, conveyor chains, deadlock risks, mazes |
+| `extra-invalid` | 10 | more broken maps (must be rejected) |
 | `edge-valid` | 29 | comments, CRLF, negative coordinates, 10 000 drones, restricted chains, ... |
 | `edge-invalid` | 58 | every parser rule broken once, plus maps without a solution |
 | `challenge` | 5 | hard maps whose target is the **exact optimum** (integer linear program); optional |
@@ -108,7 +112,7 @@ Your own map: `python3 start.py show path/to/map.txt` works with any file.
 ## Development
 
 ```sh
-make dev-test    # ~100 tests: checker, bounds, runner, replay, GUI (headless), commands
+make dev-test    # ~105 tests: checker, bounds, runner, replay, GUI (headless), commands
 make lint        # flake8 + mypy --strict
 ```
 
@@ -116,14 +120,16 @@ make lint        # flake8 + mypy --strict
 start.py         starts flyin from this folder (uses .venv/ if present)
 flyin/           api.py      the library (check, show, run, test, maps)
                  app.py      the flyin command        menu.py   the menu
+                 ui.py       arrow-key pickers (numbers without a terminal)
                  config.py   settings, last results, history in .flyin/
+                 subject.py  importing the subject's maps (not shipped)
                  report.py   the evaluation report
                  RULES.md    how the subject is read
                  tester/     map reader, checker, lower bounds, map generator,
                              runner, full command line
                  visual/     replay.py (any output -> playable), the pygame GUI
-                 maps/       the 430 maps and manifest.json
-examples/        naive_solver.py, use_as_library.py
-adapters/        template.py
+                 maps/       the 420 bundled maps and manifest.json
+examples/        naive_solver.py, use_as_library.py, adapter_template.py
+docs/            REFERENCE.md and the pictures of the README
 tests/
 ```
