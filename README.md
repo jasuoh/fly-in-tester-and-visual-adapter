@@ -101,6 +101,43 @@ The visualizer plays **whatever your program prints**:
 No display (SSH, a server)? Save a picture instead:
 `python3 start.py show easy/01 --screenshot frame.png --turn 3`.
 
+## Your own visual part is not ready yet?
+
+You do not need to build anything to watch your algorithm: it only has to
+print the turn lines (`D1-roof1 D2-corridorA`, one turn per line). The
+visualizer reads the map itself, so your data structures do not matter,
+and it plays unfinished or wrong solutions too (the broken rule is marked
+red, `E` jumps to the next one).
+
+**No code at all**: use the menu (`make`, then *Watch maps*), or hand it
+your output directly:
+
+```sh
+python3 main.py map.txt | python3 start.py show map.txt -
+python3 start.py show map.txt my_output.txt
+```
+
+**From your own program**, e.g. a `--visual` flag while developing
+(install once in your project's environment, see [As a library](#as-a-library)):
+
+```python
+import sys
+import flyin
+
+turns = my_algorithm(map_path)        # list of strings, one per turn
+print("\n".join(turns))
+
+if "--visual" in sys.argv:
+    flyin.show(map_path, turns)       # opens the window
+```
+
+Without pip, put this repository next to your project and add it to the
+path first: `sys.path.insert(0, "../flyin")`.
+
+> **For the evaluation:** the subject asks for a visual representation of
+> your own. Use flyin to debug your algorithm, not as the visual part you
+> hand in: it would be someone else's code in your project.
+
 ## Without the menu
 
 Every menu entry is also a command (`python3 start.py ...`, or `flyin ...`
@@ -135,14 +172,15 @@ pip install pygame-ce        # only for flyin.show
 ```python
 import flyin
 
-turns = my_solver("maps/easy.txt")       # your code: one string per turn
+map_path = flyin.find_map("easy/01")     # a short name or any map file
+turns = my_solver(map_path)              # your code: one string per turn
 
-result = flyin.check("easy/01", turns)   # every rule of the subject
+result = flyin.check(map_path, turns)    # every rule of the subject
 print(result.valid, result.turns, result.errors)
 
-flyin.show("easy/01", turns)             # opens the visualizer
-flyin.show("easy/01", turns, screenshot="turn3.png", turn=3)
-flyin.compare("easy/01", old_turns, turns, labels=("old", "new"))
+flyin.show(map_path, turns)              # opens the visualizer
+flyin.show(map_path, turns, screenshot="turn3.png", turn=3)
+flyin.compare(map_path, old_turns, turns, labels=("old", "new"))
 
 outcomes = flyin.test("python3 main.py {map}", cwd=".", only="challenge")
 for o in outcomes:
