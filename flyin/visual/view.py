@@ -58,11 +58,11 @@ def show(map_path: str, text: str, theme: str = "mission",
     except (MapError, OSError) as error:
         print(f"cannot read map: {error}", file=sys.stderr)
         return 2
-    report(replay)
     if not replay.result.turns:
-        print("nothing to show: the output contains no turn lines",
-              file=sys.stderr)
+        print("nothing to show: the output contains no turn lines "
+              "(D1-zone ...)", file=sys.stderr)
         return 1
+    report(replay)
     try:
         from flyin.visual.errors import FlyInError
         from flyin.visual.gui import GuiVisualizer

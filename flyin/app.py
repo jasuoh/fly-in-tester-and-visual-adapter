@@ -31,7 +31,9 @@ from flyin import api, config
 from flyin.config import Config
 from flyin.tester.cli import main as tester_main, print_outcomes
 from flyin.tester.generate import generate
-from flyin.tester.runner import DEFAULT_GROUPS, FAIL, PASS, WARN, Outcome
+from flyin.tester.runner import (
+    DEFAULT_GROUPS, FAIL, PASS, WARN, Outcome, extract_turns,
+)
 
 THEMES = ("mission", "blueprint", "graphite", "ashen")
 FIRST_MAP = "edge/valid/fork_merge_bottleneck.txt"
@@ -393,18 +395,37 @@ def do_history() -> None:
               f"{counts[FAIL]:>4} fail   {turns:>6} turns")
 
 
-def problems() -> list[dict[str, Any]]:
-    """Return the solvable maps of the last test that were not PASS."""
-    return [r for r in config.last_run()
-            if r.get("expect") == "solve" and r.get("status") != PASS
-            and r.get("output")]
+def _has_turns(record: dict[str, Any]) -> bool:
+    """Return True if the saved output of a record has turn lines."""
+    try:
+        text = Path(record["output"]).read_text("utf-8", errors="replace")
+    except (KeyError, OSError):
+        return False
+    return bool(extract_turns(text)[0])
+
+
+def problems(watchable: bool = True) -> list[dict[str, Any]]:
+    """Return the solvable maps of the last test that were not PASS.
+
+    With ``watchable`` only those whose output has turn lines (a program
+    that printed nothing leaves nothing to play).
+    """
+    found = [r for r in config.last_run()
+             if r.get("expect") == "solve" and r.get("status") != PASS
+             and r.get("output")]
+    return [r for r in found if _has_turns(r) == watchable]
 
 
 def do_show_problems(cfg: Config | None) -> None:
     """Watch every problem map of the last test, one after another."""
     todo = problems()
+    silent = problems(watchable=False)
+    for record in silent:
+        say(f"{record['map']}: {record['status']} {record['message']} - "
+            "no solution was printed, nothing to watch", "warn")
     if not todo:
-        say("No problems in the last test (or no test yet).", "ok")
+        if not silent:
+            say("No problems in the last test (or no test yet).", "ok")
         return
     for number, record in enumerate(todo, 1):
         say(f"\n[{number}/{len(todo)}] {record['map']}: {record['status']} "

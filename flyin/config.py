@@ -67,11 +67,19 @@ def save(config: Config) -> None:
 
 
 def python_for(project: Path) -> str:
-    """Return the project's virtualenv Python if it has one."""
+    """Return the project's virtualenv Python if it has one.
+
+    The path stays relative to the project (the command runs there) and
+    the link is not resolved: resolving it would leave the virtualenv
+    and lose its packages.
+    """
     for venv in (".venv", "venv"):
-        candidate = project / venv / "bin" / "python"
-        if candidate.is_file():
-            return str(candidate.resolve())
+        if os.name == "nt":
+            candidate = project / venv / "Scripts" / "python.exe"
+            if candidate.is_file():
+                return str(candidate.absolute())
+        elif (project / venv / "bin" / "python").is_file():
+            return f"{venv}/bin/python"
     return "python3" if sys.platform != "win32" else "python"
 
 

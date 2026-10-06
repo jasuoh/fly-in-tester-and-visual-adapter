@@ -121,6 +121,15 @@ class ConfigTests(InWorkdir):
         self.assertEqual(config.detect_command(folder),
                          "python3 main.py {map}")
 
+    def test_virtualenv_is_kept(self) -> None:
+        """The venv Python stays a relative path (no resolved link)."""
+        folder = self.dir / "p"
+        (folder / ".venv" / "bin").mkdir(parents=True)
+        (folder / ".venv" / "bin" / "python").symlink_to(sys.executable)
+        (folder / "main.py").write_text("")
+        self.assertEqual(config.detect_command(folder),
+                         ".venv/bin/python main.py {map}")
+
     def test_save_and_load(self) -> None:
         """The settings survive in .flyin/config.json."""
         self.assertIsNone(config.load())

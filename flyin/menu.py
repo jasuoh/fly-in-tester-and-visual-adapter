@@ -62,7 +62,8 @@ class Menu:
                 (Item("Watch maps", "your program in the visualizer"),
                  self.watch),
                 (Item("Watch the problems of the last test",
-                      f"{count} maps" if count else "none",
+                      f"{count} map{'s' if count != 1 else ''}" if count
+                      else "none",
                       "●" if count else "", "warn"), self.watch_problems),
                 (Item("Compare two solutions", "side by side, in sync"),
                  self.compare),

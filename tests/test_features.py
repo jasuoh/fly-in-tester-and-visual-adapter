@@ -1,5 +1,7 @@
 """Tests for issues, compare, history, eval, generate and rules."""
 
+import contextlib
+import io
 import os
 import sys
 import unittest
@@ -120,6 +122,20 @@ class HistoryTests(InWorkdir):
         assert last is not None and previous is not None
         self.assertEqual(last.read_text(), "D1-y\n")
         self.assertEqual(previous.read_text(), "D1-x\n")
+
+    def test_problems_without_output_are_not_played(self) -> None:
+        """A map where nothing was printed is named, not opened."""
+        from flyin.app import do_show_problems, problems
+        silent = Outcome(flyin.case_for("fork_merge"), WARN,
+                         "exit status 1: Error: line 1", output="")
+        config.save_run([silent])
+        self.assertEqual(problems(), [])
+        self.assertEqual(len(problems(watchable=False)), 1)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            do_show_problems(None)
+        self.assertIn("nothing to watch", out.getvalue())
+        self.assertNotIn("No problems", out.getvalue())
 
     def test_history_command(self) -> None:
         """Lists the runs."""
