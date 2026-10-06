@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import shutil
 import sys
 from collections import Counter
 from pathlib import Path
@@ -39,8 +40,13 @@ def _print_outcome(outcome: Outcome, color: bool, verbose: bool) -> None:
         label = "optimum" if outcome.case.optimum else "bound"
         best = f"  [{label} {outcome.best}]" if outcome.turns > \
             outcome.best else f"  [= {label}]"
+    message = outcome.message
+    if not verbose:
+        room = shutil.get_terminal_size().columns - 72 - len(best)
+        if len(message) > max(30, room):
+            message = message[:max(29, room - 1)] + "…"
     print(f"  {tag:>4}  {outcome.case.name:<52} {time_text}  "
-          f"{outcome.message}{best}")
+          f"{message}{best}")
     if verbose or outcome.status == FAIL:
         for detail in outcome.details:
             print(f"          | {detail}")

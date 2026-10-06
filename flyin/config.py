@@ -52,9 +52,32 @@ def load() -> Config | None:
     """Return the saved settings, or None before the first setup."""
     try:
         data = json.loads((state_dir() / "config.json").read_text("utf-8"))
-        return Config(**data)
+        config = Config(**data)
     except (OSError, ValueError, TypeError):
         return None
+    if _repair_python(config):
+        save(config)
+    return config
+
+
+def _repair_python(config: Config) -> bool:
+    """Undo an old bug: the venv Python was saved as the interpreter its
+    link points to (outside the venv, without its packages). Put the
+    venv path back; return True if something changed."""
+    program, _, rest = config.command.partition(" ")
+    project = Path(config.project)
+    if os.name == "nt" or not program.startswith("/"):
+        return False
+    for venv in (".venv", "venv"):
+        link = project / venv / "bin" / "python"
+        try:
+            same = link.is_file() and link.resolve() == Path(program)
+        except OSError:
+            same = False
+        if same and not Path(program).is_relative_to(project):
+            config.command = f"{venv}/bin/python {rest}".strip()
+            return True
+    return False
 
 
 def save(config: Config) -> None:

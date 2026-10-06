@@ -130,6 +130,22 @@ class ConfigTests(InWorkdir):
         self.assertEqual(config.detect_command(folder),
                          ".venv/bin/python main.py {map}")
 
+    def test_old_resolved_python_is_repaired(self) -> None:
+        """A saved command with the venv's resolved interpreter."""
+        folder = self.dir / "p"
+        (folder / ".venv" / "bin").mkdir(parents=True)
+        (folder / ".venv" / "bin" / "python").symlink_to(sys.executable)
+        real = Path(sys.executable).resolve()
+        config.save(config.Config(str(folder), f"{real} main.py {{map}}"))
+        loaded = config.load()
+        assert loaded is not None
+        self.assertEqual(loaded.command, ".venv/bin/python main.py {map}")
+        other = config.Config(str(folder), "/usr/bin/env python3 main.py")
+        config.save(other)
+        loaded = config.load()
+        assert loaded is not None
+        self.assertEqual(loaded.command, "/usr/bin/env python3 main.py")
+
     def test_save_and_load(self) -> None:
         """The settings survive in .flyin/config.json."""
         self.assertIsNone(config.load())

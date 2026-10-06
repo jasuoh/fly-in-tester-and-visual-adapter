@@ -202,10 +202,12 @@ def do_test(cfg: Config, only: list[str] | None = None,
     config.save_run(outcomes)
     if runs:
         print_changes(runs[-1], outcomes)
-    problems = sum(1 for o in outcomes if o.status != PASS
-                   and o.case.expect == "solve")
-    if problems:
-        say(f"Watch them: flyin show --problems ({problems} maps)", "dim")
+    watchable = sum(1 for o in outcomes if o.status != PASS
+                    and o.case.expect == "solve"
+                    and extract_turns(o.output)[0])
+    if watchable:
+        say(f"Watch them: flyin show --problems ({watchable} "
+            f"map{'s' if watchable != 1 else ''})", "dim")
     return outcomes
 
 
