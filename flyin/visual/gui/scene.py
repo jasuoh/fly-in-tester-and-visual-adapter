@@ -59,16 +59,18 @@ class MapScene:
         """Fit the map; switch to slanted labels when names collide."""
         px = self.layout.px
         area = self.layout.map.inflate(-2 * px(70), -2 * px(84))
+        area.width = max(px(40), area.width)
+        area.height = max(px(40), area.height)
         area.top += px(12)
         projection = Projection(self.graph, area, self.layout.scale)
         if not self._labels_collide(projection):
             return projection
         self.label_angle = self.LABEL_ANGLE
         self.label_size = max(10, self.layout.px(12))
-        longest = max(self._label_width(z.name) for z in self.graph.zones)
+        longest = max((self._label_width(z.name) for z in self.graph.zones), default=0)
         angle = math.radians(self.label_angle)
-        area.height -= round(longest * math.sin(angle) * 0.85)
-        area.width -= round(longest * math.cos(angle) * 0.55)
+        area.height = max(px(40), area.height - round(longest * math.sin(angle) * 0.85))
+        area.width = max(px(40), area.width - round(longest * math.cos(angle) * 0.55))
         slanted = Projection(self.graph, area, self.layout.scale)
         if self._slanted_fit(slanted):
             return slanted

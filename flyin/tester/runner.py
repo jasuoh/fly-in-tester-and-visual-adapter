@@ -16,7 +16,7 @@ from .bounds import lower_bound
 from .mapfile import MapError, read_map
 
 MAPS_DIR = Path(__file__).resolve().parent.parent / "maps"
-TURN_LINE = re.compile(r"^D\d+-\S+(?: D\d+-\S+)*$")
+TURN_LINE = re.compile(r"^D\d+-\S+(?:\s+D\d+-\S+)*$")
 TRACEBACK = re.compile(r"Traceback \(most recent call last\)")
 
 PASS, WARN, FAIL = "PASS", "WARN", "FAIL"
@@ -113,14 +113,33 @@ def last_line(text: str) -> str:
 
 
 def extract_turns(text: str) -> tuple[list[str], list[str]]:
-    """Split program output into turn lines and other (noise) lines."""
+    """Split program output into turn lines and other (noise) lines.
+
+    Blank lines before the first turn and after the last turn are noise.
+    An empty line between turns is kept as an empty turn line so the checker
+    can report a turn with no movement (Rule 1).
+    """
+    raw_lines = text.splitlines()
+    first_turn = next((i for i, line in enumerate(raw_lines)
+                       if TURN_LINE.match(line.strip())), None)
+    if first_turn is None:
+        return [], [line.strip() for line in raw_lines if line.strip()]
+    last_turn = max(i for i, line in enumerate(raw_lines)
+                    if TURN_LINE.match(line.strip()))
+
     turns, noise = [], []
-    for line in text.splitlines():
+    for i, line in enumerate(raw_lines):
         stripped = line.strip()
-        if TURN_LINE.match(stripped):
-            turns.append(stripped)
-        elif stripped:
-            noise.append(stripped)
+        if i < first_turn or i > last_turn:
+            if stripped:
+                noise.append(stripped)
+        else:
+            if TURN_LINE.match(stripped):
+                turns.append(stripped)
+            elif not stripped:
+                turns.append("")
+            else:
+                noise.append(stripped)
     return turns, noise
 
 
@@ -172,12 +191,22 @@ class Runner:
         # Windows splits a command line itself (backslashes in paths would
         # break shlex), so the string is passed through as it is.
         shell = self.shell or windows
-        return subprocess.run(
-            command if shell else shlex.split(command),
-            shell=shell, cwd=self.cwd, env=env, text=True,
-            errors="replace", capture_output=True, timeout=self.timeout,
-            stdin=subprocess.DEVNULL,
-        )
+        stdin_handle = None
+        if "{map}" not in self.command:
+            try:
+                stdin_handle = open(case.path, "r", encoding="utf-8")
+            except OSError:
+                stdin_handle = None
+        try:
+            return subprocess.run(
+                command if shell else shlex.split(command),
+                shell=shell, cwd=self.cwd, env=env, text=True,
+                errors="replace", capture_output=True, timeout=self.timeout,
+                stdin=stdin_handle or subprocess.DEVNULL,
+            )
+        finally:
+            if stdin_handle is not None:
+                stdin_handle.close()
 
     def run_case(self, case: Case) -> Outcome:
         """Run the program on ``case`` and judge the result."""

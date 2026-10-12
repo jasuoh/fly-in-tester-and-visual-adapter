@@ -157,6 +157,7 @@ def check_solution(fly_map: FlyMap, log: list[str]) -> CheckResult:
             kind = fly_map.zones[target].kind
             if kind == "blocked":
                 fail(turn, f"{token}: {target} is blocked", (target,))
+                continue
             elif kind == "restricted" and not kind_required:
                 fail(turn, f"{token}: {target} is restricted, so the move "
                            f"needs the form D{drone_id}-{origin}-{target}",
