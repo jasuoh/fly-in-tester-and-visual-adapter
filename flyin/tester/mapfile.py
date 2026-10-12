@@ -75,6 +75,19 @@ def _metadata(rest: str) -> tuple[str, dict[str, str]]:
     return rest[: match.start()], values
 
 
+def _strip_comment(raw: str) -> str:
+    """Remove inline comments (#...), ignoring '#' inside metadata brackets."""
+    in_bracket = False
+    for i, char in enumerate(raw):
+        if char == "[":
+            in_bracket = True
+        elif char == "]":
+            in_bracket = False
+        elif char == "#" and not in_bracket:
+            return raw[:i]
+    return raw
+
+
 def parse_map(text: str) -> FlyMap:
     """Parse the text of a valid map file."""
     nb_drones = 0
@@ -82,7 +95,7 @@ def parse_map(text: str) -> FlyMap:
     zones: dict[str, Zone] = {}
     links: dict[frozenset[str], Link] = {}
     for number, raw in enumerate(text.splitlines(), 1):
-        line = raw.split(" #")[0].strip().lstrip("﻿")
+        line = _strip_comment(raw).strip().lstrip("﻿")
         if not line or line.startswith("#"):
             continue
         key, sep, rest = line.partition(":")
@@ -108,7 +121,10 @@ def parse_map(text: str) -> FlyMap:
                     end = name
             elif key == "connection":
                 head, meta = _metadata(rest)
-                a, b = head.strip().split("-")
+                parts = [p.strip() for p in head.strip().split("-")]
+                if len(parts) != 2 or not parts[0] or not parts[1]:
+                    raise MapError(f"line {number}: malformed connection {head!r}")
+                a, b = parts
                 links[frozenset((a, b))] = Link(
                     a, b, int(meta.get("max_link_capacity", 1))
                 )
@@ -116,7 +132,7 @@ def parse_map(text: str) -> FlyMap:
                 raise MapError(f"unknown key {key!r}")
         except ValueError as error:
             raise MapError(f"line {number}: {error}") from error
-    if not (nb_drones and start and end):
+    if not (nb_drones > 0 and start and end):
         raise MapError("nb_drones, start_hub and end_hub are required")
     return FlyMap(nb_drones, start, end, zones, links)
 

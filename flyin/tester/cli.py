@@ -104,8 +104,9 @@ def command_run(args: argparse.Namespace) -> int:
     if not cases:
         print("no maps selected", file=sys.stderr)
         return 2
+    cmd = args.cmd if "{map}" in args.cmd else f"{args.cmd} {{map}}"
     runner = Runner(
-        args.cmd, timeout=args.timeout, cwd=args.cwd, source=args.source,
+        cmd, timeout=args.timeout, cwd=args.cwd, source=args.source,
         shell=args.shell, check_lines=not args.no_check_lines,
         strict_output=args.strict_output, strict_targets=args.strict_targets,
     )

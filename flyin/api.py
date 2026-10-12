@@ -140,6 +140,8 @@ def run(ref: MapRef, command: str, cwd: str | None = None,
     ``outcome.output`` holds the solution: what it printed, or the file it
     wrote (``{out}`` in the command, or a fixed ``output_file``).
     """
+    if "{map}" not in command:
+        command = f"{command} {{map}}"
     return Runner(command, timeout=timeout, cwd=cwd,
                   output_file=output_file).run_case(case_for(ref))
 
@@ -161,6 +163,8 @@ def test(command: str, cwd: str | None = None,
         output_file: The fixed file your program writes, if any (the maps
             then run one by one).
     """
+    if "{map}" not in command:
+        command = f"{command} {{map}}"
     queries = [only] if isinstance(only, str) else only
     if queries is None:
         cases = [c for c in maps() if c.group in DEFAULT_GROUPS]

@@ -230,13 +230,17 @@ class CompareWindow(PlayerWindow):
         width, height = screen.get_size()
         half = width // 2
         layout = ScreenLayout((half, height))
-        x = pos[0] - half if pos[0] >= half else pos[0]
-        bar = self.visualizer.timeline_bar(
-            layout, self.visualizer.timeline_for(self.result))
+        is_right = pos[0] >= half
+        x = pos[0] - half if is_right else pos[0]
+        vis = self.right if is_right else self.visualizer
+        res = self.right_result if is_right else self.result
+        bar = vis.timeline_bar(layout, vis.timeline_for(res))
         if not bar.track().inflate(0, layout.px(16)).collidepoint(
                 (x, pos[1])):
             return False
         self.player.playing = False
         share = (x - bar.track().left) / max(1, bar.track().width)
-        self.player.seek(max(0.0, min(1.0, share)) * self.player.turn_count)
+        clamped_share = max(0.0, min(1.0, share))
+        target_turns = len(res.turns) or self.player.turn_count
+        self.player.seek(clamped_share * target_turns)
         return True

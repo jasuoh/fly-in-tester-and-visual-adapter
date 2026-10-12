@@ -8,12 +8,14 @@ or part of a name.
 """
 
 import os
+import re
 import select
 import shutil
 import sys
 from dataclasses import dataclass
 
 CSI = "\033["
+ANSI_PATTERN = re.compile(r"\033\[[\x30-\x3f]*[\x20-\x2f]*[\x40-\x7e]")
 COLORS = {"ok": "32", "warn": "33", "bad": "31", "dim": "2", "bold": "1",
           "accent": "36"}
 
@@ -340,9 +342,13 @@ def _clip(line: str, width: int) -> str:
     index = 0
     while index < len(line):
         if line.startswith(CSI, index):
-            end = line.index("m", index) + 1
-            out.append(line[index:end])
-            index = end
+            match = ANSI_PATTERN.match(line, index)
+            if match:
+                out.append(match.group())
+                index = match.end()
+                continue
+            out.append(line[index])
+            index += 1
             continue
         if visible >= width:
             break

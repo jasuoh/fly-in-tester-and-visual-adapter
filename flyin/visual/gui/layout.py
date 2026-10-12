@@ -66,10 +66,16 @@ class Projection:
         xs = [zone.x for zone in zones]
         ys = [zone.y for zone in zones]
         x_range, y_range = max(xs) - min(xs), max(ys) - min(ys)
-        sx = area.width / x_range if x_range else math.inf
-        sy = area.height / y_range if y_range else math.inf
+        area_w = max(10, area.width)
+        area_h = max(10, area.height)
+        sx = area_w / x_range if x_range else math.inf
+        sy = area_h / y_range if y_range else math.inf
         if math.isinf(sx) and math.isinf(sy):
             sx = sy = 1.0
+        elif math.isinf(sx):
+            sx = sy
+        elif math.isinf(sy):
+            sy = sx
         sx = min(sx, sy * self.MAX_STRETCH)
         sy = min(sy, sx * self.MAX_STRETCH)
         left = area.centerx - x_range * sx / 2
@@ -78,7 +84,7 @@ class Projection:
             self.positions[zone.name] = (left + (zone.x - min(xs)) * sx,
                                          top + (zone.y - min(ys)) * sy)
         self.spacing = self._min_distance(list(self.positions.values()),
-                                          min(sx, sy, area.width))
+                                          min(sx, sy, area_w))
 
     @staticmethod
     def _min_distance(points: List[Point], default: float) -> float:
