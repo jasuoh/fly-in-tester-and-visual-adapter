@@ -123,7 +123,8 @@ def parse_map(text: str) -> FlyMap:
                 head, meta = _metadata(rest)
                 parts = [p.strip() for p in head.strip().split("-")]
                 if len(parts) != 2 or not parts[0] or not parts[1]:
-                    raise MapError(f"line {number}: malformed connection {head!r}")
+                    raise MapError(
+                        f"line {number}: malformed connection {head!r}")
                 a, b = parts
                 links[frozenset((a, b))] = Link(
                     a, b, int(meta.get("max_link_capacity", 1))

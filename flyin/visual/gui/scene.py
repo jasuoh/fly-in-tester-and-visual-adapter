@@ -67,10 +67,13 @@ class MapScene:
             return projection
         self.label_angle = self.LABEL_ANGLE
         self.label_size = max(10, self.layout.px(12))
-        longest = max((self._label_width(z.name) for z in self.graph.zones), default=0)
+        longest = max((self._label_width(z.name)
+                       for z in self.graph.zones), default=0)
         angle = math.radians(self.label_angle)
-        area.height = max(px(40), area.height - round(longest * math.sin(angle) * 0.85))
-        area.width = max(px(40), area.width - round(longest * math.cos(angle) * 0.55))
+        h_offset = round(longest * math.sin(angle) * 0.85)
+        w_offset = round(longest * math.cos(angle) * 0.55)
+        area.height = max(px(40), area.height - h_offset)
+        area.width = max(px(40), area.width - w_offset)
         slanted = Projection(self.graph, area, self.layout.scale)
         if self._slanted_fit(slanted):
             return slanted

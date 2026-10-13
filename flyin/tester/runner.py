@@ -113,33 +113,14 @@ def last_line(text: str) -> str:
 
 
 def extract_turns(text: str) -> tuple[list[str], list[str]]:
-    """Split program output into turn lines and other (noise) lines.
-
-    Blank lines before the first turn and after the last turn are noise.
-    An empty line between turns is kept as an empty turn line so the checker
-    can report a turn with no movement (Rule 1).
-    """
-    raw_lines = text.splitlines()
-    first_turn = next((i for i, line in enumerate(raw_lines)
-                       if TURN_LINE.match(line.strip())), None)
-    if first_turn is None:
-        return [], [line.strip() for line in raw_lines if line.strip()]
-    last_turn = max(i for i, line in enumerate(raw_lines)
-                    if TURN_LINE.match(line.strip()))
-
+    """Split program output into turn lines and other (noise) lines."""
     turns, noise = [], []
-    for i, line in enumerate(raw_lines):
+    for line in text.splitlines():
         stripped = line.strip()
-        if i < first_turn or i > last_turn:
-            if stripped:
-                noise.append(stripped)
-        else:
-            if TURN_LINE.match(stripped):
-                turns.append(stripped)
-            elif not stripped:
-                turns.append("")
-            else:
-                noise.append(stripped)
+        if TURN_LINE.match(stripped):
+            turns.append(stripped)
+        elif stripped:
+            noise.append(stripped)
     return turns, noise
 
 
