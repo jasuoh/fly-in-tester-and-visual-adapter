@@ -4,12 +4,15 @@ PYTHON ?= python3
 START   = $(PYTHON) start.py
 
 .DEFAULT_GOAL := menu
-.PHONY: menu run install setup test show problems compare eval history maps dev-test lint clean
+.PHONY: menu run web install setup test show problems compare eval history maps dev-test lint clean
 
 menu:            ## the interactive menu (also: make run)
 	@$(START)
 
 run: menu
+
+web:             ## the tester in the browser, http://127.0.0.1:8042 (PORT=...)
+	@$(START) web $(if $(PORT),--port $(PORT))
 
 install:         ## visualizer (pygame-ce) into .venv/
 	@$(START) install

@@ -8,11 +8,12 @@
 ![python](https://img.shields.io/badge/python-3.10%2B-3776ab)
 ![tester](https://img.shields.io/badge/tester-no%20dependencies-2ea44f)
 ![visualizer](https://img.shields.io/badge/visualizer-pygame--ce-f39c12)
-![maps](https://img.shields.io/badge/maps-120%20%2B%20300%20with%20optimum-8250df)
+![maps](https://img.shields.io/badge/maps-121%20%2B%20300%20with%20optimum-8250df)
 
 <img src="docs/demo.gif" width="780" alt="flyin playing a solution of the restricted gauntlet map">
 
 [Start](#start) ·
+[Web GUI](#in-the-browser) ·
 [What it does](#what-it-does) ·
 [Without your own visual part](#watch-your-algorithm-before-your-own-visual-part-exists) ·
 [Library](#as-a-library) ·
@@ -60,6 +61,7 @@ What do you want to do?
      Compare two solutions                side by side, in sync
      Evaluation report                    checklist + every problem
      More …                               one group, history, random map, rules, subject maps
+     Open the web GUI                     everything in the browser, localhost
      Settings                             project, command, output, theme
 ```
 
@@ -73,12 +75,39 @@ What do you want to do?
 | **Compare** | Two solutions of one map side by side, in sync: your last test against now, or any two files. |
 | **History** | After every test: which maps got better or worse than before. |
 | **Evaluation report** | One Markdown file with a checklist of the subject's requirements and every problem. |
+| **Web GUI** | `make web`: tests, results, maps and replays in the browser on `127.0.0.1`. |
+| **Subject 3.0** | The new subject maps are judged against their optimum: more than 1.25 × optimum fails, the exact optimum is marked as the bonus. Maps of the older subject (same names, other content) keep their old "≤ N turns" targets. |
 | **Random maps** | `flyin generate --seed 7`: a solvable map with its lower bound, grid or scattered. |
 | **Rules** | [RULES.md](flyin/RULES.md) says how the open points of the subject are read. |
 
 | An invalid solution: the broken rule is marked | Compare: the last test against the one before |
 | --- | --- |
 | ![invalid](docs/invalid.png) | ![compare](docs/compare.png) |
+
+## In the browser
+
+```sh
+make web                     # or: python3 start.py web [--port 8042] [--no-browser]
+```
+
+opens `http://127.0.0.1:8042` with the same settings and results as the
+menu (the `.flyin/` folder of where you start it):
+
+- **Overview**: test all maps or the groups you tick, with live progress,
+  the subject maps against their optimum (allowed ≤ 1.25 ×, bonus = the
+  optimum), the evaluation checklist and every problem; the report as
+  `.md` download.
+- **Maps**: every map with the result of the last test. Click one to see
+  the map (zone types, colours, capacities) and play a solution: run your
+  program now, the output of the last test or the one before, or paste
+  any output. Invalid turns light up red; `Space`, `←` `→`, `E` (next
+  error), zoom with the wheel. Maps with thousands of drones show counts.
+- **Settings**: project, command, where the solution goes, import of the
+  subject maps. **History** and **Rules** like in the menu.
+
+It needs no extra package and listens on your own computer only; the page
+uses a per-session token, so other websites cannot use it to run your
+command.
 
 ## Watch your algorithm before your own visual part exists
 

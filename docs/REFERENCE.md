@@ -46,6 +46,7 @@ after `pip install`, or `make ...`):
 | `generate [--seed N] [--size 8x4] [--drones N] [--shape grid\|random]` | a random solvable map in `maps-generated/` |
 | `import-maps [DIR]` | import the subject's maps from your project (default: its `maps/`) |
 | `rules` | how flyin reads the subject |
+| `web [--port N] [--no-browser]` | the web GUI on `http://127.0.0.1:8042` (`make web`) |
 | `maps [WHAT]` | list the maps with their targets |
 | `check MAP OUTPUT` | check an output without watching |
 | `run --cmd "..." [options]` | the full tester for scripts and CI (`run --help`) |
@@ -98,7 +99,7 @@ zone, `D<id>-<from>-<to>`. A solution fails when:
 
 | Group | Maps | |
 | --- | --- | --- |
-| `subject` | yours | the subject's maps, imported from your project (`flyin import-maps`), with the "≤ N turns" targets; not shipped |
+| `subject` | yours | the subject's maps, imported from your project (`flyin import-maps`), 3.0 maps with their optimum (≤ 1.25 x optimum required), older maps with their "≤ N turns"; not shipped |
 | `subject-invalid` | yours | broken maps from an `invalid/` folder of your project (must be rejected) |
 | `extra` | 18 | hand-made maps: restricted gates, conveyor chains, deadlock risks, mazes |
 | `extra-invalid` | 10 | more broken maps (must be rejected) |
@@ -112,7 +113,7 @@ Your own map: `python3 start.py show path/to/map.txt` works with any file.
 ## Development
 
 ```sh
-make dev-test    # ~105 tests: checker, bounds, runner, replay, GUI (headless), commands
+make dev-test    # ~115 tests: checker, bounds, runner, replay, GUI (headless), web, commands
 make lint        # flake8 + mypy --strict
 ```
 
@@ -128,7 +129,9 @@ flyin/           api.py      the library (check, show, run, test, maps)
                  tester/     map reader, checker, lower bounds, map generator,
                              runner, full command line
                  visual/     replay.py (any output -> playable), the pygame GUI
-                 maps/       the 420 bundled maps and manifest.json
+                 web/        server.py (stdlib, JSON API) and static/ (the page)
+                 tester/targets.py  the subject 3.0 optimum per map
+                 maps/       the 421 bundled maps and manifest.json
 examples/        naive_solver.py, use_as_library.py, adapter_template.py
 docs/            REFERENCE.md and the pictures of the README
 tests/

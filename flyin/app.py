@@ -1,6 +1,7 @@
 """The ``flyin`` command: the menu, plus short commands for every action.
 
     flyin                       interactive menu
+    flyin web [--port N]        the same in the browser (localhost)
     flyin setup [PROJECT]       tell flyin how to run your project
     flyin test [WHAT ...]       test all maps, a group or some maps
     flyin show MAP [OUTPUT]     watch your program (or an output file)
@@ -510,6 +511,11 @@ def build_parser() -> argparse.ArgumentParser:
     eval_p = sub.add_parser("eval", help="evaluation report of all maps")
     eval_p.add_argument("-o", "--out", default="flyin-report.md")
     sub.add_parser("rules", help="how flyin reads the subject")
+    web_p = sub.add_parser("web", help="the tester in your browser "
+                           "(http://127.0.0.1:8042)")
+    web_p.add_argument("--port", type=int, default=8042)
+    web_p.add_argument("--no-browser", action="store_true",
+                       help="do not open a browser tab")
     imp_p = sub.add_parser("import-maps", help="import the subject's maps "
                            "from your project (kept in .flyin/maps)")
     imp_p.add_argument("folder", nargs="?", help="default: the maps/ "
@@ -583,6 +589,9 @@ def _dispatch(args: argparse.Namespace) -> int:
     if args.command == "rules":
         do_rules()
         return 0
+    if args.command == "web":
+        from flyin.web.server import serve
+        return serve(args.port, not args.no_browser)
     if args.command == "history":
         do_history()
         return 0
