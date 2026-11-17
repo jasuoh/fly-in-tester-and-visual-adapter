@@ -3,7 +3,9 @@
 Rules checked (all from the subject):
 
 * every line is one turn; a token is ``D<id>-<zone>`` or, for a drone that
-  starts a two-turn flight to a restricted zone, ``D<id>-<from>-<to>``;
+  starts a two-turn flight to a restricted zone, ``D<id>-<connection>``
+  (``D<id>-<from>-<to>``; the connection may also be named the other way
+  round, as in the map file);
 * a drone acts at most once per turn and must land in the *next* turn;
 * moves follow connections, never enter blocked zones, and restricted zones
   are only entered by the two-turn flight;
@@ -137,6 +139,8 @@ def check_solution(fly_map: FlyMap, log: list[str]) -> CheckResult:
             origin: str | None
             if len(parts) == 2:
                 origin, target = parts
+                if target == drone.zone and origin != target:
+                    origin, target = target, origin
                 kind_required = True
             elif len(parts) == 1:
                 origin, target = drone.zone, parts[0]
@@ -196,7 +200,7 @@ def check_solution(fly_map: FlyMap, log: list[str]) -> CheckResult:
                      (name,))
     for drone_id, drone in drones.items():
         if drone.zone != fly_map.end:
-            where = drone.zone or "in flight"
+            where = f"in {drone.zone}" if drone.zone else "in flight"
             fail(0, f"D{drone_id + base} did not reach {fly_map.end} "
-                    f"(ends in {where})")
+                    f"(ends {where})")
     return result

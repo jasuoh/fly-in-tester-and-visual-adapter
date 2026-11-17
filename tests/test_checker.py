@@ -71,6 +71,10 @@ class ValidSolutionTests(Base):
         self.valid(restricted(2), [
             "D0-s-r", "D0-r", "D0-g D1-s-r", "D1-r", "D1-g"])
 
+    def test_connection_named_either_way(self) -> None:
+        """Subject 3.0: D<id>-<connection>; r-s names the same link."""
+        self.valid(restricted(), ["D0-r-s", "D0-r", "D0-g"])
+
     def test_landing_frees_the_link(self) -> None:
         """A drone may depart on the link another drone lands from."""
         self.valid(restricted(2), [

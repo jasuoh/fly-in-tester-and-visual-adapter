@@ -5,7 +5,8 @@ them somehow; this page says how flyin decides, so a verdict can be
 discussed instead of guessed. If you read the subject differently, open
 an issue and say which sentence you base it on.
 
-`flyin rules` prints this page.
+`flyin rules` prints this page. It follows **version 3.0** of the
+subject.
 
 The checker was compared with the independent validator of
 [42-fly-in-claude](https://github.com/jasuoh/42-fly-in-claude) on 4605
@@ -20,9 +21,11 @@ only possible one.
 1. **One line per turn.** The number of turns is the number of turn lines.
    An empty line between turns is an error (a turn in which nothing
    happens is not allowed).
-2. **Tokens** are `D<id>-<zone>` (a move) or `D<id>-<from>-<to>` (the
-   first turn of a flight into a restricted zone). Anything else on a
-   turn line is malformed.
+2. **Tokens** are `D<id>-<zone>` (a move) or `D<id>-<connection>` (the
+   first turn of a flight into a restricted zone). The connection is
+   written like in the map, `<zone1>-<zone2>`, in either order
+   (`D1-a-r` and `D1-r-a` are the same flight). Anything else on a turn
+   line is malformed.
 3. **Other lines are ignored**: banners, debug prints, blank lines around
    the turns. Only lines made entirely of tokens count as turns
    (`--strict-output` turns other lines into a failure).
@@ -45,7 +48,8 @@ only possible one.
 ## Capacity
 
 10. **Zones**: at the end of every turn a zone holds at most `max_drones`
-    drones. Start and end are unlimited.
+    drones. Start and end are unlimited; `max_drones` on them is ignored
+    and is no error.
 11. **Leaving frees the place in the same turn.** A drone may move into a
     zone that another drone leaves in the same turn, so a full corridor can
     advance as a whole. (Otherwise a chain of capacity-1 zones could only
@@ -60,8 +64,12 @@ only possible one.
 
 ## Maps that must be rejected
 
-14. A broken or unsolvable map must end with a **non-zero exit status**,
-    **no traceback**, an error message on stderr and **no turn lines**.
+14. A broken map must end with a **non-zero exit status**, **no
+    traceback**, an error message on stderr and **no turn lines**. An
+    *unsolvable* map (no route from start to end) is not a parsing error:
+    it must be reported clearly, without a traceback, without turn lines
+    and without running forever. A non-zero exit status is expected; exit
+    status 0 with a clear message is only a warning.
 15. For syntax errors the message must contain the **line number** of the
     mistake (any number in the message that matches counts). Maps whose
     rule is debatable are marked `recommended`: a different verdict is only
@@ -69,10 +77,23 @@ only possible one.
 
 ## Targets and scores
 
-16. The `subject` targets are the "≤ N turns" values of the subject (the
-    subject's maps are imported from your project, not shipped); more
-    turns is a warning (`--strict` makes it a failure). The challenger
-    target 44 (beat the record of 45) is optional.
+16. The `subject` maps are imported from your project, not shipped. Which
+    rule applies depends on the **content** of the map, not its name
+    (subject 3.0 ships new versions of the maps under the old names):
+    - a **subject 3.0 map** (recognised by a fingerprint that ignores
+      comments and blank lines) has the subject's **optimum** as reference:
+      linear path 4, simple fork 4, basic capacity 4, dead end trap 8,
+      circular loop 10, priority puzzle 6, maze nightmare 13, capacity
+      hell 16, ultimate challenge 26. More than **1.25 x optimum** (rounded
+      down: 5, 5, 5, 10, 12, 7, 16, 20, 32) is a **failure**, since it
+      does not validate the project; the exact optimum is the bonus. The
+      challenger (optimum 43) is optional and only warns.
+    - a **map of the older subject** keeps the older rule: at most 6, 6, 8,
+      15, 20, 12, 45, 60, 35 turns, more is a warning (`--strict` makes it
+      a failure); the challenger target 44 (beat the record of 45) is
+      optional. The 3.0 optimum would be wrong there: on the old basic
+      capacity map, for example, 4 turns are impossible (the proven lower
+      bound is 6).
 17. `challenge` and `fuzz` targets are the **exact optimum**, computed once
     with an integer linear program over the time-expanded graph; missing
     them is an optional warning.

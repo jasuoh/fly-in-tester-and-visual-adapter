@@ -348,6 +348,20 @@
       "level": "recommended"
     },
     {
+      "path": "edge/valid/start_max_drones_ignored.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 3,
+      "note": "subject 3.0: max_drones on start_hub/end_hub is ignored"
+    },
+    {
+      "path": "edge/valid/end_max_drones_ignored.txt",
+      "group": "edge-valid",
+      "expect": "solve",
+      "target": 2,
+      "note": "subject 3.0: max_drones on start_hub/end_hub is ignored"
+    },
+    {
       "path": "edge/invalid/empty_file.txt",
       "group": "edge-invalid",
       "expect": "error",
@@ -834,15 +848,6 @@
       "reason": "syntax",
       "line": 3,
       "note": "types are lower case"
-    },
-    {
-      "path": "edge/invalid/start_capacity_below_drones.txt",
-      "group": "edge-invalid",
-      "expect": "error",
-      "level": "recommended",
-      "reason": "syntax",
-      "line": 2,
-      "note": "start cannot hold all drones"
     },
     {
       "path": "challenge/01_detour_trap.txt",

@@ -2,9 +2,11 @@
 
 import contextlib
 import io
+import json
 import os
 import sys
 import unittest
+import unittest.mock
 from pathlib import Path
 
 import flyin
@@ -12,6 +14,7 @@ from flyin import config, report
 from flyin.app import changes
 from flyin.tester.checker import check_solution
 from flyin.tester.generate import generate
+from flyin.tester import targets
 from flyin.tester.mapfile import has_route, parse_map
 from flyin.tester.runner import FAIL, PASS, WARN, Case, Outcome
 from flyin.visual.replay import build_replay
@@ -160,11 +163,44 @@ class SubjectTests(InWorkdir):
         self.assertEqual(code, 0, text)
         self.assertIn("Imported 3 maps (1 with", text)
         cases = {c.name: c for c in flyin.maps("subject/")}
-        self.assertEqual(cases["subject/easy/01_linear_path.txt"].target, 6)
+        # not the 3.0 file of that name: the older rule, <= 6 turns
+        linear = cases["subject/easy/01_linear_path.txt"]
+        self.assertEqual((linear.target, linear.optimum), (6, None))
+        self.assertFalse(linear.target_required)
         self.assertIsNone(cases["subject/easy/99_mine.txt"].target)
         self.assertEqual(cases["subject/invalid/broken.txt"].expect,
                          "error")
         self.assertTrue(flyin.find_map("easy/01").is_file())
+
+    def test_targets_follow_the_content(self) -> None:
+        """A map of the older subject keeps its "<= N" target, even when an
+        earlier import stored the 3.0 values for its name; the 3.0 map
+        (recognised by its fingerprint) gets 1.25 x optimum."""
+        folder = self.dir / ".flyin" / "maps"
+        (folder / "subject" / "easy").mkdir(parents=True)
+        (folder / "subject" / "easy" / "03_basic_capacity.txt").write_text(
+            MAP, "utf-8")
+        (folder / "manifest.json").write_text(json.dumps({
+            "version": 2, "maps": [{
+                "path": "subject/easy/03_basic_capacity.txt",
+                "group": "subject", "expect": "solve", "target": 5,
+                "optimum": 4, "target_required": True}]}))
+        old = flyin.maps("subject/easy")[0]
+        self.assertEqual((old.target, old.optimum, old.target_required),
+                         (8, None, False))
+        current = dict(targets.FINGERPRINT,
+                       **{"03_basic_capacity": targets.fingerprint(MAP)})
+        with unittest.mock.patch.dict(targets.FINGERPRINT, current):
+            new = flyin.maps("subject/easy")[0]
+        self.assertEqual((new.target, new.optimum, new.target_required),
+                         (5, 4, True))
+
+    def test_fingerprint_ignores_comments(self) -> None:
+        """Comments, blank lines and spaces do not change a fingerprint."""
+        self.assertEqual(targets.fingerprint("# a\nnb_drones: 2\n\n"),
+                         targets.fingerprint("nb_drones: 2   # two\r\n"))
+        self.assertNotEqual(targets.fingerprint("nb_drones: 2"),
+                            targets.fingerprint("nb_drones: 3"))
 
     def test_nothing_shipped(self) -> None:
         """No subject map is bundled with flyin."""
@@ -180,14 +216,19 @@ class ReportTests(unittest.TestCase):
         crash = Outcome(flyin.case_for("fork_merge"), FAIL,
                         "printed a traceback: boom")
         slow = Outcome(Case(Path("x.txt"), "subject/easy/01.txt", "subject",
-                            "solve", target=6), WARN, "valid, but 9 turns",
-                       turns=9)
+                            "solve", target=5, optimum=4,
+                            target_required=True), FAIL,
+                       "valid, but 9 turns", turns=9)
         rows = {r[1]: r[0] for r in report.checklist([crash, slow])}
         self.assertFalse(rows["No crash, no traceback"])
-        self.assertFalse(rows["Turn targets of the subject are met"])
+        target_row = "Subject maps within their target (3.0: 1.25 x optimum)"
+        self.assertFalse(rows[target_row])
+        only_slow = {r[1]: r[0] for r in report.checklist([slow])}
+        self.assertTrue(only_slow["Valid maps are solved with a valid "
+                                  "output"])
+        self.assertFalse(rows["Exact optimum on the subject maps (bonus)"])
         details = {r[1]: r[2] for r in report.checklist([crash])}
-        self.assertIn("not imported", details["Turn targets of the subject "
-                                              "are met"])
+        self.assertIn("not imported", details[target_row])
         self.assertTrue(rows["No timeout"])
         text = report.build([crash, slow], "/p", "cmd {map}")
         self.assertIn("# Fly-In evaluation report", text)

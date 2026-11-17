@@ -12,7 +12,8 @@ class ManifestTests(unittest.TestCase):
 
     def setUp(self) -> None:
         """Load the manifest."""
-        self.cases = load_manifest()
+        self.cases = [c for c in load_manifest()
+                      if not c.group.startswith("subject")]
 
     def test_not_empty_and_groups(self) -> None:
         """All bundled groups exist (the subject maps are not shipped)."""
