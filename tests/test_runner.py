@@ -98,6 +98,29 @@ class FakeProgramTests(unittest.TestCase):
         self.assertEqual(
             self.judge(code, optional, strict_targets=True), WARN)
 
+    def test_subject_target_is_required(self) -> None:
+        """Subject 3.0: above 1.25 x optimum fails, the optimum is named."""
+        code = "print('D0-a'); print('D0-g')"
+        required = dataclasses.replace(self.solve, target=1, optimum=1,
+                                       target_required=True)
+        self.assertEqual(self.judge(code, required), FAIL)
+        within = dataclasses.replace(required, target=2)
+        outcome = self.runner(code).run_case(within)
+        self.assertEqual(outcome.status, PASS)
+        self.assertIn("1.25 x optimum 1", outcome.message)
+        exact = dataclasses.replace(within, optimum=2)
+        self.assertIn("= optimum", self.runner(code).run_case(exact).message)
+
+    def test_unsolvable_with_exit_zero_warns(self) -> None:
+        """Subject 3.0: an unsolvable map is reported, the exit status is
+        not demanded; a broken map with exit 0 still fails."""
+        code = "import sys; print('no path from s to g', file=sys.stderr)"
+        unsolvable = case("edge/invalid/disconnected_goal.txt")
+        self.assertEqual(self.judge(code, unsolvable), WARN)
+        self.assertEqual(self.judge(code, self.reject), FAIL)
+        self.assertEqual(self.judge(code + "; sys.exit(1)", unsolvable),
+                         PASS)
+
     def test_timeout(self) -> None:
         """A program that hangs fails with a timeout message."""
         outcome = self.runner("import time; time.sleep(30)",

@@ -42,7 +42,9 @@ class LibraryTests(unittest.TestCase):
 
     def test_maps(self) -> None:
         """All, a group, or a text."""
-        self.assertEqual(len(flyin.maps()), 420)
+        bundled = [c for c in flyin.maps()
+                   if not c.group.startswith("subject")]
+        self.assertEqual(len(bundled), 421)
         self.assertEqual(len(flyin.maps("fuzz")), 300)
         self.assertEqual(len(flyin.maps("challenge")), 5)
         self.assertEqual(len(flyin.maps("critical")), 4)

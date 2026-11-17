@@ -36,7 +36,9 @@ def _print_outcome(outcome: Outcome, color: bool, verbose: bool) -> None:
         tag = f"{COLORS[tag]}{tag}\033[0m"
     time_text = f"{outcome.seconds:5.1f}s"
     best = ""
-    if outcome.turns and outcome.best and outcome.status != FAIL:
+    valid = outcome.status != FAIL or \
+        outcome.message.startswith("valid, but")
+    if outcome.turns and outcome.best and valid:
         label = "optimum" if outcome.case.optimum else "bound"
         best = f"  [{label} {outcome.best}]" if outcome.turns > \
             outcome.best else f"  [= {label}]"
@@ -83,7 +85,7 @@ def score_line(outcomes: list[Outcome]) -> str:
     much as a map with 2.
     """
     scored = [o for o in outcomes if o.turns and o.best
-              and o.status != FAIL]
+              and (o.status != FAIL or o.message.startswith("valid, but"))]
     if not scored:
         return ""
     at_best = sum(1 for o in scored if o.turns == o.best)

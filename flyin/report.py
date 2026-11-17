@@ -28,14 +28,22 @@ def checklist(outcomes: list[Outcome]) -> list[tuple[bool, str, str]]:
         return [o for o in outcomes if o.case.group in groups
                 and o.status == FAIL and o.case.level == "required"]
 
-    solve = failed(("subject", "extra", "edge-valid"))
+    # A valid solution above its required target is a turns problem,
+    # not a wrong solution: it has its own row.
+    solve = [o for o in failed(("subject", "extra", "edge-valid"))
+             if not o.message.startswith("valid, but")]
     reject = failed(("subject-invalid", "extra-invalid", "edge-invalid"))
     crashes = _problems(outcomes, "traceback", "crashed")
     timeouts = _problems(outcomes, "timeout")
-    subject_maps = [o for o in outcomes if o.case.group == "subject"]
+    subject_maps = [o for o in outcomes if o.case.group == "subject"
+                    and o.case.target and not o.case.optional_target]
     targets = [o for o in subject_maps
-               if o.case.target and not o.case.optional_target
-               and (o.turns is None or o.turns > o.case.target)]
+               if o.turns is None or o.turns > (o.case.target or 0)]
+    with_optimum = [o for o in subject_maps if o.case.optimum]
+    not_optimal = [o for o in with_optimum
+                   if o.turns is None or o.turns > (o.case.optimum or 0)]
+    challenger = [o for o in outcomes if o.case.group == "subject"
+                  and o.case.optional_target and o.case.target]
     lines = _problems(outcomes, "does not name line")
 
     def detail(items: list[Outcome]) -> str:
@@ -53,9 +61,19 @@ def checklist(outcomes: list[Outcome]) -> list[tuple[bool, str, str]]:
         (not crashes, "No crash, no traceback", detail(crashes)),
         (not timeouts, "No timeout", detail(timeouts)),
         (bool(subject_maps) and not targets,
-         "Turn targets of the subject are met",
+         "Subject maps within their target (3.0: 1.25 x optimum)",
          detail(targets) if subject_maps else
          "subject maps not imported (flyin import-maps)"),
+        (bool(with_optimum) and not not_optimal,
+         "Exact optimum on the subject maps (bonus)",
+         detail(not_optimal) if with_optimum else
+         "only for the maps of subject 3.0 (none imported)"),
+        (bool(challenger) and all(
+            o.turns is not None and o.turns <= (o.case.target or 0)
+            for o in challenger),
+         "Challenger map at its target (bonus, optional)",
+         ", ".join(f"{o.turns or '-'} / {o.case.target} turns"
+                   for o in challenger) or "not imported"),
     ]
 
 

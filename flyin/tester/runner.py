@@ -14,6 +14,7 @@ from pathlib import Path
 from .checker import check_solution
 from .bounds import lower_bound
 from .mapfile import MapError, read_map
+from .targets import subject_entry
 
 MAPS_DIR = Path(__file__).resolve().parent.parent / "maps"
 TURN_LINE = re.compile(r"^D\d+-\S+(?: D\d+-\S+)*$")
@@ -44,6 +45,8 @@ class Case:
     note: str = ""
     prefer_visit: tuple[str, ...] = ()
     optimum: int | None = None
+    target_required: bool = False
+    reason: str = ""
 
 
 @dataclass
@@ -88,6 +91,12 @@ def _read_manifest(maps_dir: Path) -> list[Case]:
         return []
     cases = []
     for entry in data.get("maps", []):
+        if entry.get("group") == "subject":
+            # Imported subject maps always get their targets from here, by
+            # content: a 3.0 map the 3.0 rule, an older map the older rule
+            # (also for imports made before).
+            stem = Path(entry["path"]).stem
+            entry = {**entry, **subject_entry(stem, maps_dir / entry["path"])}
         line = entry.get("line", [])
         lines = tuple(line if isinstance(line, list) else [line])
         cases.append(Case(
@@ -102,6 +111,8 @@ def _read_manifest(maps_dir: Path) -> list[Case]:
             note=entry.get("note", ""),
             prefer_visit=tuple(entry.get("prefer_visit", [])),
             optimum=entry.get("optimum"),
+            target_required=entry.get("target_required", False),
+            reason=entry.get("reason", ""),
         ))
     return cases
 
@@ -236,14 +247,21 @@ class Runner:
             return Outcome(case, FAIL, "crashed instead of reporting an "
                            f"error: {cause[:100] or 'signal'}",
                            details=details)
-        if process.returncode == 0:
-            return Outcome(case, FAIL, "accepted an invalid map "
-                           "(exit status 0)", details=details)
         if turns or written.strip():
             return Outcome(case, FAIL, "printed a solution for an invalid "
                            "map", details=details)
         message = (process.stderr.strip() or "\n".join(noise)).strip()
         message = message.replace(str(case.path), case.path.name)
+        if process.returncode == 0:
+            if case.reason == "unsolvable" and message:
+                # Subject 3.0: an unsolvable map is not a parsing error;
+                # it must be reported clearly, an exit status is not
+                # demanded.
+                return Outcome(case, WARN, "reported the unsolvable map, "
+                               "but with exit status 0",
+                               details=(message.splitlines()[0][:160],))
+            return Outcome(case, FAIL, "accepted an invalid map "
+                           "(exit status 0)", details=details)
         if not message:
             return Outcome(case, FAIL, "no error message")
         if case.lines and self.check_lines:
@@ -302,16 +320,27 @@ class Runner:
         return outcome
 
     def _judge_turns(self, case: Case, turns: int) -> Outcome:
-        """Compare a valid solution's length with the reference target."""
+        """Compare a valid solution's length with the reference target.
+
+        A required target (the subject's 1.25 x optimum) fails when it is
+        missed; other targets warn, or fail with ``strict_targets``.
+        """
         if case.target is None:
             return Outcome(case, PASS, f"valid, {turns} turns", turns=turns)
+        if case.optimum is not None and turns <= case.optimum:
+            return Outcome(case, PASS, f"{turns} turns = optimum",
+                           turns=turns)
+        limit = f"target <= {case.target}"
+        if case.target_required and case.optimum:
+            limit = (f"allowed <= {case.target} = 1.25 x optimum "
+                     f"{case.optimum}")
         if turns <= case.target:
-            return Outcome(case, PASS, f"{turns} turns "
-                           f"(target <= {case.target})", turns=turns)
-        status = FAIL if self.strict_targets and not case.optional_target \
-            else WARN
+            return Outcome(case, PASS, f"{turns} turns ({limit})",
+                           turns=turns)
+        strict = self.strict_targets or case.target_required
+        status = FAIL if strict and not case.optional_target else WARN
         return Outcome(case, status, f"valid, but {turns} turns "
-                       f"(target <= {case.target})", turns=turns)
+                       f"({limit})", turns=turns)
 
     def run_all(self, cases: list[Case], jobs: int = 1) -> list[Outcome]:
         """Run every case, optionally in parallel, keeping the order."""

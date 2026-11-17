@@ -3,7 +3,9 @@
 The 42 subject comes with maps (easy, medium, hard, challenger) and turn
 targets. They belong to the subject, so flyin does not publish them;
 ``flyin import-maps`` (or the setup) copies them from your project into
-``.flyin/maps/`` and adds the known targets.
+``.flyin/maps/`` and adds the known targets: the 3.0 maps their optimum
+(within 25% is required), maps of the older subject its "<= N turns"
+(see :mod:`flyin.tester.targets`).
 """
 
 import json
@@ -11,17 +13,7 @@ import shutil
 from pathlib import Path
 
 from flyin.tester.runner import LOCAL_MAPS
-
-# "≤ N turns" of the subject; the challenger target 44 beats the record
-# of 45 and is optional.
-TARGETS = {
-    "01_linear_path": 6, "02_simple_fork": 6, "03_basic_capacity": 8,
-    "01_dead_end_trap": 15, "02_circular_loop": 20,
-    "03_priority_puzzle": 12, "01_maze_nightmare": 45,
-    "02_capacity_hell": 60, "03_ultimate_challenge": 35,
-    "01_the_impossible_dream": 44,
-}
-OPTIONAL = {"01_the_impossible_dream"}
+from flyin.tester.targets import subject_entry
 
 
 def find_maps(folder: Path) -> list[Path]:
@@ -57,16 +49,13 @@ def import_maps(source: Path) -> tuple[int, int]:
         entry: dict[str, object] = {
             "path": name, "group": "subject-invalid" if invalid
             else "subject", "expect": "error" if invalid else "solve"}
-        if not invalid and path.stem in TARGETS:
-            entry["target"] = TARGETS[path.stem]
-            with_target += 1
-            if path.stem in OPTIONAL:
-                entry.update(optional_target=True,
-                             note="optional: beat the record of 45 turns")
+        if not invalid:
+            entry.update(subject_entry(path.stem, path))
+            with_target += entry["target"] is not None
         entries.append(entry)
     target_dir.mkdir(parents=True, exist_ok=True)
     (target_dir / "manifest.json").write_text(
-        json.dumps({"version": 1, "maps": entries}, indent=2) + "\n",
+        json.dumps({"version": 2, "maps": entries}, indent=2) + "\n",
         "utf-8")
     return len(entries), with_target
 

@@ -81,15 +81,18 @@ def build_replay(fly_map: FlyMap, text: str, raw: bool = False) -> Replay:
     base = detect_id_base(lines)
     ids = range(base, base + fly_map.nb_drones)
     delivered: Dict[int, bool] = {drone: False for drone in ids}
+    where: Dict[int, str] = {drone: fly_map.start for drone in ids}
     skipped: List[str] = []
     turns: List[TurnRecord] = []
     for number, line in enumerate(lines, 1):
         moves: Dict[int, Move] = {}
         for token in line.split():
             match = TOKEN.match(token)
-            place = None if match is None else \
-                _place(fly_map, match.group(2).split("-"))
             drone = -1 if match is None else int(match.group(1))
+            parts = [] if match is None else match.group(2).split("-")
+            if len(parts) == 2 and parts[1] == where.get(drone):
+                parts.reverse()  # connection named target-first
+            place = _place(fly_map, parts)
             reason = ("malformed or unknown zone" if place is None
                       else "unknown drone" if drone not in delivered
                       else "acts twice" if drone in moves
@@ -100,6 +103,7 @@ def build_replay(fly_map: FlyMap, text: str, raw: bool = False) -> Replay:
                 continue
             moves[drone] = Move(drone, str(place))
             delivered[drone] = place == fly_map.end
+            where[drone] = str(place).split("-")[-1]
         turns.append(TurnRecord(number, [moves[d] for d in sorted(moves)]))
     graph = graph_from_map(fly_map)
     issues = [Issue(i.turn, i.message, tuple(z for z in i.zones

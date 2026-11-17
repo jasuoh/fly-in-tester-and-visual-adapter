@@ -12,7 +12,10 @@ class BoundTests(unittest.TestCase):
 
     def test_never_above_a_known_optimum(self) -> None:
         """305 maps (challenge + fuzz) have an exact optimum."""
-        known = [c for c in load_manifest() if c.optimum is not None]
+        # only the bundled maps: subject maps imported into the folder the
+        # tests run in must not change the count
+        known = [c for c in load_manifest() if c.optimum is not None
+                 and not c.group.startswith("subject")]
         self.assertEqual(len(known), 305)
         for case in known:
             with self.subTest(map=case.name):
