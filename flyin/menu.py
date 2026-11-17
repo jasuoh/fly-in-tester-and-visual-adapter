@@ -71,6 +71,8 @@ class Menu:
                  self.evaluate),
                 (Item("More …", "one group, history, random map, rules, "
                       "subject maps"), self.more),
+                (Item("Open the web GUI", "everything in the browser, "
+                      "localhost"), self.web),
                 (Item("Settings", "project, command, output, theme"),
                  self.settings),
             ]
@@ -166,6 +168,11 @@ class Menu:
         chosen = pick("More", [item for item, _ in extras])
         if chosen is not None:
             extras[chosen[0]][1]()
+
+    def web(self) -> None:
+        """Serve the web GUI until Ctrl-C, then come back to the menu."""
+        from flyin.web.server import serve
+        serve()
 
     def import_subject(self) -> None:
         """Copy the subject's maps from a folder of the project."""

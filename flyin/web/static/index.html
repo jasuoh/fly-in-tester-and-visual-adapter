@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="flyin-token" content="__FLYIN_TOKEN__">
+<meta name="color-scheme" content="dark">
+<title>flyin · Fly-In tester</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2338dce6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<!-- icons: Lucide-style strokes (no emoji as icons) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></symbol>
+    <symbol id="i-overview" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M3 6.5 9 3.5l6 3 6-3v14l-6 3-6-3-6 3z"/><path d="M9 3.5v14M15 6.5v14"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8.3"/><path d="M3 3.3v5h5"/><path d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3.5v17l14-8.5z" fill="currentColor"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 15V3M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 6.5V12l3.5 2"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M16 13H8M16 17H8M10 9H8"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><path d="m4 17 6-6-6-6M12 19h8"/></symbol>
+    <symbol id="i-wand" viewBox="0 0 24 24"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72M14 7l3 3M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <a class="brand" href="#" data-goto="overview" aria-label="flyin overview">
+    <svg class="ic"><use href="#i-plane"/></svg><b>flyin</b>
+  </a>
+  <nav class="nav" id="tabs" aria-label="Sections">
+    <button data-tab="overview" class="active"><svg class="ic"><use href="#i-overview"/></svg><span>Overview</span></button>
+    <button data-tab="maps"><svg class="ic"><use href="#i-map"/></svg><span>Maps</span></button>
+    <button data-tab="history"><svg class="ic"><use href="#i-history"/></svg><span>History</span></button>
+    <button data-tab="rules"><svg class="ic"><use href="#i-book"/></svg><span>Rules</span></button>
+    <button data-tab="settings"><svg class="ic"><use href="#i-settings"/></svg><span>Settings</span></button>
+  </nav>
+  <button class="project" id="project" data-goto="settings" title="Project and command (Settings)">
+    <svg class="ic"><use href="#i-folder"/></svg><span id="project-name">not set up</span><code id="project-cmd"></code>
+  </button>
+  <div class="run" id="run-box">
+    <div class="run-progress" id="run-progress" hidden>
+      <span id="run-text">0 / 0</span><span class="run-bar"><span id="run-bar"></span></span>
+    </div>
+    <button class="btn danger" id="test-stop" hidden><svg class="ic"><use href="#i-stop"/></svg>Stop</button>
+    <button class="btn primary" id="test-all" title="Test every standard map (all groups but fuzz)"><svg class="ic"><use href="#i-play"/></svg>Run tests</button>
+  </div>
+</header>
+
+<main>
+  <!-- overview ---------------------------------------------------------->
+  <section id="tab-overview" class="view view-overview">
+    <div class="notice warn" id="setup-banner" hidden>
+      <svg class="ic"><use href="#i-alert"/></svg>
+      <span>flyin does not know your project yet.</span>
+      <button class="btn small" data-goto="settings">Set it up</button>
+    </div>
+    <div class="notice" id="subject-banner" hidden>
+      <svg class="ic"><use href="#i-map"/></svg>
+      <span>The subject's maps are not imported, so the subject targets are not checked.</span>
+      <button class="btn small" data-goto="settings">Import them</button>
+    </div>
+
+    <div class="kpis" id="kpis">
+      <div class="kpi pass"><span>Passed</span><b id="k-pass">–</b></div>
+      <div class="kpi warn"><span>Warnings</span><b id="k-warn">–</b></div>
+      <div class="kpi fail"><span>Failed</span><b id="k-fail">–</b></div>
+      <div class="kpi"><span>At the best possible</span><b id="k-best">–</b><small id="k-best-sub"></small></div>
+      <div class="kpi"><span>Turns over best, average</span><b id="k-gap">–</b><small id="k-gap-sub"></small></div>
+      <div class="kpi run-kpi"><span id="k-when-label">Last test</span><b id="k-when">–</b>
+        <small id="k-when-sub"></small>
+        <button class="btn small ghost" id="report-link" hidden><svg class="ic"><use href="#i-download"/></svg>Report .md</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="panel span-7">
+        <header class="panel-head">
+          <h2>Subject maps</h2><span class="tag" id="subject-version">subject 3.0</span>
+        </header>
+        <p class="hint">3.0 maps: at most 1.25 × optimum is required, the optimum is the bonus. Maps of the
+          older subject (same names, other content) keep their “≤ N turns”. The challenger is optional.</p>
+        <div class="table-wrap">
+          <table class="table" id="subject-table">
+            <thead><tr><th>Map</th><th class="num">Turns</th><th class="num">Optimum</th>
+              <th class="num">Allowed</th><th>Verdict</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-5">
+        <header class="panel-head"><h2>Evaluation checklist</h2></header>
+        <ul class="checklist" id="checklist"><li class="empty">Run a test to fill this.</li></ul>
+      </section>
+
+      <section class="panel span-8">
+        <header class="panel-head">
+          <h2>Problems</h2><span class="tag" id="problems-count">0</span>
+          <div class="seg" id="problem-filter" role="group" aria-label="Show">
+            <button data-f="all" class="on">All</button><button data-f="FAIL">Failed</button><button data-f="WARN">Warnings</button>
+          </div>
+        </header>
+        <div class="table-wrap tall">
+          <table class="table" id="problems-table">
+            <thead><tr><th></th><th>Map</th><th>What</th><th class="num">Turns</th><th class="num">Best</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-4">
+        <header class="panel-head">
+          <h2>Groups</h2>
+          <button class="btn small" id="test-selected" title="Test the ticked groups"><svg class="ic"><use href="#i-play"/></svg>Test ticked</button>
+        </header>
+        <ul class="groups" id="group-chips"></ul>
+      </section>
+    </div>
+  </section>
+
+  <!-- maps -------------------------------------------------------------->
+  <section id="tab-maps" class="view view-maps" hidden>
+    <aside class="maplist">
+      <div class="search">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <input type="search" id="map-search" placeholder="Filter maps" aria-label="Filter maps">
+        <kbd>/</kbd>
+      </div>
+      <div class="filters">
+        <select id="map-group" aria-label="Group"><option value="">All groups</option></select>
+        <select id="map-status" aria-label="Result">
+          <option value="">Any result</option>
+          <option value="FAIL">Failed</option>
+          <option value="WARN">Warnings</option>
+          <option value="PASS">Passed</option>
+          <option value="none">Not tested</option>
+        </select>
+      </div>
+      <ul id="map-items" role="listbox" aria-label="Maps"></ul>
+    </aside>
+
+    <div class="workspace" id="mc">
+      <div class="center">
+        <header class="maphead">
+          <div class="maphead-title">
+            <h1 id="map-title">Pick a map</h1>
+            <div class="maphead-meta" id="map-meta">Choose one on the left, or a problem on the overview.</div>
+          </div>
+          <div class="verdict" id="verdict" hidden></div>
+          <div class="maphead-actions">
+            <button class="btn primary" id="run-map" disabled><svg class="ic"><use href="#i-play"/></svg><span>Run my program</span></button>
+            <button class="btn" id="load-last" disabled title="Output of your last test"><svg class="ic"><use href="#i-clock"/></svg>Last test</button>
+            <button class="btn" id="load-previous" disabled title="Output of the test before"><svg class="ic"><use href="#i-undo"/></svg>Before</button>
+            <button class="btn" id="paste-toggle" disabled title="Check an output you paste"><svg class="ic"><use href="#i-clipboard"/></svg>Paste</button>
+          </div>
+        </header>
+        <div class="paste" id="paste" hidden>
+          <textarea id="paste-text" rows="5" placeholder="Paste the turn lines of your program; other lines are ignored."></textarea>
+          <div class="paste-actions">
+            <button class="btn primary small" id="paste-check"><svg class="ic"><use href="#i-check"/></svg>Check and play</button>
+            <button class="btn small ghost" id="paste-close">Close</button>
+          </div>
+        </div>
+        <div class="mc-stage" id="mc-stage">
+          <div class="stage-view" id="stage-view">
+            <svg id="stage" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map"></svg>
+            <canvas id="stage-fx" aria-hidden="true"></canvas>
+          </div>
+          <div class="mc-tip" id="tooltip" hidden></div>
+          <div class="stage-empty" id="viewer-empty">
+            <svg class="ic"><use href="#i-map"/></svg>
+            <p>Pick a map on the left to see it, then play your program's solution.</p>
+          </div>
+          <div class="stage-tools">
+            <button id="fit-view" title="Fit the map (double-click)" aria-label="Fit the map"><svg class="ic"><use href="#i-fit"/></svg></button>
+            <button id="full-view" title="Full screen (F)" aria-label="Full screen"><svg class="ic"><use href="#i-expand"/></svg></button>
+          </div>
+          <div class="mc-bar">
+            <button id="p-play" class="mc-play" title="Play / pause (Space)" aria-label="Play">
+              <svg viewBox="0 0 16 16" width="16" height="16"><path id="p-play-icon" d="M4 2 L13 8 L4 14 Z"/></svg>
+            </button>
+            <button id="p-speed" class="mc-speed" title="Speed (+ / −)">1×</button>
+            <canvas id="p-track" title="Click or drag to jump"></canvas>
+            <span id="p-total" class="mc-total">–</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="inspector">
+        <nav class="itabs" id="itabs" role="tablist">
+          <button data-pane="live" class="on" role="tab"><svg class="ic"><use href="#i-activity"/></svg>Live</button>
+          <button data-pane="problems" role="tab"><svg class="ic"><use href="#i-alert"/></svg>Problems<span class="count" id="problems-badge" hidden>0</span></button>
+          <button data-pane="output" role="tab"><svg class="ic"><use href="#i-terminal"/></svg>Output</button>
+          <button data-pane="file" role="tab"><svg class="ic"><use href="#i-file"/></svg>Map</button>
+        </nav>
+
+        <div class="ipane mc-panel" data-pane="live">
+          <div class="mc-title" id="mc-title" hidden></div>
+          <div id="mc-rule" hidden>
+            <div class="mc-h mc-danger">Rule broken</div>
+            <div class="mc-rule" id="mc-rule-text"></div>
+          </div>
+          <div class="mc-turnrow">
+            <div>
+              <div class="mc-h">Turn</div>
+              <div class="mc-turn"><b id="mc-turn">0</b><span class="mc-of">/</span><span id="mc-turns">–</span></div>
+            </div>
+            <ul class="mc-states">
+              <li><i class="dot-accent"></i>en route <b id="mc-route">0</b></li>
+              <li><i class="dot-warning"></i>in transit <b id="mc-transit">0</b></li>
+              <li><i class="dot-muted"></i>waiting <b id="mc-waiting">0</b></li>
+            </ul>
+          </div>
+          <div class="mc-h">Delivered</div>
+          <div class="mc-deliv"><span id="mc-deliv">0 / 0</span><span id="mc-pct">0%</span></div>
+          <div class="mc-progress"><span id="mc-progress"></span></div>
+          <div class="mc-h">Moves this turn</div>
+          <div class="mc-moves" id="mc-moves"></div>
+          <div class="mc-h">Metrics</div>
+          <div class="mc-metrics">
+            <div><b id="mc-m-turns">–</b><span>Total turns</span></div>
+            <div><b id="mc-m-mpt">–</b><span>Moves / turn</span></div>
+            <div><b id="mc-m-tpd">–</b><span>Avg turns / drone</span></div>
+            <div><b id="mc-m-cost">–</b><span>Path cost</span></div>
+          </div>
+          <div class="mc-h" id="mc-bars-h">Moves per turn</div>
+          <canvas id="mc-bars" title="Click to jump"></canvas>
+          <div class="mc-h mc-follow-h">Follow a drone <input type="number" id="p-follow" placeholder="#" aria-label="Drone number"></div>
+          <div class="mc-drone" id="p-drone"></div>
+          <details class="mc-more">
+            <summary>Legend and keys</summary>
+            <div class="mc-legend" id="mc-legend"></div>
+            <div class="mc-keys">
+              <span><kbd>Space</kbd>play</span><span><kbd>← →</kbd>step</span><span><kbd>+ −</kbd>speed</span>
+              <span><kbd>R</kbd>restart</span><span><kbd>E</kbd>next error</span><span><kbd>F</kbd>full screen</span>
+              <span><kbd>Esc</kbd>unfollow</span><span><kbd>/</kbd>filter maps</span>
+            </div>
+          </details>
+        </div>
+        <div class="ipane" data-pane="problems" hidden>
+          <div id="side-errors"><p class="empty">No solution loaded.</p></div>
+        </div>
+        <div class="ipane" data-pane="output" hidden>
+          <pre class="code" id="output-text">No output yet: run your program or load a test.</pre>
+        </div>
+        <div class="ipane" data-pane="file" hidden>
+          <pre class="code" id="map-text"></pre>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- history ----------------------------------------------------------->
+  <section id="tab-history" class="view view-page" hidden>
+    <header class="page-head"><h1>History</h1><p>Every test run in this folder, newest first, compared with the run before it.</p></header>
+    <section class="panel">
+      <div class="table-wrap">
+        <table class="table" id="history-table">
+          <thead><tr><th>When</th><th class="num">Maps</th><th class="bar-col">Result</th><th class="num">Pass</th>
+            <th class="num">Warn</th><th class="num">Fail</th><th>Compared with the run before</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <!-- rules ------------------------------------------------------------->
+  <section id="tab-rules" class="view view-page" hidden>
+    <section class="panel prose" id="rules"></section>
+  </section>
+
+  <!-- settings ---------------------------------------------------------->
+  <section id="tab-settings" class="view view-page" hidden>
+    <header class="page-head"><h1>Settings</h1><p>The same settings as the flyin menu, kept in <code>.flyin/</code> of the folder flyin runs in.</p></header>
+    <div class="settings">
+      <form class="panel form" id="settings-form" autocomplete="off">
+        <h2>Your project</h2>
+        <label class="field"><span>Project folder</span>
+          <div class="input-row">
+            <input name="project" id="f-project" class="mono" placeholder="~/42/fly-in" required>
+            <button type="button" class="btn" id="f-detect"><svg class="ic"><use href="#i-wand"/></svg>Detect</button>
+          </div>
+          <small>The command runs in this folder.</small>
+        </label>
+        <label class="field"><span>Command for one map</span>
+          <input name="command" id="f-command" class="mono" placeholder="python3 main.py {map}" required>
+          <small><code>{map}</code> is the path of the map, <code>{out}</code> a file to write the solution to (optional).</small>
+        </label>
+        <fieldset class="field">
+          <legend>Where is the solution?</legend>
+          <label class="choice"><input type="radio" name="mode" value="terminal" checked><span>Printed in the terminal</span></label>
+          <label class="choice"><input type="radio" name="mode" value="out"><span>Written to <code>{out}</code> from the command</span></label>
+          <label class="choice"><input type="radio" name="mode" value="file"><span>Always the same file</span>
+            <input name="output_file" id="f-output" class="mono" placeholder="output.txt" aria-label="Output file"></label>
+        </fieldset>
+        <div class="field-row">
+          <label class="field"><span>Seconds per map</span><input name="timeout" id="f-timeout" type="number" min="1" step="1"></label>
+          <label class="field"><span>Maps in parallel</span><input name="jobs" id="f-jobs" type="number" min="1" max="32"></label>
+        </div>
+        <div class="form-actions">
+          <button class="btn primary" type="submit"><svg class="ic"><use href="#i-check"/></svg>Save</button>
+          <span class="note" id="settings-note" role="status"></span>
+        </div>
+      </form>
+
+      <div class="panel form">
+        <h2>Subject maps</h2>
+        <p class="hint">The subject's maps are not shipped with flyin. Import them from your project: they stay
+          on your computer in <code>.flyin/maps/</code>, and each gets the rule of its subject version.</p>
+        <label class="field"><span>Folder with the maps</span>
+          <input id="f-import" class="mono" placeholder="default: the maps/ folder of your project">
+        </label>
+        <div class="form-actions">
+          <button class="btn primary" id="f-import-go" type="button"><svg class="ic"><use href="#i-download"/></svg>Import</button>
+          <span class="note" id="import-note" role="status"></span>
+        </div>
+        <h2 class="gap">This server</h2>
+        <p class="hint" id="about"></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script src="/static/app.js"></script>
+<script src="/static/viewer.js"></script>
+</body>
+</html>

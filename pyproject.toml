@@ -1,7 +1,7 @@
 [project]
 name = "flyin"
 version = "2.0.0"
-description = "Test your 42 Fly-In algorithm on 130 maps and watch it in a visualizer (menu, command line and library)"
+description = "Test your 42 Fly-In algorithm on 421 maps and watch it in a visualizer (menu, command line and library)"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
@@ -17,11 +17,13 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["flyin", "flyin.tester", "flyin.visual", "flyin.visual.gui"]
+packages = ["flyin", "flyin.tester", "flyin.visual", "flyin.visual.gui",
+            "flyin.web"]
 
 [tool.setuptools.package-data]
 flyin = ["maps/**/*.txt", "maps/manifest.json", "RULES.md"]
 "flyin.visual" = ["assets/fonts/*"]
+"flyin.web" = ["static/*"]
 
 [tool.mypy]
 strict = true
